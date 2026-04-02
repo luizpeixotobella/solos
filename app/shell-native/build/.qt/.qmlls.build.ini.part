@@ -1,0 +1,3 @@
+[<SLASH>home<SLASH>lcpby<SLASH>.openclaw<SLASH>workspace<SLASH>solos<SLASH>app<SLASH>shell-native]
+importPaths="/home/lcpby/.openclaw/workspace/solos/app/shell-native/build:/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/SolOS/Shell:/home/lcpby/Qt/6.11.0/gcc_64/qml"
+resourceFiles="/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.qt/rcc/qmake_SolOS_Shell.qrc:/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.qt/rcc/solos-shell-native_raw_qml_0.qrc"

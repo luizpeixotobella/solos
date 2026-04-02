@@ -1,0 +1,18 @@
+{
+    "classes": [
+        {
+            "className": "AppRegistryModel",
+            "lineNumber": 13,
+            "object": true,
+            "qualifiedClassName": "AppRegistryModel",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QAbstractListModel"
+                }
+            ]
+        }
+    ],
+    "inputFile": "appregistrymodel.h",
+    "outputRevision": 69
+}

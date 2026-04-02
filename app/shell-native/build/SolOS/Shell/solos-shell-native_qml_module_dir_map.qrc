@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="/qt/qml/SolOS/Shell">/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/SolOS/Shell</file>
+
+  </qresource>
+</RCC>

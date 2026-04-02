@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=SolOS Kiosk
+Comment=Launch the SolOS shell demo in kiosk mode
+Exec=/home/solos/.config/solos/launch-kiosk.sh
+X-GNOME-Autostart-enabled=true
+Terminal=false

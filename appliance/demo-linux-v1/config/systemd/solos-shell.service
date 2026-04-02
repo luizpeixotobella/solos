@@ -1,0 +1,18 @@
+[Unit]
+Description=SolOS shell demo server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/solos-shell.env
+Environment=SOLOS_ROOT=/opt/solos-shell/current
+Environment=SOLOS_BIND_HOST=127.0.0.1
+Environment=SOLOS_PORT=8080
+ExecStart=/usr/bin/env node /opt/solos-shell/bin/run-shell-server.mjs
+Restart=always
+RestartSec=2
+WorkingDirectory=/opt/solos-shell/current
+
+[Install]
+WantedBy=default.target

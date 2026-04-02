@@ -1,0 +1,55 @@
+{
+    "formatRevision": 1,
+    "modules": [
+        {
+            "moduleFiles": [
+                {
+                    "entries": [
+                        {
+                            "codegenResult": 0,
+                            "column": 23,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 10,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 20,
+                            "durationMicroseconds": 0,
+                            "functionName": "model",
+                            "line": 21,
+                            "message": "Cannot load property quickActionsModel from QQuickItem::parent with type QQuickItem."
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 30,
+                            "durationMicroseconds": 0,
+                            "functionName": "actionTitle",
+                            "line": 29,
+                            "message": "Cannot access value for name model"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 33,
+                            "durationMicroseconds": 0,
+                            "functionName": "actionSubtitle",
+                            "line": 30,
+                            "message": "Cannot access value for name model"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 36,
+                            "durationMicroseconds": 0,
+                            "functionName": "actionDescription",
+                            "line": 31,
+                            "message": "Cannot access value for name model"
+                        }
+                    ],
+                    "filePath": "/home/lcpby/.openclaw/workspace/solos/app/shell-native/qml/screens/HomeScreen.qml"
+                }
+            ],
+            "moduleId": "SolOS.Shell(solos-shell-native)"
+        }
+    ]
+}

@@ -1,0 +1,349 @@
+[
+    {
+        "classes": [
+            {
+                "className": "ActivityFeedModel",
+                "lineNumber": 13,
+                "object": true,
+                "qualifiedClassName": "ActivityFeedModel",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "activityfeedmodel.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "AppController",
+                "lineNumber": 12,
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 0,
+                        "lineNumber": 15,
+                        "name": "currentScreen",
+                        "notify": "currentScreenChanged",
+                        "override": false,
+                        "read": "currentScreen",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setCurrentScreen"
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 1,
+                        "lineNumber": 16,
+                        "name": "sessionLabel",
+                        "override": false,
+                        "read": "sessionLabel",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 2,
+                        "lineNumber": 17,
+                        "name": "systemLabel",
+                        "override": false,
+                        "read": "systemLabel",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 3,
+                        "lineNumber": 18,
+                        "name": "walletLabel",
+                        "override": false,
+                        "read": "walletLabel",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 4,
+                        "lineNumber": 19,
+                        "name": "agentStatus",
+                        "override": false,
+                        "read": "agentStatus",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 5,
+                        "lineNumber": 20,
+                        "name": "appNames",
+                        "override": false,
+                        "read": "appNames",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 6,
+                        "lineNumber": 21,
+                        "name": "appRegistryModel",
+                        "override": false,
+                        "read": "appRegistryModel",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "AppRegistryModel*",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 7,
+                        "lineNumber": 22,
+                        "name": "activityFeedModel",
+                        "override": false,
+                        "read": "activityFeedModel",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "ActivityFeedModel*",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 8,
+                        "lineNumber": 23,
+                        "name": "quickActionsModel",
+                        "override": false,
+                        "read": "quickActionsModel",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QuickActionsModel*",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 9,
+                        "lineNumber": 24,
+                        "name": "approvalQueueModel",
+                        "override": false,
+                        "read": "approvalQueueModel",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "ApprovalQueueModel*",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 10,
+                        "lineNumber": 25,
+                        "name": "ghostRuntime",
+                        "override": false,
+                        "read": "ghostRuntime",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "GhostRuntime*",
+                        "user": false,
+                        "virtual": false
+                    }
+                ],
+                "qualifiedClassName": "AppController",
+                "signals": [
+                    {
+                        "access": "public",
+                        "index": 0,
+                        "lineNumber": 45,
+                        "name": "currentScreenChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "appcontroller.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "AppRegistryModel",
+                "lineNumber": 13,
+                "object": true,
+                "qualifiedClassName": "AppRegistryModel",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "appregistrymodel.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "ApprovalQueueModel",
+                "lineNumber": 13,
+                "object": true,
+                "qualifiedClassName": "ApprovalQueueModel",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "approvalqueuemodel.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "GhostRuntime",
+                "lineNumber": 6,
+                "object": true,
+                "properties": [
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 0,
+                        "lineNumber": 9,
+                        "name": "presenceLabel",
+                        "override": false,
+                        "read": "presenceLabel",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 1,
+                        "lineNumber": 10,
+                        "name": "modeLabel",
+                        "override": false,
+                        "read": "modeLabel",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 2,
+                        "lineNumber": 11,
+                        "name": "thesisLabel",
+                        "override": false,
+                        "read": "thesisLabel",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "virtual": false
+                    }
+                ],
+                "qualifiedClassName": "GhostRuntime",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "ghostruntime.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "QuickActionsModel",
+                "lineNumber": 13,
+                "object": true,
+                "qualifiedClassName": "QuickActionsModel",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "quickactionsmodel.h",
+        "outputRevision": 69
+    }
+]

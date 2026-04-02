@@ -1,0 +1,39 @@
+{
+    "formatRevision": 1,
+    "modules": [
+        {
+            "moduleFiles": [
+                {
+                    "entries": [
+                        {
+                            "codegenResult": 0,
+                            "column": 12,
+                            "durationMicroseconds": 0,
+                            "functionName": "title",
+                            "line": 9,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 15,
+                            "durationMicroseconds": 0,
+                            "functionName": "subtitle",
+                            "line": 10,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 11,
+                            "durationMicroseconds": 0,
+                            "functionName": "body",
+                            "line": 11,
+                            "message": ""
+                        }
+                    ],
+                    "filePath": "/home/lcpby/.openclaw/workspace/solos/app/shell-native/qml/components/QuickActionTile.qml"
+                }
+            ],
+            "moduleId": "SolOS.Shell(solos-shell-native)"
+        }
+    ]
+}
