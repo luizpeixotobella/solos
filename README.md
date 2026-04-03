@@ -37,3 +37,12 @@ Current stack:
 ## Working principle
 
 Document while building. The idea should mature with the code, not after it.
+
+## Documentation discipline
+
+SolOS should be documented as a live system across two synchronized surfaces:
+
+1. **Product repository** — thesis, architecture, roadmap, devlog, and implementation notes
+2. **Institutional CMS** — executive framing, launch collateral, public narrative, and referenced campaign material
+
+When the thesis sharpens or implementation meaningfully advances, both surfaces should be reviewed so the internal doctrine and external framing do not drift apart.

@@ -1,5 +1,14 @@
 # SolOS Devlog
 
+## 2026-04-03
+
+- Re-read the thesis, architecture, roadmap, and launch collateral to keep implementation and narrative aligned.
+- Reconfirmed the core external framing now present in the CMS launch pack: **SolOS as an operating layer for agents, dApps, and digital identity**.
+- Added an explicit process rule to the working log: SolOS progress should be documented continuously in-repo rather than reconstructed later.
+- Began a CMS alignment pass so project doctrine and outward-facing campaign language do not drift apart.
+- Updated the matching CMS Business Affairs entry to include a live reference-doc section covering thesis, architecture, roadmap, devlog, launch pack, and the operating-layer visual.
+- Reinforced a cross-system documentation rule: SolOS repo updates and CMS institutional updates should happen in the same operational cycle whenever the thesis or implementation meaningfully shifts.
+
 ## 2026-04-02
 
 - Confirmed local Qt version mismatch and resolved build path by pointing CMake to user-installed Qt.
