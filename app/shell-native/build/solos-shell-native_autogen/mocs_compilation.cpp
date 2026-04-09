@@ -4,4 +4,5 @@
 #include "UVLADIE3JM/moc_appregistrymodel.cpp"
 #include "UVLADIE3JM/moc_approvalqueuemodel.cpp"
 #include "UVLADIE3JM/moc_ghostruntime.cpp"
+#include "UVLADIE3JM/moc_homestate.cpp"
 #include "UVLADIE3JM/moc_quickactionsmodel.cpp"

@@ -14,6 +14,8 @@ solos-shell-native_autogen/timestamp: \
 	/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/approvalqueuemodel.h \
 	/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/ghostruntime.cpp \
 	/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/ghostruntime.h \
+	/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.cpp \
+	/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.h \
 	/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/main.cpp \
 	/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/quickactionsmodel.cpp \
 	/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/quickactionsmodel.h \

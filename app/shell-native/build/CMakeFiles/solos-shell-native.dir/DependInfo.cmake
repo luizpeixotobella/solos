@@ -30,6 +30,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/appregistrymodel.cpp" "CMakeFiles/solos-shell-native.dir/src/appregistrymodel.cpp.o" "gcc" "CMakeFiles/solos-shell-native.dir/src/appregistrymodel.cpp.o.d"
   "/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/approvalqueuemodel.cpp" "CMakeFiles/solos-shell-native.dir/src/approvalqueuemodel.cpp.o" "gcc" "CMakeFiles/solos-shell-native.dir/src/approvalqueuemodel.cpp.o.d"
   "/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/ghostruntime.cpp" "CMakeFiles/solos-shell-native.dir/src/ghostruntime.cpp.o" "gcc" "CMakeFiles/solos-shell-native.dir/src/ghostruntime.cpp.o.d"
+  "/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.cpp" "CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o" "gcc" "CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o.d"
   "/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/main.cpp" "CMakeFiles/solos-shell-native.dir/src/main.cpp.o" "gcc" "CMakeFiles/solos-shell-native.dir/src/main.cpp.o.d"
   "/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/quickactionsmodel.cpp" "CMakeFiles/solos-shell-native.dir/src/quickactionsmodel.cpp.o" "gcc" "CMakeFiles/solos-shell-native.dir/src/quickactionsmodel.cpp.o.d"
   )

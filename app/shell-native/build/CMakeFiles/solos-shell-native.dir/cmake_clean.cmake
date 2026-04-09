@@ -73,6 +73,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/solos-shell-native.dir/src/approvalqueuemodel.cpp.o.d"
   "CMakeFiles/solos-shell-native.dir/src/ghostruntime.cpp.o"
   "CMakeFiles/solos-shell-native.dir/src/ghostruntime.cpp.o.d"
+  "CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o"
+  "CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o.d"
   "CMakeFiles/solos-shell-native.dir/src/main.cpp.o"
   "CMakeFiles/solos-shell-native.dir/src/main.cpp.o.d"
   "CMakeFiles/solos-shell-native.dir/src/quickactionsmodel.cpp.o"

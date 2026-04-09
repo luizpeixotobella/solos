@@ -419,4 +419,5 @@ CMakeFiles/solos-shell-native.dir/src/main.cpp.o: \
  /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/appregistrymodel.h \
  /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/approvalqueuemodel.h \
  /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/ghostruntime.h \
+ /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.h \
  /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/quickactionsmodel.h

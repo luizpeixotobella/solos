@@ -1261,6 +1261,12 @@
 			null
 		],
 		[
+			"/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.h",
+			"MU",
+			"UVLADIE3JM/moc_homestate.cpp",
+			null
+		],
+		[
 			"/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/quickactionsmodel.h",
 			"MU",
 			"UVLADIE3JM/moc_quickactionsmodel.cpp",
@@ -1381,6 +1387,11 @@
 		],
 		[
 			"/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/ghostruntime.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.cpp",
 			"MU",
 			null
 		],

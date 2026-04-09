@@ -936,6 +936,30 @@ src/ghostruntime.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/solos-shell-native.dir/build.make CMakeFiles/solos-shell-native.dir/src/ghostruntime.cpp.s
 .PHONY : src/ghostruntime.cpp.s
 
+src/homestate.o: src/homestate.cpp.o
+.PHONY : src/homestate.o
+
+# target to build an object file
+src/homestate.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/solos-shell-native.dir/build.make CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o
+.PHONY : src/homestate.cpp.o
+
+src/homestate.i: src/homestate.cpp.i
+.PHONY : src/homestate.i
+
+# target to preprocess a source file
+src/homestate.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/solos-shell-native.dir/build.make CMakeFiles/solos-shell-native.dir/src/homestate.cpp.i
+.PHONY : src/homestate.cpp.i
+
+src/homestate.s: src/homestate.cpp.s
+.PHONY : src/homestate.s
+
+# target to generate assembly for a file
+src/homestate.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/solos-shell-native.dir/build.make CMakeFiles/solos-shell-native.dir/src/homestate.cpp.s
+.PHONY : src/homestate.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -1081,6 +1105,9 @@ help:
 	@echo "... src/ghostruntime.o"
 	@echo "... src/ghostruntime.i"
 	@echo "... src/ghostruntime.s"
+	@echo "... src/homestate.o"
+	@echo "... src/homestate.i"
+	@echo "... src/homestate.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

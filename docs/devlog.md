@@ -8,6 +8,13 @@
 - Began a CMS alignment pass so project doctrine and outward-facing campaign language do not drift apart.
 - Updated the matching CMS Business Affairs entry to include a live reference-doc section covering thesis, architecture, roadmap, devlog, launch pack, and the operating-layer visual.
 - Reinforced a cross-system documentation rule: SolOS repo updates and CMS institutional updates should happen in the same operational cycle whenever the thesis or implementation meaningfully shifts.
+- Began aligning the native shell with the newer public framing of “structure + something useful” by adding explicit Home-level environment guidance instead of leaving the surface as a generic section list.
+- Added a first-pass “next useful action” concept to the native shell so Home can point toward the most important legible move rather than only describing the information architecture.
+- Promoted Home guidance from ad hoc `AppController` strings into a dedicated `HomeState` object, moving the shell one step closer to a real structured Home model instead of a generic placeholder surface.
+- Reframed the Home surface around a more legible system promise: show what matters now, then point toward the next useful safe action.
+- Updated roadmap and architecture docs to reflect the current state more accurately, including the new `HomeState` direction and a selective Rust migration principle instead of a blanket rewrite posture.
+- Created a matching documentation spine in `lbartes-cms/docs` so institutional/public framing can stay aligned with the SolOS repo.
+- Registered a stronger documentation rule for the broader operation: SolOS changes should now be reflected in two synchronized tracks — offline docs in the repositories and official online documentation inside the webapp.
 
 ## 2026-04-02
 

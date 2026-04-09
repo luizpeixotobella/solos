@@ -8,6 +8,7 @@ AppController::AppController(QObject *parent)
     , m_quickActionsModel(this)
     , m_approvalQueueModel(this)
     , m_ghostRuntime(this)
+    , m_homeState(this)
 {
 }
 
@@ -44,6 +45,11 @@ QString AppController::walletLabel() const
 QString AppController::agentStatus() const
 {
     return QStringLiteral("Ghost active · awaiting approval");
+}
+
+HomeState *AppController::homeState()
+{
+    return &m_homeState;
 }
 
 QStringList AppController::appNames() const

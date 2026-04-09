@@ -46,6 +46,8 @@ template <> constexpr inline auto AppController::qt_create_metaobjectdata<qt_met
         "systemLabel",
         "walletLabel",
         "agentStatus",
+        "homeState",
+        "HomeState*",
         "appNames",
         "appRegistryModel",
         "AppRegistryModel*",
@@ -74,18 +76,20 @@ template <> constexpr inline auto AppController::qt_create_metaobjectdata<qt_met
         QtMocHelpers::PropertyData<QString>(6, QMetaType::QString, QMC::DefaultPropertyFlags | QMC::Constant),
         // property 'agentStatus'
         QtMocHelpers::PropertyData<QString>(7, QMetaType::QString, QMC::DefaultPropertyFlags | QMC::Constant),
+        // property 'homeState'
+        QtMocHelpers::PropertyData<HomeState*>(8, 0x80000000 | 9, QMC::DefaultPropertyFlags | QMC::EnumOrFlag | QMC::Constant),
         // property 'appNames'
-        QtMocHelpers::PropertyData<QStringList>(8, QMetaType::QStringList, QMC::DefaultPropertyFlags | QMC::Constant),
+        QtMocHelpers::PropertyData<QStringList>(10, QMetaType::QStringList, QMC::DefaultPropertyFlags | QMC::Constant),
         // property 'appRegistryModel'
-        QtMocHelpers::PropertyData<AppRegistryModel*>(9, 0x80000000 | 10, QMC::DefaultPropertyFlags | QMC::EnumOrFlag | QMC::Constant),
+        QtMocHelpers::PropertyData<AppRegistryModel*>(11, 0x80000000 | 12, QMC::DefaultPropertyFlags | QMC::EnumOrFlag | QMC::Constant),
         // property 'activityFeedModel'
-        QtMocHelpers::PropertyData<ActivityFeedModel*>(11, 0x80000000 | 12, QMC::DefaultPropertyFlags | QMC::EnumOrFlag | QMC::Constant),
+        QtMocHelpers::PropertyData<ActivityFeedModel*>(13, 0x80000000 | 14, QMC::DefaultPropertyFlags | QMC::EnumOrFlag | QMC::Constant),
         // property 'quickActionsModel'
-        QtMocHelpers::PropertyData<QuickActionsModel*>(13, 0x80000000 | 14, QMC::DefaultPropertyFlags | QMC::EnumOrFlag | QMC::Constant),
+        QtMocHelpers::PropertyData<QuickActionsModel*>(15, 0x80000000 | 16, QMC::DefaultPropertyFlags | QMC::EnumOrFlag | QMC::Constant),
         // property 'approvalQueueModel'
-        QtMocHelpers::PropertyData<ApprovalQueueModel*>(15, 0x80000000 | 16, QMC::DefaultPropertyFlags | QMC::EnumOrFlag | QMC::Constant),
+        QtMocHelpers::PropertyData<ApprovalQueueModel*>(17, 0x80000000 | 18, QMC::DefaultPropertyFlags | QMC::EnumOrFlag | QMC::Constant),
         // property 'ghostRuntime'
-        QtMocHelpers::PropertyData<GhostRuntime*>(17, 0x80000000 | 18, QMC::DefaultPropertyFlags | QMC::EnumOrFlag | QMC::Constant),
+        QtMocHelpers::PropertyData<GhostRuntime*>(19, 0x80000000 | 20, QMC::DefaultPropertyFlags | QMC::EnumOrFlag | QMC::Constant),
     };
     QtMocHelpers::UintData qt_enums {
     };
@@ -118,15 +122,17 @@ void AppController::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
     if (_c == QMetaObject::RegisterPropertyMetaType) {
         switch (_id) {
         default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-        case 7:
-            *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< ActivityFeedModel* >(); break;
-        case 6:
-            *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< AppRegistryModel* >(); break;
-        case 9:
-            *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< ApprovalQueueModel* >(); break;
-        case 10:
-            *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< GhostRuntime* >(); break;
         case 8:
+            *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< ActivityFeedModel* >(); break;
+        case 7:
+            *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< AppRegistryModel* >(); break;
+        case 10:
+            *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< ApprovalQueueModel* >(); break;
+        case 11:
+            *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< GhostRuntime* >(); break;
+        case 5:
+            *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< HomeState* >(); break;
+        case 9:
             *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< QuickActionsModel* >(); break;
         }
     }
@@ -138,12 +144,13 @@ void AppController::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 2: *reinterpret_cast<QString*>(_v) = _t->systemLabel(); break;
         case 3: *reinterpret_cast<QString*>(_v) = _t->walletLabel(); break;
         case 4: *reinterpret_cast<QString*>(_v) = _t->agentStatus(); break;
-        case 5: *reinterpret_cast<QStringList*>(_v) = _t->appNames(); break;
-        case 6: *reinterpret_cast<AppRegistryModel**>(_v) = _t->appRegistryModel(); break;
-        case 7: *reinterpret_cast<ActivityFeedModel**>(_v) = _t->activityFeedModel(); break;
-        case 8: *reinterpret_cast<QuickActionsModel**>(_v) = _t->quickActionsModel(); break;
-        case 9: *reinterpret_cast<ApprovalQueueModel**>(_v) = _t->approvalQueueModel(); break;
-        case 10: *reinterpret_cast<GhostRuntime**>(_v) = _t->ghostRuntime(); break;
+        case 5: *reinterpret_cast<HomeState**>(_v) = _t->homeState(); break;
+        case 6: *reinterpret_cast<QStringList*>(_v) = _t->appNames(); break;
+        case 7: *reinterpret_cast<AppRegistryModel**>(_v) = _t->appRegistryModel(); break;
+        case 8: *reinterpret_cast<ActivityFeedModel**>(_v) = _t->activityFeedModel(); break;
+        case 9: *reinterpret_cast<QuickActionsModel**>(_v) = _t->quickActionsModel(); break;
+        case 10: *reinterpret_cast<ApprovalQueueModel**>(_v) = _t->approvalQueueModel(); break;
+        case 11: *reinterpret_cast<GhostRuntime**>(_v) = _t->ghostRuntime(); break;
         default: break;
         }
     }
@@ -188,7 +195,7 @@ int AppController::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
             || _c == QMetaObject::ResetProperty || _c == QMetaObject::BindableProperty
             || _c == QMetaObject::RegisterPropertyMetaType) {
         qt_static_metacall(this, _c, _id, _a);
-        _id -= 11;
+        _id -= 12;
     }
     return _id;
 }

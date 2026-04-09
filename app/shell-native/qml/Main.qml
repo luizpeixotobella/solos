@@ -64,6 +64,7 @@ ApplicationWindow {
                 HomeScreen {
                     anchors.fill: parent
                     quickActionsModel: appController.quickActionsModel
+                    homeState: appController.homeState
                 }
 
                 AgentScreen {

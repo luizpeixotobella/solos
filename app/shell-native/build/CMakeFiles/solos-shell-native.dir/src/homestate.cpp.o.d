@@ -1,7 +1,7 @@
-CMakeFiles/solos-shell-native.dir/src/appcontroller.cpp.o: \
- /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/appcontroller.cpp \
+CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o: \
+ /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.cpp \
  /usr/include/stdc-predef.h \
- /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/appcontroller.h \
+ /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.h \
  /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/QObject \
  /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qobject.h \
  /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qobjectdefs.h \
@@ -321,43 +321,4 @@ CMakeFiles/solos-shell-native.dir/src/appcontroller.cpp.o: \
  /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qbindingstorage.h \
  /usr/include/c++/13/chrono /usr/include/c++/13/bits/chrono.h \
  /usr/include/c++/13/ratio /usr/include/c++/13/ctime \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/QStringList \
- /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/activityfeedmodel.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/QAbstractListModel \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qabstractitemmodel.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qhash.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qvariant.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qdebug.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qtextstream.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qcontiguouscache.h \
- /usr/include/c++/13/climits \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h \
- /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
- /usr/include/x86_64-linux-gnu/bits/local_lim.h \
- /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
- /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
- /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qsharedpointer.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qshareddata.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
- /usr/include/c++/13/set /usr/include/c++/13/bits/stl_set.h \
- /usr/include/c++/13/bits/stl_multiset.h \
- /usr/include/c++/13/unordered_set \
- /usr/include/c++/13/bits/unordered_set.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qmap.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qshareddata_impl.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qset.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qvarlengtharray.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qalloc.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/q23utility.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/q20utility.h \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/QString \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/QVector \
- /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/qvector.h \
- /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/appregistrymodel.h \
- /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/approvalqueuemodel.h \
- /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/ghostruntime.h \
- /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.h \
- /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/quickactionsmodel.h
+ /home/lcpby/Qt/6.11.0/gcc_64/include/QtCore/QString

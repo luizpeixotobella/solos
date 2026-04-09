@@ -3,4 +3,5 @@
 /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/include/../UVLADIE3JM/moc_appregistrymodel.cpp.json
 /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/include/../UVLADIE3JM/moc_approvalqueuemodel.cpp.json
 /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/include/../UVLADIE3JM/moc_ghostruntime.cpp.json
+/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/include/../UVLADIE3JM/moc_homestate.cpp.json
 /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/include/../UVLADIE3JM/moc_quickactionsmodel.cpp.json

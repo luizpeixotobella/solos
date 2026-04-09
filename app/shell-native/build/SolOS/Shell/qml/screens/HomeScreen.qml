@@ -5,6 +5,7 @@ import SolOS.Shell 1.0
 
 Item {
     required property var quickActionsModel
+    required property var homeState
 
     ColumnLayout {
         anchors.fill: parent
@@ -12,9 +13,16 @@ Item {
 
         SectionCard {
             Layout.fillWidth: true
-            title: "Home"
-            subtitle: "What matters now"
-            body: "System overview, quick actions, wallet snapshot, and agent pulse belong here first."
+            title: homeState.summaryTitle
+            subtitle: homeState.summarySubtitle
+            body: homeState.summaryBody
+        }
+
+        SectionCard {
+            Layout.fillWidth: true
+            title: homeState.nextActionTitle
+            subtitle: homeState.nextActionSubtitle
+            body: homeState.nextActionBody
         }
 
         Repeater {

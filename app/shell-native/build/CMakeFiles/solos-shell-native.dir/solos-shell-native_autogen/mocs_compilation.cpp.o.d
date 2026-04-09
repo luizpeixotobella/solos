@@ -363,8 +363,10 @@ CMakeFiles/solos-shell-native.dir/solos-shell-native_autogen/mocs_compilation.cp
  /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/UVLADIE3JM/../../../src/appregistrymodel.h \
  /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/UVLADIE3JM/../../../src/approvalqueuemodel.h \
  /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/UVLADIE3JM/../../../src/ghostruntime.h \
+ /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/UVLADIE3JM/../../../src/homestate.h \
  /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/UVLADIE3JM/../../../src/quickactionsmodel.h \
  /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/UVLADIE3JM/moc_appregistrymodel.cpp \
  /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/UVLADIE3JM/moc_approvalqueuemodel.cpp \
  /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/UVLADIE3JM/moc_ghostruntime.cpp \
+ /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/UVLADIE3JM/moc_homestate.cpp \
  /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_autogen/UVLADIE3JM/moc_quickactionsmodel.cpp

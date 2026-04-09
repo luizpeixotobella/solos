@@ -7,6 +7,7 @@
 #include "appregistrymodel.h"
 #include "approvalqueuemodel.h"
 #include "ghostruntime.h"
+#include "homestate.h"
 #include "quickactionsmodel.h"
 
 class AppController : public QObject
@@ -17,6 +18,7 @@ class AppController : public QObject
     Q_PROPERTY(QString systemLabel READ systemLabel CONSTANT)
     Q_PROPERTY(QString walletLabel READ walletLabel CONSTANT)
     Q_PROPERTY(QString agentStatus READ agentStatus CONSTANT)
+    Q_PROPERTY(HomeState* homeState READ homeState CONSTANT)
     Q_PROPERTY(QStringList appNames READ appNames CONSTANT)
     Q_PROPERTY(AppRegistryModel* appRegistryModel READ appRegistryModel CONSTANT)
     Q_PROPERTY(ActivityFeedModel* activityFeedModel READ activityFeedModel CONSTANT)
@@ -34,6 +36,7 @@ public:
     QString systemLabel() const;
     QString walletLabel() const;
     QString agentStatus() const;
+    HomeState *homeState();
     QStringList appNames() const;
     AppRegistryModel *appRegistryModel();
     ActivityFeedModel *activityFeedModel();
@@ -51,4 +54,5 @@ private:
     QuickActionsModel m_quickActionsModel;
     ApprovalQueueModel m_approvalQueueModel;
     GhostRuntime m_ghostRuntime;
+    HomeState m_homeState;
 };

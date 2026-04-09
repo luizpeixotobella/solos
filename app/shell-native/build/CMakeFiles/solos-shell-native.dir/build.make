@@ -399,10 +399,24 @@ CMakeFiles/solos-shell-native.dir/src/ghostruntime.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/solos-shell-native.dir/src/ghostruntime.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/ghostruntime.cpp -o CMakeFiles/solos-shell-native.dir/src/ghostruntime.cpp.s
 
+CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
+CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o: /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.cpp
+CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o -MF CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o.d -o CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.cpp
+
+CMakeFiles/solos-shell-native.dir/src/homestate.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/solos-shell-native.dir/src/homestate.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.cpp > CMakeFiles/solos-shell-native.dir/src/homestate.cpp.i
+
+CMakeFiles/solos-shell-native.dir/src/homestate.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/solos-shell-native.dir/src/homestate.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lcpby/.openclaw/workspace/solos/app/shell-native/src/homestate.cpp -o CMakeFiles/solos-shell-native.dir/src/homestate.cpp.s
+
 CMakeFiles/solos-shell-native.dir/solos-shell-native_qmltyperegistrations.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/solos-shell-native_qmltyperegistrations.cpp.o: solos-shell-native_qmltyperegistrations.cpp
 CMakeFiles/solos-shell-native.dir/solos-shell-native_qmltyperegistrations.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/solos-shell-native.dir/solos-shell-native_qmltyperegistrations.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/solos-shell-native.dir/solos-shell-native_qmltyperegistrations.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/solos-shell-native_qmltyperegistrations.cpp.o -MF CMakeFiles/solos-shell-native.dir/solos-shell-native_qmltyperegistrations.cpp.o.d -o CMakeFiles/solos-shell-native.dir/solos-shell-native_qmltyperegistrations.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/solos-shell-native_qmltyperegistrations.cpp
 
 CMakeFiles/solos-shell-native.dir/solos-shell-native_qmltyperegistrations.cpp.i: cmake_force
@@ -416,7 +430,7 @@ CMakeFiles/solos-shell-native.dir/solos-shell-native_qmltyperegistrations.cpp.s:
 CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp.o: .qt/rcc/qrc_qmake_SolOS_Shell.cpp
 CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp.i: cmake_force
@@ -430,7 +444,7 @@ CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp.s: cma
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp.o: .rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp.i: cmake_force
@@ -444,7 +458,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qmlcach
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/Main_qml.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/Main_qml.cpp.o: .rcc/qmlcache/solos-shell-native_qml/Main_qml.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/Main_qml.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/Main_qml.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/Main_qml.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/Main_qml.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/Main_qml.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/Main_qml.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qml/Main_qml.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/Main_qml.cpp.i: cmake_force
@@ -458,7 +472,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/Mai
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SectionCard_qml.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SectionCard_qml.cpp.o: .rcc/qmlcache/solos-shell-native_qml/components/SectionCard_qml.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SectionCard_qml.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SectionCard_qml.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SectionCard_qml.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SectionCard_qml.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SectionCard_qml.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SectionCard_qml.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qml/components/SectionCard_qml.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SectionCard_qml.cpp.i: cmake_force
@@ -472,7 +486,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/com
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SidebarNav_qml.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SidebarNav_qml.cpp.o: .rcc/qmlcache/solos-shell-native_qml/components/SidebarNav_qml.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SidebarNav_qml.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SidebarNav_qml.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SidebarNav_qml.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SidebarNav_qml.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SidebarNav_qml.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SidebarNav_qml.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qml/components/SidebarNav_qml.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/SidebarNav_qml.cpp.i: cmake_force
@@ -486,7 +500,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/com
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/TopStatusBar_qml.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/TopStatusBar_qml.cpp.o: .rcc/qmlcache/solos-shell-native_qml/components/TopStatusBar_qml.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/TopStatusBar_qml.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/TopStatusBar_qml.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/TopStatusBar_qml.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/TopStatusBar_qml.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/TopStatusBar_qml.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/TopStatusBar_qml.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qml/components/TopStatusBar_qml.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/TopStatusBar_qml.cpp.i: cmake_force
@@ -500,7 +514,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/com
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/AppTile_qml.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/AppTile_qml.cpp.o: .rcc/qmlcache/solos-shell-native_qml/components/AppTile_qml.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/AppTile_qml.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/AppTile_qml.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/AppTile_qml.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/AppTile_qml.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/AppTile_qml.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/AppTile_qml.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qml/components/AppTile_qml.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/AppTile_qml.cpp.i: cmake_force
@@ -514,7 +528,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/com
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ActivityItem_qml.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ActivityItem_qml.cpp.o: .rcc/qmlcache/solos-shell-native_qml/components/ActivityItem_qml.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ActivityItem_qml.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ActivityItem_qml.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ActivityItem_qml.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ActivityItem_qml.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ActivityItem_qml.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ActivityItem_qml.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qml/components/ActivityItem_qml.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ActivityItem_qml.cpp.i: cmake_force
@@ -528,7 +542,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/com
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ApprovalItem_qml.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ApprovalItem_qml.cpp.o: .rcc/qmlcache/solos-shell-native_qml/components/ApprovalItem_qml.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ApprovalItem_qml.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ApprovalItem_qml.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ApprovalItem_qml.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ApprovalItem_qml.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ApprovalItem_qml.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ApprovalItem_qml.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qml/components/ApprovalItem_qml.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/ApprovalItem_qml.cpp.i: cmake_force
@@ -542,7 +556,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/com
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/QuickActionTile_qml.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/QuickActionTile_qml.cpp.o: .rcc/qmlcache/solos-shell-native_qml/components/QuickActionTile_qml.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/QuickActionTile_qml.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/QuickActionTile_qml.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/QuickActionTile_qml.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/QuickActionTile_qml.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/QuickActionTile_qml.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/QuickActionTile_qml.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qml/components/QuickActionTile_qml.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/components/QuickActionTile_qml.cpp.i: cmake_force
@@ -556,7 +570,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/com
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/HomeScreen_qml.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/HomeScreen_qml.cpp.o: .rcc/qmlcache/solos-shell-native_qml/screens/HomeScreen_qml.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/HomeScreen_qml.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/HomeScreen_qml.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/HomeScreen_qml.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/HomeScreen_qml.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/HomeScreen_qml.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/HomeScreen_qml.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qml/screens/HomeScreen_qml.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/HomeScreen_qml.cpp.i: cmake_force
@@ -570,7 +584,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/scr
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AgentScreen_qml.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AgentScreen_qml.cpp.o: .rcc/qmlcache/solos-shell-native_qml/screens/AgentScreen_qml.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AgentScreen_qml.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AgentScreen_qml.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AgentScreen_qml.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AgentScreen_qml.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AgentScreen_qml.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AgentScreen_qml.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qml/screens/AgentScreen_qml.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AgentScreen_qml.cpp.i: cmake_force
@@ -584,7 +598,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/scr
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/WalletScreen_qml.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/WalletScreen_qml.cpp.o: .rcc/qmlcache/solos-shell-native_qml/screens/WalletScreen_qml.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/WalletScreen_qml.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/WalletScreen_qml.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_42) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/WalletScreen_qml.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/WalletScreen_qml.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/WalletScreen_qml.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/WalletScreen_qml.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qml/screens/WalletScreen_qml.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/WalletScreen_qml.cpp.i: cmake_force
@@ -598,7 +612,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/scr
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AppsScreen_qml.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AppsScreen_qml.cpp.o: .rcc/qmlcache/solos-shell-native_qml/screens/AppsScreen_qml.cpp
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AppsScreen_qml.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_42) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AppsScreen_qml.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_43) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AppsScreen_qml.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AppsScreen_qml.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AppsScreen_qml.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AppsScreen_qml.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.rcc/qmlcache/solos-shell-native_qml/screens/AppsScreen_qml.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/screens/AppsScreen_qml.cpp.i: cmake_force
@@ -612,7 +626,7 @@ CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qml/scr
 CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_solos-shell-native_raw_qml_0.cpp.o: CMakeFiles/solos-shell-native.dir/flags.make
 CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_solos-shell-native_raw_qml_0.cpp.o: .qt/rcc/qrc_solos-shell-native_raw_qml_0.cpp
 CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_solos-shell-native_raw_qml_0.cpp.o: CMakeFiles/solos-shell-native.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_43) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_solos-shell-native_raw_qml_0.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_44) "Building CXX object CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_solos-shell-native_raw_qml_0.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_solos-shell-native_raw_qml_0.cpp.o -MF CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_solos-shell-native_raw_qml_0.cpp.o.d -o CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_solos-shell-native_raw_qml_0.cpp.o -c /home/lcpby/.openclaw/workspace/solos/app/shell-native/build/.qt/rcc/qrc_solos-shell-native_raw_qml_0.cpp
 
 CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_solos-shell-native_raw_qml_0.cpp.i: cmake_force
@@ -633,6 +647,7 @@ solos__shell__native_OBJECTS = \
 "CMakeFiles/solos-shell-native.dir/src/quickactionsmodel.cpp.o" \
 "CMakeFiles/solos-shell-native.dir/src/approvalqueuemodel.cpp.o" \
 "CMakeFiles/solos-shell-native.dir/src/ghostruntime.cpp.o" \
+"CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o" \
 "CMakeFiles/solos-shell-native.dir/solos-shell-native_qmltyperegistrations.cpp.o" \
 "CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp.o" \
 "CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp.o" \
@@ -661,6 +676,7 @@ solos-shell-native: CMakeFiles/solos-shell-native.dir/src/activityfeedmodel.cpp.
 solos-shell-native: CMakeFiles/solos-shell-native.dir/src/quickactionsmodel.cpp.o
 solos-shell-native: CMakeFiles/solos-shell-native.dir/src/approvalqueuemodel.cpp.o
 solos-shell-native: CMakeFiles/solos-shell-native.dir/src/ghostruntime.cpp.o
+solos-shell-native: CMakeFiles/solos-shell-native.dir/src/homestate.cpp.o
 solos-shell-native: CMakeFiles/solos-shell-native.dir/solos-shell-native_qmltyperegistrations.cpp.o
 solos-shell-native: CMakeFiles/solos-shell-native.dir/build/.qt/rcc/qrc_qmake_SolOS_Shell.cpp.o
 solos-shell-native: CMakeFiles/solos-shell-native.dir/build/.rcc/qmlcache/solos-shell-native_qmlcache_loader.cpp.o
@@ -687,7 +703,7 @@ solos-shell-native: /home/lcpby/Qt/6.11.0/gcc_64/lib/libQt6Qml.so.6.11.0
 solos-shell-native: /home/lcpby/Qt/6.11.0/gcc_64/lib/libQt6Network.so.6.11.0
 solos-shell-native: /home/lcpby/Qt/6.11.0/gcc_64/lib/libQt6Core.so.6.11.0
 solos-shell-native: CMakeFiles/solos-shell-native.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_44) "Linking CXX executable solos-shell-native"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/lcpby/.openclaw/workspace/solos/app/shell-native/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_45) "Linking CXX executable solos-shell-native"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/solos-shell-native.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -26,6 +26,13 @@ Current stack:
 
 - Qt 6 / QML
 - C++ controller bridge
+- model-backed shell surfaces replacing ad hoc UI strings
+
+Current implementation direction:
+
+- `HomeState` now gives Home a structured summary and a legible next-action concept
+- Home is moving away from generic placeholder copy toward explicit environment guidance
+- the native shell is gradually inheriting semantics from the earlier web-shell prototype while becoming a real native system surface
 
 ## Documentation map
 
@@ -33,6 +40,18 @@ Current stack:
 - `docs/architecture.md` — system architecture and component map
 - `docs/roadmap.md` — implementation roadmap
 - `docs/devlog.md` — chronological development notes
+
+## Current doctrine for technical migration
+
+SolOS should adopt Rust selectively where it improves safety, correctness, or long-term architecture.
+
+That does **not** imply a blanket rewrite.
+
+Preferred rule:
+
+- new security-sensitive or concurrency-heavy subsystems may default toward Rust
+- stable prototype/UI bridge code may remain in C++ until there is a concrete migration reason
+- migration should happen by subsystem boundary, not by ideology
 
 ## Working principle
 

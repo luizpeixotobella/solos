@@ -23,6 +23,8 @@ qt_add_executable(solos-shell-native
     src/approvalqueuemodel.h
     src/ghostruntime.cpp
     src/ghostruntime.h
+    src/homestate.cpp
+    src/homestate.h
 )
 
 qt_add_qml_module(solos-shell-native

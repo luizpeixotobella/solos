@@ -10,15 +10,63 @@
                             "column": 23,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
-                            "line": 10,
+                            "line": 11,
                             "message": ""
                         },
                         {
                             "codegenResult": 2,
                             "column": 20,
                             "durationMicroseconds": 0,
+                            "functionName": "title",
+                            "line": 16,
+                            "message": "Cannot access value for name homeState"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 23,
+                            "durationMicroseconds": 0,
+                            "functionName": "subtitle",
+                            "line": 17,
+                            "message": "Cannot access value for name homeState"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 19,
+                            "durationMicroseconds": 0,
+                            "functionName": "body",
+                            "line": 18,
+                            "message": "Cannot access value for name homeState"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 20,
+                            "durationMicroseconds": 0,
+                            "functionName": "title",
+                            "line": 23,
+                            "message": "Cannot access value for name homeState"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 23,
+                            "durationMicroseconds": 0,
+                            "functionName": "subtitle",
+                            "line": 24,
+                            "message": "Cannot access value for name homeState"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 19,
+                            "durationMicroseconds": 0,
+                            "functionName": "body",
+                            "line": 25,
+                            "message": "Cannot access value for name homeState"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 20,
+                            "durationMicroseconds": 0,
                             "functionName": "model",
-                            "line": 21,
+                            "line": 29,
                             "message": "Cannot load property quickActionsModel from QQuickItem::parent with type QQuickItem."
                         },
                         {
@@ -26,7 +74,7 @@
                             "column": 30,
                             "durationMicroseconds": 0,
                             "functionName": "actionTitle",
-                            "line": 29,
+                            "line": 37,
                             "message": "Cannot access value for name model"
                         },
                         {
@@ -34,7 +82,7 @@
                             "column": 33,
                             "durationMicroseconds": 0,
                             "functionName": "actionSubtitle",
-                            "line": 30,
+                            "line": 38,
                             "message": "Cannot access value for name model"
                         },
                         {
@@ -42,7 +90,7 @@
                             "column": 36,
                             "durationMicroseconds": 0,
                             "functionName": "actionDescription",
-                            "line": 31,
+                            "line": 39,
                             "message": "Cannot access value for name model"
                         }
                     ],
