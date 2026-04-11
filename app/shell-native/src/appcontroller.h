@@ -1,7 +1,9 @@
 #pragma once
 
 #include <QObject>
+#include <QString>
 #include <QStringList>
+#include <QTimer>
 
 #include "activityfeedmodel.h"
 #include "appregistrymodel.h"
@@ -14,10 +16,10 @@ class AppController : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString currentScreen READ currentScreen WRITE setCurrentScreen NOTIFY currentScreenChanged)
-    Q_PROPERTY(QString sessionLabel READ sessionLabel CONSTANT)
-    Q_PROPERTY(QString systemLabel READ systemLabel CONSTANT)
-    Q_PROPERTY(QString walletLabel READ walletLabel CONSTANT)
-    Q_PROPERTY(QString agentStatus READ agentStatus CONSTANT)
+    Q_PROPERTY(QString sessionLabel READ sessionLabel NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString systemLabel READ systemLabel NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString walletLabel READ walletLabel NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString agentStatus READ agentStatus NOTIFY runtimeStateChanged)
     Q_PROPERTY(HomeState* homeState READ homeState CONSTANT)
     Q_PROPERTY(QStringList appNames READ appNames CONSTANT)
     Q_PROPERTY(AppRegistryModel* appRegistryModel READ appRegistryModel CONSTANT)
@@ -25,6 +27,9 @@ class AppController : public QObject
     Q_PROPERTY(QuickActionsModel* quickActionsModel READ quickActionsModel CONSTANT)
     Q_PROPERTY(ApprovalQueueModel* approvalQueueModel READ approvalQueueModel CONSTANT)
     Q_PROPERTY(GhostRuntime* ghostRuntime READ ghostRuntime CONSTANT)
+    Q_PROPERTY(QString runtimeStatus READ runtimeStatus NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString runtimeSource READ runtimeSource NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString lastRuntimeRefresh READ lastRuntimeRefresh NOTIFY runtimeStateChanged)
 
 public:
     explicit AppController(QObject *parent = nullptr);
@@ -43,16 +48,32 @@ public:
     QuickActionsModel *quickActionsModel();
     ApprovalQueueModel *approvalQueueModel();
     GhostRuntime *ghostRuntime();
+    QString runtimeStatus() const;
+    QString runtimeSource() const;
+    QString lastRuntimeRefresh() const;
+
+    Q_INVOKABLE void refreshRuntime();
 
 signals:
     void currentScreenChanged();
+    void runtimeStateChanged();
 
 private:
+    void loadRuntimeSnapshot();
+
     QString m_currentScreen;
+    QString m_sessionLabel;
+    QString m_systemLabel;
+    QString m_walletLabel;
+    QString m_agentStatus;
+    QString m_runtimeStatus;
+    QString m_runtimeSource;
+    QString m_lastRuntimeRefresh;
     AppRegistryModel m_appRegistryModel;
     ActivityFeedModel m_activityFeedModel;
     QuickActionsModel m_quickActionsModel;
     ApprovalQueueModel m_approvalQueueModel;
     GhostRuntime m_ghostRuntime;
     HomeState m_homeState;
+    QTimer m_runtimeWatchTimer;
 };

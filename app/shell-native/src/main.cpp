@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     AppController controller;
 
-    engine.rootContext()->setContextProperty(QStringLiteral("appController"), &controller);
+    engine.rootContext()->setContextProperty(QStringLiteral("globalAppController"), &controller);
 
     const QUrl url(QStringLiteral("qrc:/qt/qml/SolOS/Shell/qml/Main.qml"));
     QObject::connect(

@@ -1,0 +1,87 @@
+{
+  "sessionLabel": "Luiz · SolOS Environment Active",
+  "systemLabel": "Online · v0.3-live-refresh · Rust generator active",
+  "walletLabel": "Solana · 9xLu...Ghost · 12.84 SOL · 248.00 USDC",
+  "agentStatus": "Ghost active · runtime generated snapshot loaded",
+  "home": {
+    "summaryTitle": "Operational center of gravity",
+    "summarySubtitle": "Agency, approvals, identity, and apps in one field",
+    "summaryBody": "Rust now generates a runtime snapshot that the native shell can re-read while it is running. That gives SolOS a visible pulse instead of a static conceptual mock.",
+    "nextActionTitle": "Next useful move",
+    "nextActionSubtitle": "Make runtime generation the source of visible movement",
+    "nextActionBody": "Regenerate the snapshot and the shell should visibly shift. This keeps architecture work honest by tying backend progress to perceivable product change."
+  },
+  "ghost": {
+    "presenceLabel": "Ghost present in shell",
+    "modeLabel": "Rust-generated · approval-aware · live-refreshing",
+    "thesisLabel": "Native agent presence should read from explicit runtime state, not scattered UI literals."
+  },
+  "quickActions": [
+    {
+      "title": "Regenerate runtime",
+      "subtitle": "Useful visible change",
+      "description": "Re-run the Rust generator and watch the shell refresh into a new state without a deep rebuild."
+    },
+    {
+      "title": "Audit approval lane",
+      "subtitle": "System trust surface",
+      "description": "Turn approvals into a durable operating-system primitive instead of ad hoc prompts."
+    },
+    {
+      "title": "Expand live app registry",
+      "subtitle": "Runtime-fed modules",
+      "description": "Let the Apps surface become a live registry driven by the runtime contract."
+    }
+  ],
+  "activityFeed": [
+    {
+      "title": "Rust generator active",
+      "detail": "The runtime core can now emit the snapshot contract consumed by the native shell.",
+      "status": "active"
+    },
+    {
+      "title": "Shell refresh loop active",
+      "detail": "The shell can manually or automatically refresh runtime-backed state while running.",
+      "status": "active"
+    },
+    {
+      "title": "Visible product movement achieved",
+      "detail": "The architecture pass now produces perceivable changes in Home, Agent, and Apps screens.",
+      "status": "active"
+    }
+  ],
+  "approvals": [
+    {
+      "title": "Promote generated snapshot to default dev loop",
+      "scope": "runtime-core -> shell-native",
+      "risk": "medium"
+    },
+    {
+      "title": "Connect approval items to executable actions",
+      "scope": "agent and wallet surfaces",
+      "risk": "high"
+    }
+  ],
+  "apps": [
+    {
+      "name": "Workspace",
+      "subtitle": "Core environment",
+      "description": "Tasks, notes, and active operational context for the system and the user."
+    },
+    {
+      "name": "Approval Lane",
+      "subtitle": "Trust and action boundary",
+      "description": "A dedicated lane for approvals, scope, and explicit consent."
+    },
+    {
+      "name": "Wallet Hub",
+      "subtitle": "Ownership surface",
+      "description": "Balances, identity, signatures, and assets in one visible operating surface."
+    },
+    {
+      "name": "Ghost Console",
+      "subtitle": "Native agent presence",
+      "description": "A runtime-backed agent surface for context, tasks, and orchestration."
+    }
+  ]
+}

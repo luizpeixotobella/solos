@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 
 import SolOS.Shell 1.0
@@ -7,52 +8,89 @@ Item {
     required property var activityFeedModel
     required property var approvalQueueModel
     required property var ghostRuntime
+    required property var appController
 
-    ColumnLayout {
+    ScrollView {
         anchors.fill: parent
-        spacing: 16
+        clip: true
 
-        SectionCard {
-            Layout.fillWidth: true
-            title: ghostRuntime.presenceLabel
-            subtitle: ghostRuntime.modeLabel
-            body: ghostRuntime.thesisLabel
-        }
+        Item {
+            width: parent.width
+            implicitHeight: content.implicitHeight + 24
 
-        SectionCard {
-            Layout.fillWidth: true
-            title: "Approval Surface"
-            subtitle: "Pending system boundaries"
-            body: "Approvals should become a native, legible queue instead of random interruptions."
-        }
+            ColumnLayout {
+                id: content
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.margins: 8
+                spacing: 16
 
-        Repeater {
-            model: parent.parent.approvalQueueModel
+                SectionCard {
+                    Layout.fillWidth: true
+                    title: ghostRuntime.presenceLabel
+                    subtitle: ghostRuntime.modeLabel
+                    body: ghostRuntime.thesisLabel
+                }
 
-            delegate: ApprovalItem {
-                required property string title
-                required property string scope
-                required property string risk
+                RowLayout {
+                    Layout.fillWidth: true
 
-                Layout.fillWidth: true
-                title: model.title
-                scope: model.scope
-                risk: model.risk
-            }
-        }
+                    SectionCard {
+                        Layout.fillWidth: true
+                        title: "Approval Surface"
+                        subtitle: "Pending system boundaries"
+                        body: "Approvals should become a native, legible queue instead of random interruptions."
+                    }
 
-        Repeater {
-            model: parent.parent.activityFeedModel
+                    Button {
+                        text: "Refresh runtime"
+                        onClicked: appController.refreshRuntime()
+                    }
+                }
 
-            delegate: ActivityItem {
-                required property string title
-                required property string detail
-                required property string status
+                GridLayout {
+                    Layout.fillWidth: true
+                    columns: width > 980 ? 2 : 1
+                    columnSpacing: 16
+                    rowSpacing: 16
 
-                Layout.fillWidth: true
-                title: model.title
-                detail: model.detail
-                status: model.status
+                    Repeater {
+                        model: approvalQueueModel
+
+                        delegate: ApprovalItem {
+                            required property string title
+                            required property string scope
+                            required property string risk
+
+                            Layout.fillWidth: true
+                            Layout.alignment: Qt.AlignTop
+                            title: model.title
+                            scope: model.scope
+                            risk: model.risk
+                        }
+                    }
+                }
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 16
+
+                    Repeater {
+                        model: activityFeedModel
+
+                        delegate: ActivityItem {
+                            required property string title
+                            required property string detail
+                            required property string status
+
+                            Layout.fillWidth: true
+                            title: model.title
+                            detail: model.detail
+                            status: model.status
+                        }
+                    }
+                }
             }
         }
     }

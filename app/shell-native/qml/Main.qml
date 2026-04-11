@@ -20,6 +20,7 @@ ApplicationWindow {
     property color textSoft: "#9fb0d0"
     property color accent: "#73d0ff"
     property color accent2: "#8b7dff"
+    property var appController: globalAppController
 
     RowLayout {
         anchors.fill: parent
@@ -62,25 +63,35 @@ ApplicationWindow {
                 }
 
                 HomeScreen {
-                    anchors.fill: parent
-                    quickActionsModel: appController.quickActionsModel
-                    homeState: appController.homeState
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    quickActionsModel: root.appController.quickActionsModel
+                    homeState: root.appController.homeState
+                    runtimeStatus: root.appController.runtimeStatus
+                    runtimeSource: root.appController.runtimeSource
+                    lastRuntimeRefresh: root.appController.lastRuntimeRefresh
+                    appController: root.appController
                 }
 
                 AgentScreen {
-                    anchors.fill: parent
-                    activityFeedModel: appController.activityFeedModel
-                    approvalQueueModel: appController.approvalQueueModel
-                    ghostRuntime: appController.ghostRuntime
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    activityFeedModel: root.appController.activityFeedModel
+                    approvalQueueModel: root.appController.approvalQueueModel
+                    ghostRuntime: root.appController.ghostRuntime
+                    appController: root.appController
                 }
 
                 WalletScreen {
-                    anchors.fill: parent
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
                 }
 
                 AppsScreen {
-                    anchors.fill: parent
-                    appRegistryModel: appController.appRegistryModel
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    appRegistryModel: root.appController.appRegistryModel
+                    appController: root.appController
                 }
             }
         }
