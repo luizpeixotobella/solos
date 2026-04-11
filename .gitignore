@@ -1,0 +1,12 @@
+# Rust
+app/runtime-core/target/
+
+# Qt / CMake build outputs
+app/shell-native/build/
+
+# Generic build artifacts
+*.o
+*.obj
+*.so
+*.a
+*.out
