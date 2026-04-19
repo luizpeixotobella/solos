@@ -2,12 +2,12 @@
 
 ## 2026-04-19
 
-- Corrected an architectural inconsistency: SolOS had been described as an operating layer over Linux, but `app/runtime-core` still behaved and spoke too much like a self-contained runtime generator.
-- Repositioned the Rust runtime core as a **Linux host runtime adapter** that reads host facts and normalizes them into SolOS-visible state.
-- Added explicit host-runtime fields to the runtime snapshot so the shell can distinguish Linux substrate data from SolOS orchestration semantics.
-- Updated architecture and roadmap language to make the ownership boundary unambiguous: Linux owns the runtime, SolOS owns the operating layer.
-- Declared SolOS v1.0 as a Linux-based operating layer release posture and documented it in a dedicated version note.
-- Expanded `appliance/demo-linux-v1` into a more explicit v1.0 packaging path, including a step-by-step guide for assembling a reproducible demo ISO.
+- Corrected an architectural inconsistency: SolOS had first been reframed as an operating layer above Linux, but that still collapsed the runtime semantics too directly into the host system.
+- Refined the model again to the more precise three-layer posture: **Linux base system -> runtime intermediary -> SolOS operating layer**.
+- Repositioned `app/runtime-core` as the first real **runtime intermediary** boundary, responsible for reading Linux host facts, mediating them, and exposing stable SolOS-facing runtime state.
+- Added explicit runtime-role and mediation-status fields to the runtime snapshot so the shell can distinguish Linux substrate, runtime mediation, and operating-layer semantics.
+- Updated architecture, version notes, README language, and shell fixture copy to make the ownership boundary unambiguous across all three layers.
+- Kept the demo ISO path aligned with that correction so the packaging story now reflects Linux base system + runtime mediation + SolOS operating layer.
 
 ## 2026-04-13
 

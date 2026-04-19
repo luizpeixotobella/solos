@@ -65,6 +65,10 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     snapshot.systemLabel = root.value(QStringLiteral("systemLabel")).toString();
     snapshot.walletLabel = root.value(QStringLiteral("walletLabel")).toString();
     snapshot.agentStatus = root.value(QStringLiteral("agentStatus")).toString();
+    snapshot.runtimeMode = root.value(QStringLiteral("runtimeMode")).toString();
+    snapshot.runtimeSource = root.value(QStringLiteral("runtimeSource")).toString();
+    snapshot.runtimeRole = root.value(QStringLiteral("runtimeRole")).toString();
+    snapshot.mediationStatus = root.value(QStringLiteral("mediationStatus")).toString();
 
     snapshot.summaryTitle = home.value(QStringLiteral("summaryTitle")).toString();
     snapshot.summarySubtitle = home.value(QStringLiteral("summarySubtitle")).toString();

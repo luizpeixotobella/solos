@@ -1,87 +1,101 @@
 {
-  "sessionLabel": "Luiz · SolOS Environment Active",
-  "systemLabel": "Online · v0.3-live-refresh · Rust generator active",
-  "walletLabel": "Solana · 9xLu...Ghost · 12.84 SOL · 248.00 USDC",
-  "agentStatus": "Ghost active · runtime generated snapshot loaded",
+  "sessionLabel": "Luiz · SolOS operating layer active",
+  "systemLabel": "Linux base system attached · systemd · x11",
+  "walletLabel": "Wallet bridge pending · ownership surface visible",
+  "agentStatus": "Ghost active · runtime intermediary attached",
+  "runtimeMode": "runtime-intermediary",
+  "runtimeSource": "Rust runtime-core mediates between Linux host services and the SolOS operating layer.",
+  "runtimeRole": "Intermediary layer between Linux base system and SolOS operating layer",
+  "mediationStatus": "Host facts detected and normalized into SolOS-facing runtime state",
   "home": {
-    "summaryTitle": "Operational center of gravity",
-    "summarySubtitle": "Agency, approvals, identity, and apps in one field",
-    "summaryBody": "Rust now generates a runtime snapshot that the native shell can re-read while it is running. That gives SolOS a visible pulse instead of a static conceptual mock.",
+    "summaryTitle": "SolOS v1.0 runs above a runtime intermediary",
+    "summarySubtitle": "Linux is the base system, the runtime mediates, and SolOS delivers the operating layer.",
+    "summaryBody": "This fixture models the correct architecture: Linux is the base system, runtime-core is the intermediary mediation layer, and SolOS is the operating layer above it.",
     "nextActionTitle": "Next useful move",
-    "nextActionSubtitle": "Make runtime generation the source of visible movement",
-    "nextActionBody": "Regenerate the snapshot and the shell should visibly shift. This keeps architecture work honest by tying backend progress to perceivable product change."
+    "nextActionSubtitle": "Promote mediation into real runtime services",
+    "nextActionBody": "Wire approvals, app launch, wallet bridges, and agent actions through runtime-mediated services instead of leaving the shell coupled to static fixtures."
   },
   "ghost": {
     "presenceLabel": "Ghost present in shell",
-    "modeLabel": "Rust-generated · approval-aware · live-refreshing",
-    "thesisLabel": "Native agent presence should read from explicit runtime state, not scattered UI literals."
+    "modeLabel": "runtime-mediated · approval-aware · host-integrated",
+    "thesisLabel": "SolOS should sit above a runtime intermediary that translates Linux host reality into stable operating-layer semantics."
   },
   "quickActions": [
     {
-      "title": "Regenerate runtime",
-      "subtitle": "Useful visible change",
-      "description": "Re-run the Rust generator and watch the shell refresh into a new state without a deep rebuild."
+      "title": "Inspect mediated host services",
+      "subtitle": "Runtime as intermediary",
+      "description": "Read systemd, session, network, and process state through the runtime layer instead of exposing raw host details everywhere in the shell."
     },
     {
-      "title": "Audit approval lane",
-      "subtitle": "System trust surface",
-      "description": "Turn approvals into a durable operating-system primitive instead of ad hoc prompts."
+      "title": "Bind approvals to mediated commands",
+      "subtitle": "Controlled execution path",
+      "description": "Move approvals from static queue items toward runtime-mediated Linux actions with explicit scope and rollback expectations."
     },
     {
-      "title": "Expand live app registry",
-      "subtitle": "Runtime-fed modules",
-      "description": "Let the Apps surface become a live registry driven by the runtime contract."
+      "title": "Assemble ISO demo",
+      "subtitle": "Package all three layers",
+      "description": "Boot Linux first, initialize the runtime intermediary, then launch SolOS as the visible operating layer with documented image assembly steps."
     }
   ],
   "activityFeed": [
     {
-      "title": "Rust generator active",
-      "detail": "The runtime core can now emit the snapshot contract consumed by the native shell.",
+      "title": "Linux base system detected",
+      "detail": "Runtime intermediary is attached to a Linux host and normalizing host state into shell-visible runtime context.",
       "status": "active"
     },
     {
-      "title": "Shell refresh loop active",
-      "detail": "The shell can manually or automatically refresh runtime-backed state while running.",
+      "title": "Runtime role corrected",
+      "detail": "runtime-core is now described as the mediation layer between Linux and SolOS, not as Linux itself and not as a fake replacement runtime.",
       "status": "active"
     },
     {
-      "title": "Visible product movement achieved",
-      "detail": "The architecture pass now produces perceivable changes in Home, Agent, and Apps screens.",
+      "title": "ISO demo path ready",
+      "detail": "The appliance path now packages Linux base system, runtime mediation, and SolOS operating layer as one coherent demo image story.",
       "status": "active"
     }
   ],
   "approvals": [
     {
-      "title": "Promote generated snapshot to default dev loop",
-      "scope": "runtime-core -> shell-native",
+      "title": "Grant controlled access to mediated system services",
+      "scope": "runtime intermediary -> systemd / desktop session / launchers",
       "risk": "medium"
     },
     {
-      "title": "Connect approval items to executable actions",
-      "scope": "agent and wallet surfaces",
+      "title": "Connect signing and wallet actions to explicit mediated brokers",
+      "scope": "wallet bridge / secure approvals / runtime mediation",
       "risk": "high"
     }
   ],
   "apps": [
     {
       "name": "Workspace",
-      "subtitle": "Core environment",
-      "description": "Tasks, notes, and active operational context for the system and the user."
+      "subtitle": "Operating layer context",
+      "description": "Coordinates user tasks, notes, and live environment state above the runtime intermediary."
     },
     {
       "name": "Approval Lane",
-      "subtitle": "Trust and action boundary",
-      "description": "A dedicated lane for approvals, scope, and explicit consent."
+      "subtitle": "Policy boundary",
+      "description": "Surfaces runtime-mediated host actions that require explicit consent before execution."
     },
     {
       "name": "Wallet Hub",
       "subtitle": "Ownership surface",
-      "description": "Balances, identity, signatures, and assets in one visible operating surface."
+      "description": "Keeps identity, balances, and signing visible through explicit runtime-mediated flows."
     },
     {
       "name": "Ghost Console",
       "subtitle": "Native agent presence",
-      "description": "A runtime-backed agent surface for context, tasks, and orchestration."
+      "description": "Turns runtime-mediated host state into agent-readable, approval-aware orchestration inside SolOS."
     }
-  ]
+  ],
+  "hostRuntime": {
+    "os": "Linux host",
+    "kernel": "unknown-kernel",
+    "initSystem": "systemd",
+    "sessionType": "x11",
+    "desktopSession": "openbox",
+    "shell": "/bin/bash",
+    "hostname": "solos-demo",
+    "user": "Luiz"
+  }
 }

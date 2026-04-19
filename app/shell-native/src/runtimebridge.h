@@ -15,6 +15,10 @@ struct RuntimeSnapshotData {
     QString systemLabel;
     QString walletLabel;
     QString agentStatus;
+    QString runtimeMode;
+    QString runtimeSource;
+    QString runtimeRole;
+    QString mediationStatus;
     QString summaryTitle;
     QString summarySubtitle;
     QString summaryBody;

@@ -23,7 +23,7 @@ AppController::AppController(QObject *parent)
     , m_systemLabel(QStringLiteral("Online · v0.1-foundation · Synced"))
     , m_walletLabel(QStringLiteral("Solana · 9xLu...Ghost · 12.84 SOL"))
     , m_agentStatus(QStringLiteral("Ghost active · awaiting approval"))
-    , m_runtimeStatus(QStringLiteral("Waiting for runtime snapshot"))
+    , m_runtimeStatus(QStringLiteral("Waiting for runtime intermediary snapshot"))
     , m_runtimeSource(runtimeSnapshotPath())
     , m_lastRuntimeRefresh(QStringLiteral("not yet refreshed"))
     , m_appRegistryModel(this)
@@ -140,7 +140,7 @@ void AppController::loadRuntimeSnapshot()
     const QString now = QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd hh:mm:ss"));
 
     if (!snapshot.isValid) {
-        m_runtimeStatus = QStringLiteral("Runtime snapshot missing or invalid");
+        m_runtimeStatus = QStringLiteral("Runtime intermediary snapshot missing or invalid");
         m_lastRuntimeRefresh = now;
         emit runtimeStateChanged();
         return;
@@ -150,7 +150,25 @@ void AppController::loadRuntimeSnapshot()
     m_systemLabel = snapshot.systemLabel;
     m_walletLabel = snapshot.walletLabel;
     m_agentStatus = snapshot.agentStatus;
-    m_runtimeStatus = QStringLiteral("Live runtime snapshot loaded");
+
+    QStringList runtimeStatusParts;
+    if (!snapshot.runtimeMode.isEmpty()) {
+        runtimeStatusParts << snapshot.runtimeMode;
+    }
+    if (!snapshot.runtimeRole.isEmpty()) {
+        runtimeStatusParts << snapshot.runtimeRole;
+    }
+    if (!snapshot.mediationStatus.isEmpty()) {
+        runtimeStatusParts << snapshot.mediationStatus;
+    }
+    m_runtimeStatus = runtimeStatusParts.isEmpty()
+        ? QStringLiteral("Live runtime intermediary snapshot loaded")
+        : runtimeStatusParts.join(QStringLiteral(" · "));
+
+    if (!snapshot.runtimeSource.isEmpty()) {
+        m_runtimeSource = snapshot.runtimeSource;
+    }
+
     m_lastRuntimeRefresh = now;
 
     m_homeState.setSummary(snapshot.summaryTitle, snapshot.summarySubtitle, snapshot.summaryBody);

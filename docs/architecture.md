@@ -2,7 +2,7 @@
 
 ## Current prototype
 
-The current native shell is a Qt/QML application with a C++ coordination layer and an early Rust runtime-state generator.
+The current native shell is a Qt/QML application with a C++ coordination layer and an early Rust runtime intermediary that mediates between Linux host state and the SolOS operating layer.
 
 ### Present structure
 
@@ -30,7 +30,8 @@ The current native shell is a Qt/QML application with a C++ coordination layer a
 
 - `app/runtime-core/src/main.rs`
   - emits a structured runtime snapshot in JSON
-  - currently acts as the first Rust subsystem boundary for SolOS
+  - currently acts as the first runtime intermediary boundary for SolOS
+  - reads Linux host facts and translates them into SolOS-facing runtime state
 
 ## Immediate architectural direction
 
@@ -131,10 +132,11 @@ The Qt/QML shell itself can continue iterating with a thin C++ layer until real 
 
 At a high level, the current SolOS shell works like this:
 
-1. Rust generates a structured runtime snapshot.
-2. C++ loads and interprets that snapshot.
-3. `AppController` pushes the imported state into Qt models and state objects.
-4. QML renders those models as native shell surfaces.
+1. Linux provides the host substrate and raw system facts.
+2. Rust runtime-core mediates those host facts into a structured runtime snapshot.
+3. C++ loads and interprets that runtime state.
+4. `AppController` pushes the imported state into Qt models and state objects.
+5. QML renders those models as native shell surfaces.
 
 So the present codebase is no longer only a pile of static strings manually pasted into the UI.
 
@@ -154,7 +156,7 @@ A lot of visible content is still effectively static in product terms because th
 
 The current implementation now has a concrete first seam for multi-language architecture:
 
-- `app/runtime-core` (Rust) can produce structured runtime state
+- `app/runtime-core` (Rust) can produce structured runtime-intermediary state
 - `app/shell-native/src/runtimebridge.*` (C++) parses and imports that state
 - QML consumes model-backed shell state instead of expanding hardcoded copy forever
 
@@ -179,7 +181,7 @@ This last point matters product-wise: SolOS implementation should not only impro
 
 The current runtime contract is still modest.
 
-Today, most of the generated state is predetermined snapshot content, not a broad live operating substrate. In practice, that means:
+Today, most of the generated state is predetermined snapshot content, not yet a broad live mediated runtime. In practice, that means:
 
 - the Rust side is generating structured data, but not yet deep real-world system state
 - the C++ side is coordinating real shell surfaces, but many surfaces still depend on prototype assumptions
@@ -216,8 +218,8 @@ Owns:
 
 Owns first:
 
-- structured runtime state generation
-- future orchestration services
+- structured runtime intermediary state generation
+- future mediation and orchestration services
 - approval/task backends
 - safety-sensitive parsing and system logic
 
