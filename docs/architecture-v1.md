@@ -1,102 +1,159 @@
-# SolOS Architecture v1
+# SolOS Architecture v1.0
 
 ## Objective
 
-Define the first serious system architecture for SolOS.
+Define SolOS 1.0 as an operating layer that runs on top of Linux instead of pretending to replace Linux with a separate runtime.
 
-This architecture is designed to support:
+This architecture supports:
 
 - a believable MVP
 - a coherent shell experience
 - future integration with agents, wallets, and apps
-- eventual packaging into a more system-like environment
+- packaging into a Linux appliance and demo ISO
 
-## Architectural principle
+## Core correction
 
-SolOS should begin as an operating layer, not a new kernel.
+SolOS is **not** a new kernel and should **not** invent a parallel runtime when Linux already provides:
 
-That means:
-- rely on a trusted base system underneath
-- innovate in orchestration, UI, agent integration, and identity/app layers above it
-- keep the future open for deeper system packaging later
-
-## Core layers
-
-### 1. Base System Layer
-Provides:
-- host OS services
+- process scheduling
+- memory management
+- device drivers
 - networking
+- filesystem semantics
+- init and service management
+- session and desktop plumbing
+
+So the architecture rule for v1.0 is simple:
+
+**Linux owns the runtime. SolOS owns the operating layer above it.**
+
+Rust, C++, QML, and web surfaces are implementation tools for the SolOS layer, not replacements for the Linux runtime.
+
+## Layer model
+
+### 1. Linux Host Runtime Layer
+Provides:
+- kernel
+- init system
+- service manager
 - filesystem
 - process execution
-- security primitives
+- networking
+- desktop/session primitives
+- security boundaries
 
-Near-term assumption:
-- Linux is the long-term target environment
-- development can occur from the current workstation setup
+Examples:
+- Linux kernel
+- systemd
+- X11 or Wayland session
+- local package/runtime stack
 
-### 2. Shell UI Layer
+This is the real runtime substrate.
+
+### 2. SolOS Runtime Adapter Layer
 Provides:
-- the main SolOS experience
-- navigation and screens
-- panels, status, actions, transitions
-- visual identity of the product
+- host-state discovery
+- normalized runtime snapshot/state
+- service mediation
+- capability boundaries
+- orchestration contracts exposed to the shell
 
-Primary screens:
-- Home
-- Agent
-- Wallet
-- Apps
+Current implementation direction:
+- `app/runtime-core` in Rust reads Linux runtime facts and produces structured state
+- this layer should evolve from snapshot generation toward real mediated services and event streams
 
-### 3. State + Orchestration Layer
+This layer does not recreate Linux. It translates Linux-host reality into SolOS concepts.
+
+### 3. SolOS Shell UI Layer
 Provides:
-- session state
-- wallet state
-- agent state
-- apps registry state
-- notifications
-- approvals
-- task lifecycle
+- the SolOS experience
+- Home, Agent, Wallet, and Apps surfaces
+- approvals and task visibility
+- navigation and ambient system presence
 
-This layer is what makes the UI feel like a system instead of static screens.
+Possible shells:
+- native Qt/QML shell
+- browser-based kiosk shell for demo packaging
+
+The shell is the user-facing operating layer, not the underlying runtime.
 
 ### 4. Agent Bridge Layer
 Provides:
-- safe interface between the agent and system capabilities
-- action mediation
+- safe interface between agent actions and Linux-backed capabilities
 - approval workflow triggers
+- bounded execution paths
 - system-aware responses back to the shell
 
-Initial principle:
-- the agent does not directly control everything
-- the bridge exposes bounded capabilities
+Principle:
+- the agent does not directly become the runtime
+- the bridge mediates access to Linux-backed operations
 
 ### 5. Wallet / Identity Layer
 Provides:
-- local profile identity
-- SolOS profile state
-- wallet connection state
-- assets and signing visibility
+- profile identity
+- wallet state
+- signing visibility
 - ownership-aware UX
 
-Security principle:
-- wallet signing must remain explicit and visible
-- identity concepts should remain distinct unless intentionally linked
+Principle:
+- wallet actions remain explicit
+- signing is never hidden behind generic agent behavior
+- wallet state is surfaced by SolOS, but not confused with kernel-level primitives
 
-### 6. Apps Runtime Layer
+### 6. Apps Layer
 Provides:
 - app registry
-- app metadata
-- app type distinctions
-- capability display
-- app open/launch flow
+- launch mediation
+- app metadata and capability display
+- local, web, dApp, and hybrid entry points
 
-App categories:
-- local
-- web
-- dApp
-- hybrid
+Principle:
+- apps run using host capabilities
+- SolOS governs discovery, visibility, launch policy, and UX cohesion
+
+## Runtime ownership model
+
+### Linux owns
+- boot
+- scheduler
+- devices
+- networking
+- users/processes
+- service lifecycle
+- session infrastructure
+
+### SolOS owns
+- shell composition
+- orchestration semantics
+- agent presence
+- approval UX
+- app registry model
+- wallet/identity visibility
+- user-facing policy and capability framing
+
+### Rust runtime-core owns
+- reading host runtime state
+- normalizing host facts into SolOS state
+- mediating selected Linux-backed actions
+- eventually exposing evented contracts to the shell
+
+### Rust runtime-core does not own
+- kernel behavior
+- init replacement
+- a fake full-system runtime
+- duplicate service/process semantics already handled by Linux
 
 ## Core data objects
+
+### HostRuntime
+- os
+- kernel
+- initSystem
+- sessionType
+- desktopSession
+- shell
+- hostname
+- user
 
 ### UserSession
 - id
@@ -110,6 +167,7 @@ App categories:
 - syncState
 - notificationsCount
 - approvalsCount
+- hostRuntimeSummary
 
 ### AgentState
 - status
@@ -137,74 +195,68 @@ App categories:
 ## Security boundaries
 
 ### The agent may
-- read allowed system state
+- read allowed host/system state
 - suggest actions
+- request bounded Linux-backed operations
 - open non-sensitive surfaces
 - prepare workflows
 
 ### The agent may not autonomously
 - sign transactions
 - move assets
-- install critical components without confirmation
+- install critical host components without confirmation
 - access sensitive user data without explicit boundaries
+- bypass Linux security and service boundaries through SolOS abstractions
 
 ### The shell must always surface
 - what action is being proposed
+- whether the action touches Linux-host services
 - why approval is needed
 - what the impact is
 
+## Packaging principle for v1.0
+
+SolOS v1.0 should ship first as a **Linux appliance layer**.
+
+That means:
+- boot a standard Linux distribution
+- auto-start the SolOS experience
+- use Linux services below
+- keep SolOS focused on orchestration and user experience above
+
+This supports two parallel tracks:
+
+1. **Native shell track**
+   - Qt/QML shell as the long-term first-class SolOS shell
+2. **Demo ISO track**
+   - Linux image that boots directly into a SolOS demo environment
+
 ## Recommended implementation path
 
-### MVP phase
-- mocked state
-- realistic UI
-- typed services
-- bridge contract drafted but partially simulated
+### v1.0
+- keep Linux as the runtime substrate
+- make runtime-core explicitly host-aware
+- remove language implying SolOS is inventing its own runtime
+- package a demo ISO around Linux + SolOS shell
 
-### Next phase
-- local bridge implementation
-- limited agent integration
-- early wallet integration
+### v1.x
+- replace more static snapshot fields with real host/service/app data
+- connect approvals to mediated commands and services
+- add launcher bridge and app discovery from the host
+- add real wallet/account brokers
 
-### Later phase
-- app packaging
-- VM packaging
-- broader Linux environment integration
-
-## Suggested code structure
-
-```text
-solos/
-  docs/
-  app/
-    shell/
-      src/
-        app/
-        components/
-        features/
-        state/
-        services/
-        styles/
-        types/
-```
-
-Feature areas:
-- `features/home`
-- `features/agent`
-- `features/wallet`
-- `features/apps`
-
-Service areas:
-- `services/agent-bridge`
-- `services/system`
-- `services/wallet`
-- `services/app-registry`
+### later
+- move from snapshot seam toward events/IPC
+- deepen session and display integration
+- consider more dedicated appliance behavior once the operating layer is stable
 
 ## North-star outcome
 
-A user can open SolOS and feel they are inside a coherent operating environment where:
-- the shell is intentional
-- the agent is native
+A user boots a Linux-based SolOS image and feels they are inside a coherent operating environment where:
+- Linux provides the execution substrate
+- SolOS provides the shell and orchestration layer
+- the agent is native to the experience
 - wallet and identity are visible
-- apps are part of one system world
-- actions and approvals are understandable
+- apps feel like one system world
+- approvals are explicit and understandable
+- the architecture is honest about what is runtime and what is operating layer

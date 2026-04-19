@@ -22,10 +22,12 @@
 
 ## Phase 2 — Real system integration
 
-- [ ] Connect shell state to real runtime data
+- [~] Replace predetermined runtime snapshot content with progressively real Linux-host-derived state
+- [~] Connect shell state to real host runtime data
 - [ ] Connect approvals to real command/task state
 - [ ] Connect wallet panel to real account state
 - [ ] Add launcher bridge for modules/apps
+- [ ] Introduce clearer capability boundaries so controllers stop behaving like staging points for semi-static copy
 
 ## Phase 3 — OS identity
 
@@ -36,10 +38,18 @@
 
 ## Phase 4 — Selective systems migration
 
-- [ ] Define which subsystems should stay in C++ for now
-- [ ] Identify Rust candidates by safety/concurrency/integration risk
-- [ ] Prototype one Rust subsystem behind a clear interface boundary
-- [ ] Establish C++/Rust interoperability rules for the shell and future runtime layers
+- [x] Define which subsystems should stay in C++ for now
+- [x] Identify Rust candidates by safety/concurrency/integration risk
+- [x] Prototype one Rust subsystem behind a clear interface boundary
+- [~] Establish C++/Rust interoperability rules for the shell and future runtime layers
+
+Current first boundary:
+
+- Linux remains the real runtime substrate
+- C++/Qt/QML shell remains the presentation layer
+- Rust runtime core reads and emits structured host-backed orchestration state
+- JSON snapshot contract acts as the first integration seam before a heavier IPC or FFI decision
+- next iteration should turn this from a structured host snapshot seam into progressively real mediated runtime services
 
 ## Migration principle
 
@@ -47,9 +57,9 @@ Rust should enter SolOS gradually and intentionally.
 
 Priority targets are the parts most likely to benefit from stronger memory safety and clearer concurrency boundaries, such as:
 
-- runtime/integration services
+- runtime/integration adapters over Linux host services
 - approval/task orchestration backends
 - parsers and capability layers
 - future system-facing modules
 
-The current Qt/QML shell can continue evolving in C++ while those boundaries become clearer.
+The current Qt/QML shell can continue evolving in C++ while those boundaries become clearer, and without claiming ownership of the Linux runtime itself.

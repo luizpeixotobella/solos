@@ -47,3 +47,10 @@ QHash<int, QByteArray> QuickActionsModel::roleNames() const
         {DescriptionRole, "description"}
     };
 }
+
+void QuickActionsModel::setEntries(const QVector<QuickActionEntry> &entries)
+{
+    beginResetModel();
+    m_entries = entries;
+    endResetModel();
+}

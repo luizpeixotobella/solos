@@ -1,5 +1,33 @@
 # SolOS Devlog
 
+## 2026-04-19
+
+- Corrected an architectural inconsistency: SolOS had been described as an operating layer over Linux, but `app/runtime-core` still behaved and spoke too much like a self-contained runtime generator.
+- Repositioned the Rust runtime core as a **Linux host runtime adapter** that reads host facts and normalizes them into SolOS-visible state.
+- Added explicit host-runtime fields to the runtime snapshot so the shell can distinguish Linux substrate data from SolOS orchestration semantics.
+- Updated architecture and roadmap language to make the ownership boundary unambiguous: Linux owns the runtime, SolOS owns the operating layer.
+- Declared SolOS v1.0 as a Linux-based operating layer release posture and documented it in a dedicated version note.
+- Expanded `appliance/demo-linux-v1` into a more explicit v1.0 packaging path, including a step-by-step guide for assembling a reproducible demo ISO.
+
+## 2026-04-13
+
+- Reassessed the current SolOS implementation in plainer terms so the documentation reflects the code more honestly.
+- Clarified that the shell is no longer just a pile of ad hoc strings, but also not yet a deeply dynamic system.
+- Documented the present execution path more explicitly: Rust emits a structured runtime snapshot, C++ imports and coordinates it, Qt models/state objects hold it, and QML renders it.
+- Recorded an important product/architecture correction: the next step is not a blanket rewrite, but turning the current structured snapshot seam into progressively real runtime state.
+- Updated roadmap language to make the guinada explicit: fewer semi-static staging controllers over time, more real runtime-derived state, approvals, wallet/account data, and app capability boundaries.
+- Synchronized this clarification pass with the LBArtes CMS documentation so internal and external explanations stay aligned.
+
+## 2026-04-10
+
+- Defined the first real multi-language boundary for SolOS: runtime snapshot generation on one side, native shell presentation on the other.
+- Added `runtimebridge.*` to the Qt/C++ shell so structured state can replace indefinitely hardcoded UI copy.
+- Made `HomeState`, `GhostRuntime`, and list-backed models mutable from imported runtime data.
+- Scaffolded `app/runtime-core` as the first Rust subsystem candidate.
+- Updated SolOS docs and LBArtes CMS surfaces so architecture direction, public framing, and implementation roadmap stay aligned.
+- Reinforced a working product rule: each implementation pass should improve structure and also create a useful visible change in the shell.
+- Added live refresh behavior so Home, Agent, and Apps can react to runtime snapshot changes while the shell is open.
+
 ## 2026-04-03
 
 - Re-read the thesis, architecture, roadmap, and launch collateral to keep implementation and narrative aligned.

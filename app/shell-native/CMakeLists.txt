@@ -25,6 +25,8 @@ qt_add_executable(solos-shell-native
     src/ghostruntime.h
     src/homestate.cpp
     src/homestate.h
+    src/runtimebridge.cpp
+    src/runtimebridge.h
 )
 
 qt_add_qml_module(solos-shell-native

@@ -1,0 +1,16 @@
+systemd
+sudo
+xorg
+xinit
+openbox
+chromium
+nodejs
+npm
+rsync
+ca-certificates
+fonts-dejavu
+qt6-base-dev
+qml6-module-qtquick
+qml6-module-qtquick-controls
+libqt6qml6
+libqt6quick6

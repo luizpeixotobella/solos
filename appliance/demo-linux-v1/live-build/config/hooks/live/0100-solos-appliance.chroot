@@ -1,0 +1,84 @@
+#!/bin/bash
+set -e
+
+ENV_FILE="/etc/solos-build.env"
+if [ -f "$ENV_FILE" ]; then
+  . "$ENV_FILE"
+fi
+
+SOLOS_DEMO_USER="${SOLOS_DEMO_USER:-solos}"
+SOLOS_SHELL_MODE="${SOLOS_SHELL_MODE:-web}"
+SOLOS_ENABLE_AUTOLOGIN="${SOLOS_ENABLE_AUTOLOGIN:-1}"
+SOLOS_ENABLE_NATIVE_SHELL="${SOLOS_ENABLE_NATIVE_SHELL:-0}"
+BUILD_ROOT="/opt/solos-build"
+APPLIANCE_ROOT="$BUILD_ROOT/appliance/demo-linux-v1"
+WEB_DIST_ROOT="$BUILD_ROOT/app/shell/dist"
+NATIVE_BIN="$BUILD_ROOT/app/shell-native/build/solos-shell-native"
+RUNTIME_CORE_ROOT="$BUILD_ROOT/app/runtime-core"
+
+id "$SOLOS_DEMO_USER" >/dev/null 2>&1 || useradd -m -s /bin/bash "$SOLOS_DEMO_USER"
+mkdir -p /opt/solos-shell/current /opt/solos-shell/bin
+mkdir -p "/home/$SOLOS_DEMO_USER/.config/systemd/user" \
+         "/home/$SOLOS_DEMO_USER/.config/autostart" \
+         "/home/$SOLOS_DEMO_USER/.config/solos"
+
+if [ -d "$WEB_DIST_ROOT" ]; then
+  rsync -a --delete "$WEB_DIST_ROOT/" /opt/solos-shell/current/
+fi
+
+if [ -f "$APPLIANCE_ROOT/bin/run-shell-server.mjs" ]; then
+  install -m 0755 "$APPLIANCE_ROOT/bin/run-shell-server.mjs" /opt/solos-shell/bin/run-shell-server.mjs
+fi
+
+if [ -f "$NATIVE_BIN" ]; then
+  install -d -m 0755 /opt/solos-shell/native
+  install -m 0755 "$NATIVE_BIN" /opt/solos-shell/native/solos-shell-native
+fi
+
+if [ -d "$RUNTIME_CORE_ROOT" ]; then
+  mkdir -p /opt/solos-runtime-core
+  rsync -a --exclude target "$RUNTIME_CORE_ROOT/" /opt/solos-runtime-core/
+fi
+
+if [ -x "$APPLIANCE_ROOT/bin/provision-demo-host.sh" ]; then
+  SOL_USER="$SOLOS_DEMO_USER" SOL_HOME="/home/$SOLOS_DEMO_USER" "$APPLIANCE_ROOT/bin/provision-demo-host.sh" || true
+fi
+
+if [ "$SOLOS_ENABLE_AUTOLOGIN" = "1" ]; then
+  mkdir -p /etc/systemd/system/getty@tty1.service.d
+  cat > /etc/systemd/system/getty@tty1.service.d/override.conf <<EOF
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin $SOLOS_DEMO_USER --noclear %I \$TERM
+EOF
+
+  cat > "/home/$SOLOS_DEMO_USER/.bash_profile" <<'EOF'
+if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+  exec startx
+fi
+EOF
+fi
+
+cat > "/home/$SOLOS_DEMO_USER/.xinitrc" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ -f /etc/solos-build.env ]; then
+  . /etc/solos-build.env
+fi
+
+SOLOS_SHELL_MODE="${SOLOS_SHELL_MODE:-web}"
+
+if [ "$SOLOS_SHELL_MODE" = "native" ] && [ -x /opt/solos-shell/native/solos-shell-native ]; then
+  exec /opt/solos-shell/native/solos-shell-native
+fi
+
+exec /home/solos/.xsession
+EOF
+chmod +x "/home/$SOLOS_DEMO_USER/.xinitrc"
+
+if [ "$SOLOS_ENABLE_NATIVE_SHELL" = "1" ]; then
+  sed -i 's/^SOLOS_SHELL_MODE=.*/SOLOS_SHELL_MODE=native/' /etc/solos-build.env || true
+fi
+
+chown -R "$SOLOS_DEMO_USER:$SOLOS_DEMO_USER" "/home/$SOLOS_DEMO_USER" /opt/solos-shell /opt/solos-runtime-core 2>/dev/null || true

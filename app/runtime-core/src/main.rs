@@ -1,4 +1,7 @@
 use serde::Serialize;
+use std::env;
+use std::path::Path;
+use std::process::Command;
 
 #[derive(Serialize)]
 struct RuntimeSnapshot {
@@ -6,12 +9,15 @@ struct RuntimeSnapshot {
     systemLabel: String,
     walletLabel: String,
     agentStatus: String,
+    runtimeMode: String,
+    runtimeSource: String,
     home: HomeState,
     ghost: GhostState,
     quickActions: Vec<QuickAction>,
     activityFeed: Vec<ActivityEntry>,
     approvals: Vec<ApprovalEntry>,
     apps: Vec<AppEntry>,
+    hostRuntime: HostRuntime,
 }
 
 #[derive(Serialize)]
@@ -59,94 +65,170 @@ struct AppEntry {
     description: String,
 }
 
+#[derive(Serialize)]
+struct HostRuntime {
+    os: String,
+    kernel: String,
+    initSystem: String,
+    sessionType: String,
+    desktopSession: String,
+    shell: String,
+    hostname: String,
+    user: String,
+}
+
 fn main() {
+    let host = detect_host_runtime();
+
     let snapshot = RuntimeSnapshot {
-        sessionLabel: "Luiz · SolOS Environment Active".into(),
-        systemLabel: "Online · v0.3-live-refresh · Rust generator active".into(),
-        walletLabel: "Solana · 9xLu...Ghost · 12.84 SOL · 248.00 USDC".into(),
-        agentStatus: "Ghost active · runtime generated snapshot loaded".into(),
+        sessionLabel: format!("{} · SolOS operating layer active", host.user),
+        systemLabel: format!(
+            "Linux runtime active · {} · {}",
+            host.initSystem, host.sessionType
+        ),
+        walletLabel: "Wallet bridge pending · ownership surface visible".into(),
+        agentStatus: "Ghost active · Linux host runtime attached".into(),
+        runtimeMode: "host-runtime".into(),
+        runtimeSource: "SolOS runs as an operating layer on top of Linux. Rust is only the adapter that reads and organizes host runtime state.".into(),
         home: HomeState {
-            summaryTitle: "Operational center of gravity".into(),
-            summarySubtitle: "Agency, approvals, identity, and apps in one field".into(),
-            summaryBody: "Rust now generates a runtime snapshot that the native shell can re-read while it is running. That gives SolOS a visible pulse instead of a static conceptual mock.".into(),
+            summaryTitle: "SolOS v1.0 operates on the Linux host".into(),
+            summarySubtitle: "The runtime belongs to Linux. SolOS composes experience, orchestration, and policy above it.".into(),
+            summaryBody: format!(
+                "This build no longer presents Rust as a self-contained runtime. SolOS reads the existing Linux runtime, session, and process environment, then turns that host state into shell-visible orchestration. Host: {} on kernel {}.",
+                host.os, host.kernel
+            ),
             nextActionTitle: "Next useful move".into(),
-            nextActionSubtitle: "Make runtime generation the source of visible movement".into(),
-            nextActionBody: "Regenerate the snapshot and the shell should visibly shift. This keeps architecture work honest by tying backend progress to perceivable product change.".into(),
+            nextActionSubtitle: "Promote Linux-backed services into first-class SolOS capabilities".into(),
+            nextActionBody: "Wire approvals, app launch, wallet bridges, and agent actions into real Linux services instead of extending static shell copy.".into(),
         },
         ghost: GhostState {
             presenceLabel: "Ghost present in shell".into(),
-            modeLabel: "Rust-generated · approval-aware · live-refreshing".into(),
-            thesisLabel: "Native agent presence should read from explicit runtime state, not scattered UI literals.".into(),
+            modeLabel: "Linux-backed · approval-aware · host-integrated".into(),
+            thesisLabel: "SolOS should not fake a kernel or invent a parallel runtime when Linux already provides the execution substrate.".into(),
         },
         quickActions: vec![
             QuickAction {
-                title: "Regenerate runtime".into(),
-                subtitle: "Useful visible change".into(),
-                description: "Re-run the Rust generator and watch the shell refresh into a new state without a deep rebuild.".into(),
+                title: "Inspect host services".into(),
+                subtitle: "Use Linux as substrate".into(),
+                description: "Read systemd, session, network, and process state from the host instead of recreating those primitives inside SolOS.".into(),
             },
             QuickAction {
-                title: "Audit approval lane".into(),
-                subtitle: "System trust surface".into(),
-                description: "Turn approvals into a durable operating-system primitive instead of ad hoc prompts.".into(),
+                title: "Bind approvals to real commands".into(),
+                subtitle: "Stop staging fake actions".into(),
+                description: "Move approvals from static queue items toward mediated Linux actions with explicit scope and rollback expectations.".into(),
             },
             QuickAction {
-                title: "Expand live app registry".into(),
-                subtitle: "Runtime-fed modules".into(),
-                description: "Let the Apps surface become a live registry driven by the runtime contract.".into(),
+                title: "Assemble ISO demo".into(),
+                subtitle: "Package the operating layer".into(),
+                description: "Boot Linux first, then launch SolOS as the default shell experience with documented image assembly steps.".into(),
             },
         ],
         activityFeed: vec![
             ActivityEntry {
-                title: "Rust generator active".into(),
-                detail: "The runtime core can now emit the snapshot contract consumed by the native shell.".into(),
+                title: "Host runtime detected".into(),
+                detail: format!(
+                    "SolOS is attached to {} with {} as init and {} as the active session type.",
+                    host.os, host.initSystem, host.sessionType
+                ),
                 status: "active".into(),
             },
             ActivityEntry {
-                title: "Shell refresh loop active".into(),
-                detail: "The shell can manually or automatically refresh runtime-backed state while running.".into(),
+                title: "Runtime ownership corrected".into(),
+                detail: "Rust now acts as a runtime adapter layer, not as a pretend operating-system runtime replacing Linux.".into(),
                 status: "active".into(),
             },
             ActivityEntry {
-                title: "Visible product movement achieved".into(),
-                detail: "The architecture pass now produces perceivable changes in Home, Agent, and Apps screens.".into(),
+                title: "ISO demo path ready".into(),
+                detail: "The appliance folder defines how to package SolOS v1.0 as a Linux image instead of describing an abstract future distro.".into(),
                 status: "active".into(),
             },
         ],
         approvals: vec![
             ApprovalEntry {
-                title: "Promote generated snapshot to default dev loop".into(),
-                scope: "runtime-core -> shell-native".into(),
+                title: "Grant controlled access to system services".into(),
+                scope: "SolOS bridge -> systemd / desktop session / launchers".into(),
                 risk: "medium".into(),
             },
             ApprovalEntry {
-                title: "Connect approval items to executable actions".into(),
-                scope: "agent and wallet surfaces".into(),
+                title: "Connect signing and wallet actions to explicit Linux-backed brokers".into(),
+                scope: "wallet bridge / secure approvals".into(),
                 risk: "high".into(),
             },
         ],
         apps: vec![
             AppEntry {
                 name: "Workspace".into(),
-                subtitle: "Core environment".into(),
-                description: "Tasks, notes, and active operational context for the system and the user.".into(),
+                subtitle: "Operating layer context".into(),
+                description: "Coordinates user tasks, notes, and live environment state on top of the Linux host.".into(),
             },
             AppEntry {
                 name: "Approval Lane".into(),
-                subtitle: "Trust and action boundary".into(),
-                description: "A dedicated lane for approvals, scope, and explicit consent.".into(),
+                subtitle: "Policy boundary".into(),
+                description: "Surfaces Linux-backed actions that require explicit consent before execution.".into(),
             },
             AppEntry {
                 name: "Wallet Hub".into(),
                 subtitle: "Ownership surface".into(),
-                description: "Balances, identity, signatures, and assets in one visible operating surface.".into(),
+                description: "Keeps identity, balances, and signing visible without pretending they belong to the kernel.".into(),
             },
             AppEntry {
                 name: "Ghost Console".into(),
                 subtitle: "Native agent presence".into(),
-                description: "A runtime-backed agent surface for context, tasks, and orchestration.".into(),
+                description: "Turns host runtime state into agent-readable, approval-aware orchestration inside SolOS.".into(),
             },
         ],
+        hostRuntime: host,
     };
 
     println!("{}", serde_json::to_string_pretty(&snapshot).unwrap());
+}
+
+fn detect_host_runtime() -> HostRuntime {
+    HostRuntime {
+        os: read_os_pretty_name().unwrap_or_else(|| "Linux host".into()),
+        kernel: run("uname", &["-r"]).unwrap_or_else(|| "unknown-kernel".into()),
+        initSystem: detect_init_system(),
+        sessionType: env::var("XDG_SESSION_TYPE").unwrap_or_else(|_| "unknown-session".into()),
+        desktopSession: env::var("XDG_CURRENT_DESKTOP")
+            .or_else(|_| env::var("DESKTOP_SESSION"))
+            .unwrap_or_else(|_| "unknown-desktop".into()),
+        shell: env::var("SHELL").unwrap_or_else(|_| "unknown-shell".into()),
+        hostname: run("hostname", &[]).unwrap_or_else(|| "unknown-host".into()),
+        user: env::var("USER").unwrap_or_else(|_| "unknown-user".into()),
+    }
+}
+
+fn read_os_pretty_name() -> Option<String> {
+    let content = std::fs::read_to_string("/etc/os-release").ok()?;
+    for line in content.lines() {
+        if let Some(value) = line.strip_prefix("PRETTY_NAME=") {
+            return Some(value.trim_matches('"').to_string());
+        }
+    }
+    None
+}
+
+fn detect_init_system() -> String {
+    if let Ok(target) = std::fs::read_link("/proc/1/exe") {
+        if let Some(name) = Path::new(&target).file_name().and_then(|n| n.to_str()) {
+            return name.to_string();
+        }
+    }
+
+    run("ps", &["-p", "1", "-o", "comm="]).unwrap_or_else(|| "unknown-init".into())
+}
+
+fn run(command: &str, args: &[&str]) -> Option<String> {
+    let output = Command::new(command).args(args).output().ok()?;
+    if !output.status.success() {
+        return None;
+    }
+
+    let text = String::from_utf8(output.stdout).ok()?;
+    let trimmed = text.trim();
+    if trimmed.is_empty() {
+        None
+    } else {
+        Some(trimmed.to_string())
+    }
 }

@@ -46,3 +46,10 @@ QHash<int, QByteArray> ApprovalQueueModel::roleNames() const
         {RiskRole, "risk"}
     };
 }
+
+void ApprovalQueueModel::setEntries(const QVector<ApprovalQueueEntry> &entries)
+{
+    beginResetModel();
+    m_entries = entries;
+    endResetModel();
+}

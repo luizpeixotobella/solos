@@ -47,3 +47,10 @@ QHash<int, QByteArray> AppRegistryModel::roleNames() const
         {DescriptionRole, "description"}
     };
 }
+
+void AppRegistryModel::setEntries(const QVector<AppRegistryEntry> &entries)
+{
+    beginResetModel();
+    m_entries = entries;
+    endResetModel();
+}

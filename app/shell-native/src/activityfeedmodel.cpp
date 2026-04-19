@@ -47,3 +47,10 @@ QHash<int, QByteArray> ActivityFeedModel::roleNames() const
         {StatusRole, "status"}
     };
 }
+
+void ActivityFeedModel::setEntries(const QVector<ActivityFeedEntry> &entries)
+{
+    beginResetModel();
+    m_entries = entries;
+    endResetModel();
+}

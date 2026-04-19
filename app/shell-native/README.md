@@ -26,6 +26,17 @@ This scaffold currently provides:
 - top status bar with mocked session/system/wallet data
 - main workspace panels for each primary surface
 - basic structure for future native state models and Linux integration
+- a runtime snapshot bridge that allows structured shell state to be loaded from a machine-readable contract
+
+## Runtime boundary
+
+The shell now includes a first integration seam:
+
+- `src/runtime_snapshot.json` acts as the current fixture contract
+- `src/runtimebridge.*` parses structured runtime state into shell models
+- this boundary is designed so a Rust subsystem can replace the static fixture incrementally
+
+That means the shell can become more real without requiring a full rewrite.
 
 ## Build intent
 

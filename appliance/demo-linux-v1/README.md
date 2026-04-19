@@ -1,49 +1,66 @@
-# SolOS demo appliance v1
+# SolOS demo appliance v1.0
 
-This is the first real scaffold for a **Linux-based SolOS demo image**.
+This folder contains the first real scaffold for a **Linux-based SolOS demo image / demo ISO**.
 
-It does **not** pretend to be a finished ISO. Instead, it defines a credible path for turning a small Debian/Ubuntu-style Linux install into a boot-to-SolOS demo appliance:
+The key architectural rule is now explicit:
 
-1. build the existing SolOS shell from `app/shell`
-2. serve the built assets locally on `127.0.0.1:8080`
-3. auto-login into a lightweight X session
-4. launch Chromium in kiosk mode to the local shell
+- Linux is the runtime
+- SolOS is the operating layer above Linux
+- this appliance packages that relationship into a bootable demo experience
 
-That gives us a plausible v1 demo image architecture without overcommitting to a full distro build system yet.
+## What this folder is for
 
-## Layout
+Use this folder to assemble a reproducible SolOS v1.0 demo image that:
 
-- `bin/` - runtime and provisioning scripts
-- `config/systemd/` - user/system services for the demo appliance
-- `config/x11/` - X session bootstrap
-- `config/autostart/` - desktop-session autostart entry
-- `config/environment/` - environment template for overrides
-- `scripts/` - helper notes for future image assembly steps
+1. installs on top of a Debian or Ubuntu class Linux base
+2. auto-starts the SolOS shell experience
+3. uses Linux services and session management underneath
+4. can be converted into a VM image or bootable ISO
 
-## Intended target
-
-A minimal Linux machine or VM with:
-
-- Debian 12 / Ubuntu 24.04 class base OS
-- systemd
-- a display manager or TTY autologin path
-- Node.js 20+
-- Chromium or Google Chrome
-- Xorg + Openbox (or another tiny session manager)
-
-## Runtime model
+## v1.0 runtime model
 
 At boot:
 
-- Linux auto-logs in as the `solos` user
-- user session starts X
-- X session launches the SolOS shell server as a user service
-- Chromium opens `http://127.0.0.1:8080` in kiosk mode
-- if Chromium exits, the kiosk launcher retries after a short delay
+1. Linux boots normally
+2. system services and session plumbing come from Linux
+3. a `solos` user auto-logs in
+4. the SolOS shell service starts
+5. the SolOS experience becomes the visible operating layer
 
-## Quick start on a Linux host
+That means the ISO is not a fake standalone SolOS kernel image. It is a Linux image that boots into the SolOS environment.
 
-### 1. Build the shell
+## Folder layout
+
+- `bin/` - runtime, provisioning, and install scripts
+- `config/systemd/` - user service for SolOS shell runtime
+- `config/x11/` - session bootstrap for the demo session
+- `config/autostart/` - desktop-session autostart entry
+- `config/environment/` - environment template for overrides
+- `scripts/` - assembly notes and ISO build helpers
+
+## Current shell modes
+
+This appliance folder can support two SolOS shell modes.
+
+### Mode A, browser kiosk demo
+Current lowest-friction path.
+
+- build shell assets
+- serve them locally
+- launch Chromium in kiosk mode
+
+This is still useful for demos and ISO validation.
+
+### Mode B, native shell migration path
+Longer-term path.
+
+- package the native shell as the primary SolOS session
+- keep Linux as the runtime substrate
+- reduce browser use to app compatibility surfaces
+
+## Fast path, test on a Linux VM
+
+### 1. Build the SolOS shell
 
 From repo root:
 
@@ -53,31 +70,82 @@ npm install
 npm run build
 ```
 
-### 2. Provision the demo appliance bits
+### 2. Provision the demo host files
 
 ```bash
 cd appliance/demo-linux-v1
 sudo ./bin/provision-demo-host.sh
 ```
 
-This script copies configs into the expected locations and prints the remaining manual steps.
-
-### 3. Install the shell into `/opt/solos-shell`
+### 3. Install the shell build into `/opt/solos-shell`
 
 ```bash
 sudo SOLOS_REPO=/path/to/solos ./bin/install-shell-build.sh
 ```
 
-### 4. Enable services for the demo user
+### 4. Enable the service for the demo user
 
-Log in as `solos` once, then:
+Log in as `solos`, then run:
 
 ```bash
 systemctl --user daemon-reload
 systemctl --user enable --now solos-shell.service
 ```
 
-If you use the `.xsession` path, Chromium will be launched from the X session. If you use a desktop environment, copy the autostart file.
+### 5. Configure graphical autologin
+
+Use your display manager's normal Linux autologin path for the `solos` user.
+
+### 6. Reboot and validate
+
+On boot, Linux should start first and then enter the SolOS experience automatically.
+
+## How to create a demo ISO
+
+There are multiple viable image-build paths. For v1.0, keep it simple.
+
+### Recommended path: Debian live-build
+
+1. Create a Debian 12 build environment
+2. Use `live-build` to generate a live ISO
+3. Add packages:
+   - xorg
+   - openbox
+   - chromium
+   - nodejs
+   - rsync
+4. Create the `solos` user during chroot/customization
+5. Copy this appliance tree into the image build context
+6. Run `bin/provision-demo-host.sh` during image customization
+7. Copy `app/shell/dist` into `/opt/solos-shell/current`
+8. Enable autologin and the SolOS user service
+9. Build the ISO
+
+### Alternative paths
+
+- Ubuntu autoinstall + postinstall customization
+- Packer for VM appliance images
+- Raspberry Pi OS image customization for ARM demos
+
+## Minimum package set
+
+Suggested packages for the current browser-kiosk demo image:
+
+- systemd
+- xorg
+- xinit
+- openbox
+- chromium or google-chrome
+- nodejs 20+
+- rsync
+- ca-certificates
+- fonts-dejavu
+
+## Demo ISO expectation
+
+The demo ISO should boot into Linux and quickly hand off the visible experience to SolOS.
+
+That is the correct v1.0 story.
 
 ## Files of interest
 
@@ -85,41 +153,44 @@ If you use the `.xsession` path, Chromium will be launched from the X session. I
 Copies service/session config into place and creates the expected directories.
 
 ### `bin/install-shell-build.sh`
-Copies `app/shell/dist` into `/opt/solos-shell/current` and installs the local static server.
+Copies the shell build into `/opt/solos-shell/current`.
 
 ### `bin/run-shell-server.mjs`
-A tiny static-file server for production demo use. No external runtime dependency beyond Node.
-
-### `config/x11/solos-xsession.sh`
-Minimal X session bootstrap that launches Openbox and the kiosk browser.
+Tiny local server used by the browser-kiosk demo path.
 
 ### `config/systemd/solos-shell.service`
-User service that serves the shell on `127.0.0.1:8080`.
+User service that serves the shell locally.
 
-## Suggested demo-image assembly flow
+### `config/x11/solos-xsession.sh`
+Minimal X session bootstrap that launches the SolOS kiosk session.
 
-For a future real image build, the likely next step is:
+### `scripts/build-demo-iso.md`
+Step-by-step guide for building a reproducible demo ISO.
 
-1. start from Debian live-build, Ubuntu autoinstall, or Raspberry Pi OS customization
-2. preinstall Node, Chromium, Xorg, Openbox
-3. copy this `appliance/demo-linux-v1` tree into the image build context
-4. run `provision-demo-host.sh` during image finalization
-5. preseed the built shell into `/opt/solos-shell/current`
-6. enable autologin for the `solos` user
+### `live-build/`
+A real Debian `live-build` scaffold with package lists, customization hook, artifact preparation, and ISO build helper scripts.
 
-## Limitations
+## Ready-to-use ISO scaffold
 
-- Not a full image builder yet
-- Assumes Debian/Ubuntu-like paths and package names
-- Uses a browser kiosk rather than a native window manager shell
-- Does not yet bundle wallet daemons, agent runtime, or OpenClaw pairing UX
-- Does not configure graphical autologin automatically because that varies by display manager
+A real scaffold now exists under:
 
-## Why this is a good v1
+```text
+appliance/demo-linux-v1/live-build/
+```
 
-Because it is honest and shippable:
+Typical flow:
 
-- grounded in the real shell that already exists
-- easy to test in a VM
-- easy to evolve into a proper appliance image later
-- keeps the SolOS product story focused on the shell experience first
+```bash
+cd appliance/demo-linux-v1/live-build
+./prepare-build-context.sh
+./build-iso.sh
+```
+
+This prepares a Debian live-build context, injects current SolOS artifacts, and builds a hybrid ISO.
+
+## Why this is v1.0-worthy
+
+Because it is honest, packageable, and testable.
+
+It does not claim SolOS replaced Linux.
+It shows SolOS acting as the operating layer it is supposed to be.
