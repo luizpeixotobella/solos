@@ -319,7 +319,7 @@ void AppController::openUrl(const QString &url)
 
 void AppController::loadRuntimeSnapshot()
 {
-    const RuntimeSnapshotData snapshot = RuntimeBridge::loadSnapshot(m_runtimeSource);
+    const RuntimeSnapshotData snapshot = RuntimeBridge::loadSnapshot(runtimeSnapshotPath());
     const QString now = QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd hh:mm:ss"));
 
     if (!snapshot.isValid) {
