@@ -61,6 +61,20 @@ QStringList parseGhostPipelineLines(const QJsonArray &array)
     return lines;
 }
 
+QStringList parseGhostIntentLines(const QJsonArray &array)
+{
+    QStringList lines;
+    for (const QJsonValue &value : array) {
+        const QJsonObject object = value.toObject();
+        const QString name = object.value(QStringLiteral("name")).toString();
+        const QString status = object.value(QStringLiteral("status")).toString();
+        const QString reason = object.value(QStringLiteral("reason")).toString();
+        const QString nextAction = object.value(QStringLiteral("nextAction")).toString();
+        lines.append(QStringLiteral("%1 [%2]\n%3\nNext: %4").arg(name, status, reason, nextAction));
+    }
+    return lines;
+}
+
 QStringList parseGhostCitationLines(const QJsonArray &array)
 {
     QStringList lines;
@@ -122,6 +136,9 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     snapshot.ghostOnboardingBody = ghost.value(QStringLiteral("onboardingBody")).toString();
     snapshot.ghostOnboardingUrl = ghost.value(QStringLiteral("onboardingUrl")).toString();
     snapshot.ghostOnboardingStatus = ghost.value(QStringLiteral("onboardingStatus")).toString();
+    snapshot.ghostIntentsTitle = ghost.value(QStringLiteral("intentsTitle")).toString();
+    snapshot.ghostIntentsSummary = ghost.value(QStringLiteral("intentsSummary")).toString();
+    snapshot.ghostIntentLines = parseGhostIntentLines(ghost.value(QStringLiteral("intents")).toArray());
     snapshot.ghostPipelineLines = parseGhostPipelineLines(ghost.value(QStringLiteral("pipelineStages")).toArray());
     snapshot.ghostCitationLines = parseGhostCitationLines(lastResearch.value(QStringLiteral("citations")).toArray());
     snapshot.hostRuntimeSummary = systemStatus.value(QStringLiteral("hostRuntimeSummary")).toString();

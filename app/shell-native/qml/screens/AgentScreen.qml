@@ -149,10 +149,24 @@ Item {
 
                     SectionCard {
                         Layout.fillWidth: true
+                        title: ghostRuntime.intentsTitle
+                        subtitle: ghostRuntime.intentsSummary
+                        body: ghostRuntime.intentLines.length > 0 ? ghostRuntime.intentLines.join("\n\n") : "No Ghost intents yet."
+                    }
+
+                    SectionCard {
+                        Layout.fillWidth: true
                         title: "Pipeline layers"
                         subtitle: "Data -> Results -> Algorithms"
                         body: ghostRuntime.pipelineLines.length > 0 ? ghostRuntime.pipelineLines.join("\n\n") : "No pipeline detail yet."
                     }
+                }
+
+                GridLayout {
+                    Layout.fillWidth: true
+                    columns: 1
+                    columnSpacing: 16
+                    rowSpacing: 16
 
                     SectionCard {
                         Layout.fillWidth: true

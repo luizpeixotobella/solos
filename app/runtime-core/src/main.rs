@@ -49,6 +49,9 @@ struct GhostState {
     onboardingBody: String,
     onboardingUrl: String,
     onboardingStatus: String,
+    intentsTitle: String,
+    intentsSummary: String,
+    intents: Vec<GhostIntent>,
     pipelineStages: Vec<GhostPipelineStage>,
     lastResearch: GhostResearchSnapshot,
 }
@@ -77,6 +80,15 @@ struct GhostCitation {
     title: String,
     url: String,
     snippet: String,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct GhostIntent {
+    name: String,
+    status: String,
+    reason: String,
+    nextAction: String,
 }
 
 #[derive(Serialize)]
@@ -187,7 +199,7 @@ impl GhostBrain {
         }
     }
 
-    fn process(&self, host: &HostRuntime, online: bool) -> (Vec<GhostPipelineStage>, GhostResearchOutcome) {
+    fn process(&self, host: &HostRuntime, online: bool) -> (Vec<GhostPipelineStage>, GhostResearchOutcome, Vec<GhostIntent>) {
         let query = format!(
             "how to design a layered local AI agent with web search and approval flow for operating system shell"
         );
@@ -223,7 +235,8 @@ impl GhostBrain {
             detail: "Ghost applies a layered decision pipeline: ingest data, score relevance, summarize useful paths, and expose next actions inside SolOS.".into(),
         });
 
-        (stages, research)
+        let intents = self.build_intents(host, online, &research);
+        (stages, research, intents)
     }
 
     fn run_research(&self, query: &str, online: bool) -> GhostResearchOutcome {
@@ -281,13 +294,46 @@ impl GhostBrain {
             },
         }
     }
+
+    fn build_intents(&self, host: &HostRuntime, online: bool, research: &GhostResearchOutcome) -> Vec<GhostIntent> {
+        vec![
+            GhostIntent {
+                name: "answer-directly".into(),
+                status: "ready".into(),
+                reason: format!(
+                    "Ghost already has host facts for {} on {} and can answer local environment questions without leaving SolOS.",
+                    host.user, host.hostname
+                ),
+                nextAction: "Use local runtime state first when the request is about host/session status.".into(),
+            },
+            GhostIntent {
+                name: "research-web".into(),
+                status: if online && research.status == "ready" { "ready" } else { "waiting" }.into(),
+                reason: format!(
+                    "Ghost web grounding is {} via {}.",
+                    research.status, research.source
+                ),
+                nextAction: if online && research.status == "ready" {
+                    "Use Brave-backed evidence when the user asks how to do something or needs fresh external context.".into()
+                } else {
+                    "Require a valid Brave key and network before treating web research as available.".into()
+                },
+            },
+            GhostIntent {
+                name: "request-approval".into(),
+                status: "ready".into(),
+                reason: "Ghost should escalate from guidance to explicit approval when an intent touches system actions, wallets, or account-linked operations.".into(),
+                nextAction: "Route risky or billable actions into the approval lane instead of silently executing them.".into(),
+            },
+        ]
+    }
 }
 
 fn main() {
     let host = detect_host_runtime();
     let online = detect_online();
     let ghost_brain = GhostBrain::new();
-    let (ghost_pipeline, ghost_research) = ghost_brain.process(&host, online);
+    let (ghost_pipeline, ghost_research, ghost_intents) = ghost_brain.process(&host, online);
     let app_registry = build_app_registry();
     let approvals = build_approvals();
     let activity_feed = build_activity_feed(&host, online, app_registry.len(), &ghost_research);
@@ -339,6 +385,9 @@ fn main() {
             },
             onboardingUrl: ghost_brain.intelligence.onboarding_url.clone(),
             onboardingStatus: ghost_brain.intelligence.onboarding_status.clone(),
+            intentsTitle: "Ghost intents".into(),
+            intentsSummary: "First intent router: answer locally, research externally when grounded, and request approval for sensitive actions.".into(),
+            intents: ghost_intents,
             pipelineStages: ghost_pipeline,
             lastResearch: GhostResearchSnapshot {
                 query: ghost_research.query,

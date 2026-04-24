@@ -10,7 +10,7 @@
   "home": {
     "summaryTitle": "Ghost now has a first layered intelligence module",
     "summarySubtitle": "data + results = algorithms, grounded in host runtime and optional Brave web search.",
-    "summaryBody": "This build gives Ghost a first perceptron-like pipeline with stacked stages: runtime data ingestion, result synthesis, and algorithmic next-action output. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 5d 16h 36m. Web grounding currently reports: Ghost found 3 web references about layered agent design, web search grounding, and approval-aware orchestration..",
+    "summaryBody": "This build gives Ghost a first perceptron-like pipeline with stacked stages: runtime data ingestion, result synthesis, and algorithmic next-action output. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 5d 16h 44m. Web grounding currently reports: Ghost found 3 web references about layered agent design, web search grounding, and approval-aware orchestration..",
     "nextActionTitle": "Next useful move",
     "nextActionSubtitle": "Promote Ghost from research pipeline to task executor",
     "nextActionBody": "The next module should add task intents and tool actions so Ghost can turn researched guidance into explicit SolOS commands, approval requests, and user-visible outcomes."
@@ -25,11 +25,33 @@
     "onboardingBody": "Ghost already has a repository-local Brave key configured for this SolOS checkout.",
     "onboardingUrl": "https://api-dashboard.search.brave.com/app/keys",
     "onboardingStatus": "configured",
+    "intentsTitle": "Ghost intents",
+    "intentsSummary": "First intent router: answer locally, research externally when grounded, and request approval for sensitive actions.",
+    "intents": [
+      {
+        "name": "answer-directly",
+        "status": "ready",
+        "reason": "Ghost already has host facts for lcpby on lcpby-HP-ENVY-TS-17-Notebook-PC and can answer local environment questions without leaving SolOS.",
+        "nextAction": "Use local runtime state first when the request is about host/session status."
+      },
+      {
+        "name": "research-web",
+        "status": "ready",
+        "reason": "Ghost web grounding is ready via file:../../config/ghost.json.",
+        "nextAction": "Use Brave-backed evidence when the user asks how to do something or needs fresh external context."
+      },
+      {
+        "name": "request-approval",
+        "status": "ready",
+        "reason": "Ghost should escalate from guidance to explicit approval when an intent touches system actions, wallets, or account-linked operations.",
+        "nextAction": "Route risky or billable actions into the approval lane instead of silently executing them."
+      }
+    ],
     "pipelineStages": [
       {
         "name": "data",
         "status": "active",
-        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 5d 16h 36m, network online."
+        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 5d 16h 44m, network online."
       },
       {
         "name": "results",
@@ -62,7 +84,7 @@
         {
           "title": "Build an OpenClaw Free (Secure), Always-On Local AI Agent | flyingpenguin",
           "url": "https://www.flyingpenguin.com/build-an-openclaw-free-secure-always-on-local-ai-agent/",
-          "snippet": "<strong>Each channel is a separate process with its own Ed25519 identity</strong>. The vault runs out of process. Inference stays on loopback because the agent is on the host. Shell exec runs in a hardened container configured at the tool layer, rather than trying to wrap around the whole agent."
+          "snippet": "With shell:sh pre-approved at Tier 2, the same agent runs a compound command that probes three locations: [14] assistant_tool_calls call: exec({&quot;command&quot;:&quot;sh -c \\&quot;touch /cannot_write_here 2&gt;&amp;1; ...\\&quot;&quot;}) [15] tool_result tool=exec success=True output: touch: cannot touch &#x27;/cannot_write_here&#x27;: Read-only file system ws_ok=1 tmp_ok=1 [19] attestation chain_head_seq=18 chain_head_hash=6bf35f22df02b496244091e54b4dbf9b3ffdcf6a03485413f0522b84e2eb08a8"
         }
       ]
     }
@@ -87,7 +109,7 @@
   "activityFeed": [
     {
       "title": "Linux base system detected",
-      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 5d 16h 36m.",
+      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 5d 16h 44m.",
       "status": "active"
     },
     {
@@ -161,12 +183,12 @@
     "shell": "unknown-shell",
     "hostname": "lcpby-HP-ENVY-TS-17-Notebook-PC",
     "user": "lcpby",
-    "uptime": "5d 16h 36m"
+    "uptime": "5d 16h 44m"
   },
   "systemStatus": {
     "online": true,
     "approvalsCount": 2,
     "notificationsCount": 4,
-    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 5d 16h 36m"
+    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 5d 16h 44m"
   }
 }

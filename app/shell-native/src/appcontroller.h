@@ -73,6 +73,7 @@ signals:
     void runtimeStateChanged();
 
 private:
+    bool generateRuntimeSnapshot();
     void loadRuntimeSnapshot();
 
     QString m_currentScreen;

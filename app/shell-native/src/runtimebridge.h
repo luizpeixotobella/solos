@@ -37,6 +37,9 @@ struct RuntimeSnapshotData {
     QString ghostOnboardingBody;
     QString ghostOnboardingUrl;
     QString ghostOnboardingStatus;
+    QString ghostIntentsTitle;
+    QString ghostIntentsSummary;
+    QStringList ghostIntentLines;
     QStringList ghostPipelineLines;
     QStringList ghostCitationLines;
     QString hostRuntimeSummary;

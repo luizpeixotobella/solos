@@ -20,6 +20,13 @@ QString runtimeSnapshotPath()
     const QString candidate = QDir(appDir).absoluteFilePath(QStringLiteral("../src/runtime_snapshot.json"));
     return QDir::cleanPath(candidate);
 }
+
+QString runtimeCorePath()
+{
+    const QString appDir = QCoreApplication::applicationDirPath();
+    const QString candidate = QDir(appDir).absoluteFilePath(QStringLiteral("../../runtime-core"));
+    return QDir::cleanPath(candidate);
+}
 }
 
 AppController::AppController(QObject *parent)
@@ -44,6 +51,7 @@ AppController::AppController(QObject *parent)
     , m_ghostRuntime(this)
     , m_homeState(this)
 {
+    generateRuntimeSnapshot();
     loadRuntimeSnapshot();
 
     m_runtimeWatchTimer.setInterval(2000);
@@ -167,6 +175,7 @@ QString AppController::ghostConfigStatus() const
 
 void AppController::refreshRuntime()
 {
+    generateRuntimeSnapshot();
     loadRuntimeSnapshot();
 }
 
@@ -206,6 +215,35 @@ bool writeGhostConfigJson(const QJsonObject &root)
 }
 }
 
+bool AppController::generateRuntimeSnapshot()
+{
+    QProcess process;
+    process.setWorkingDirectory(runtimeCorePath());
+    process.start(QStringLiteral("cargo"), {QStringLiteral("run")});
+    if (!process.waitForFinished(30000)) {
+        m_runtimeStatus = QStringLiteral("Runtime snapshot generation timed out");
+        return false;
+    }
+
+    if (process.exitStatus() != QProcess::NormalExit || process.exitCode() != 0) {
+        const QString error = QString::fromUtf8(process.readAllStandardError()).trimmed();
+        m_runtimeStatus = error.isEmpty()
+            ? QStringLiteral("Runtime snapshot generation failed")
+            : QStringLiteral("Runtime snapshot generation failed: ") + error;
+        return false;
+    }
+
+    QFile snapshotFile(runtimeSnapshotPath());
+    if (!snapshotFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        m_runtimeStatus = QStringLiteral("Could not write runtime snapshot file");
+        return false;
+    }
+
+    snapshotFile.write(process.readAllStandardOutput());
+    snapshotFile.close();
+    return true;
+}
+
 bool AppController::saveGhostBraveApiKey(const QString &apiKey)
 {
     const QString trimmed = apiKey.trimmed();
@@ -240,6 +278,7 @@ bool AppController::saveGhostBraveApiKey(const QString &apiKey)
     }
 
     m_ghostConfigStatus = QStringLiteral("Ghost Brave key saved in SolOS repo config");
+    generateRuntimeSnapshot();
     loadRuntimeSnapshot();
     emit runtimeStateChanged();
     return true;
@@ -307,6 +346,7 @@ bool AppController::clearGhostBraveApiKey()
     }
 
     m_ghostConfigStatus = QStringLiteral("Ghost Brave key cleared from SolOS repo config");
+    generateRuntimeSnapshot();
     loadRuntimeSnapshot();
     emit runtimeStateChanged();
     return true;
@@ -378,6 +418,9 @@ void AppController::loadRuntimeSnapshot()
                              snapshot.ghostOnboardingBody,
                              snapshot.ghostOnboardingUrl,
                              snapshot.ghostOnboardingStatus,
+                             snapshot.ghostIntentsTitle,
+                             snapshot.ghostIntentsSummary,
+                             snapshot.ghostIntentLines,
                              snapshot.ghostPipelineLines,
                              snapshot.ghostCitationLines);
     m_quickActionsModel.setEntries(snapshot.quickActions);

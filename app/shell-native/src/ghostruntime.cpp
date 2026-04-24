@@ -13,6 +13,8 @@ GhostRuntime::GhostRuntime(QObject *parent)
     , m_onboardingBody(QStringLiteral("Ghost should help each SolOS user configure their own Brave key."))
     , m_onboardingUrl(QStringLiteral("https://api-dashboard.search.brave.com/app/keys"))
     , m_onboardingStatus(QStringLiteral("needs-user-key"))
+    , m_intentsTitle(QStringLiteral("Ghost intents"))
+    , m_intentsSummary(QStringLiteral("Intent routing not loaded yet."))
 {
 }
 
@@ -71,6 +73,21 @@ QString GhostRuntime::onboardingStatus() const
     return m_onboardingStatus;
 }
 
+QString GhostRuntime::intentsTitle() const
+{
+    return m_intentsTitle;
+}
+
+QString GhostRuntime::intentsSummary() const
+{
+    return m_intentsSummary;
+}
+
+QStringList GhostRuntime::intentLines() const
+{
+    return m_intentLines;
+}
+
 QStringList GhostRuntime::pipelineLines() const
 {
     return m_pipelineLines;
@@ -92,6 +109,9 @@ void GhostRuntime::setLabels(const QString &presence,
                              const QString &onboardingBody,
                              const QString &onboardingUrl,
                              const QString &onboardingStatus,
+                             const QString &intentsTitle,
+                             const QString &intentsSummary,
+                             const QStringList &intentLines,
                              const QStringList &pipelineLines,
                              const QStringList &citationLines)
 {
@@ -106,6 +126,9 @@ void GhostRuntime::setLabels(const QString &presence,
     m_onboardingBody = onboardingBody;
     m_onboardingUrl = onboardingUrl;
     m_onboardingStatus = onboardingStatus;
+    m_intentsTitle = intentsTitle;
+    m_intentsSummary = intentsSummary;
+    m_intentLines = intentLines;
     m_pipelineLines = pipelineLines;
     m_citationLines = citationLines;
     emit stateChanged();
