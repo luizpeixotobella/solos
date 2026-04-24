@@ -2,7 +2,7 @@
   "sessionLabel": "lcpby · SolOS operating layer active",
   "systemLabel": "Linux base system attached · systemd · wayland · online",
   "walletLabel": "Wallet bridge pending · ownership surface visible",
-  "agentStatus": "Ghost active · local pipeline online",
+  "agentStatus": "Ghost active · web-grounded · approval-aware",
   "runtimeMode": "runtime-intermediary",
   "runtimeSource": "Rust runtime-core mediates between Linux host services and the SolOS operating layer.",
   "runtimeRole": "Intermediary layer between Linux base system and SolOS operating layer",
@@ -10,7 +10,7 @@
   "home": {
     "summaryTitle": "Ghost now has a first layered intelligence module",
     "summarySubtitle": "data + results = algorithms, grounded in host runtime and optional Brave web search.",
-    "summaryBody": "This build gives Ghost a first perceptron-like pipeline with stacked stages: runtime data ingestion, result synthesis, and algorithmic next-action output. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 5d 14h 56m. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
+    "summaryBody": "This build gives Ghost a first perceptron-like pipeline with stacked stages: runtime data ingestion, result synthesis, and algorithmic next-action output. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 5d 16h 36m. Web grounding currently reports: Ghost found 3 web references about layered agent design, web search grounding, and approval-aware orchestration..",
     "nextActionTitle": "Next useful move",
     "nextActionSubtitle": "Promote Ghost from research pipeline to task executor",
     "nextActionBody": "The next module should add task intents and tool actions so Ghost can turn researched guidance into explicit SolOS commands, approval requests, and user-visible outcomes."
@@ -20,21 +20,21 @@
     "modeLabel": "layered-intelligence · approval-aware · web-grounded when configured",
     "thesisLabel": "Ghost should become a native orchestration layer that combines local runtime reality, web research, and explicit approvals into useful operating behavior.",
     "intelligenceSummary": "Perceptron-like layered pipeline: input data, synthesized results, then action-shaping algorithms.",
-    "webStatusLabel": "Brave research status: unconfigured",
+    "webStatusLabel": "Brave research status: ready",
     "onboardingTitle": "Brave key onboarding",
-    "onboardingBody": "Ghost should send each SolOS user to Brave's key page, let them subscribe with their own account, then return and paste the key into solos/config/ghost.json so this repo stays isolated from your personal quota. Current status: needs-user-key.",
+    "onboardingBody": "Ghost already has a repository-local Brave key configured for this SolOS checkout.",
     "onboardingUrl": "https://api-dashboard.search.brave.com/app/keys",
-    "onboardingStatus": "needs-user-key",
+    "onboardingStatus": "configured",
     "pipelineStages": [
       {
         "name": "data",
         "status": "active",
-        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 5d 14h 56m, network online."
+        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 5d 16h 36m, network online."
       },
       {
         "name": "results",
-        "status": "warning",
-        "detail": "Ghost converts raw runtime and web evidence into structured results. Source: missing-config."
+        "status": "ready",
+        "detail": "Ghost converts raw runtime and web evidence into structured results. Source: file:../../config/ghost.json."
       },
       {
         "name": "algorithms",
@@ -44,11 +44,27 @@
     ],
     "lastResearch": {
       "query": "how to design a layered local AI agent with web search and approval flow for operating system shell",
-      "status": "unconfigured",
-      "resultCount": 0,
-      "source": "missing-config",
-      "summary": "Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment.",
-      "citations": []
+      "status": "ready",
+      "resultCount": 3,
+      "source": "file:../../config/ghost.json",
+      "summary": "Ghost found 3 web references about layered agent design, web search grounding, and approval-aware orchestration.",
+      "citations": [
+        {
+          "title": "Building AI Coding Agents for the Terminal: Scaffolding, Harness, Context Engineering, and Lessons Learned",
+          "url": "https://arxiv.org/html/2603.05344v1",
+          "snippet": "Figure 2 illustrates the architecture of OpenDev across four principal layers: Entry &amp; UI, Agent, Tool &amp; Context, and Persistence. A user query flows through this pipeline sequentially, from the entry point through agent reasoning and tool execution, before results are persisted and rendered. The CLI Entry Point parses arguments and bootstraps four shared managers (ConfigManager, SessionManager, ModeManager, and ApprovalManager), which are injected into all downstream components."
+        },
+        {
+          "title": "Build a More Secure, Always-On Local AI Agent with OpenClaw and NVIDIA NemoClaw | NVIDIA Technical Blog",
+          "url": "https://developer.nvidia.com/blog/build-a-secure-always-on-local-ai-agent-with-nvidia-nemoclaw-and-openclaw/",
+          "snippet": "Key security features include network and filesystem isolation managed by OpenShell, real-time policy approval for external access, and full local inference to ensure that no data leaves the device during agent operation. AI-generated content may summarize information incompletely. Verify important information. Learn more · Agents are evolving from question-and-answer systems into long-running autonomous assistants that read files, call APIs, and drive multi-step workflows."
+        },
+        {
+          "title": "Build an OpenClaw Free (Secure), Always-On Local AI Agent | flyingpenguin",
+          "url": "https://www.flyingpenguin.com/build-an-openclaw-free-secure-always-on-local-ai-agent/",
+          "snippet": "<strong>Each channel is a separate process with its own Ed25519 identity</strong>. The vault runs out of process. Inference stays on loopback because the agent is on the host. Shell exec runs in a hardened container configured at the tool layer, rather than trying to wrap around the whole agent."
+        }
+      ]
     }
   },
   "quickActions": [
@@ -71,7 +87,7 @@
   "activityFeed": [
     {
       "title": "Linux base system detected",
-      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 5d 14h 56m.",
+      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 5d 16h 36m.",
       "status": "active"
     },
     {
@@ -81,8 +97,8 @@
     },
     {
       "title": "Ghost web research state",
-      "detail": "Research query status is unconfigured. Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment.",
-      "status": "warning"
+      "detail": "Research query status is ready. Ghost found 3 web references about layered agent design, web search grounding, and approval-aware orchestration.",
+      "status": "ready"
     },
     {
       "title": "App registry surfaced",
@@ -145,12 +161,12 @@
     "shell": "unknown-shell",
     "hostname": "lcpby-HP-ENVY-TS-17-Notebook-PC",
     "user": "lcpby",
-    "uptime": "5d 14h 56m"
+    "uptime": "5d 16h 36m"
   },
   "systemStatus": {
     "online": true,
     "approvalsCount": 2,
     "notificationsCount": 4,
-    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 5d 14h 56m"
+    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 5d 16h 36m"
   }
 }

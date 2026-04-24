@@ -728,6 +728,7 @@ fn read_brave_key_from_path(path: &str) -> Option<String> {
 fn brave_key_file_candidates() -> Vec<&'static str> {
     vec![
         "./config/ghost.json",
+        "../../config/ghost.json",
         "./solos/config/ghost.json",
         "./config/solos.json",
         "./config/runtime.json",
