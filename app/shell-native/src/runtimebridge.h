@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QString>
+#include <QStringList>
 #include <QVector>
 
 #include "activityfeedmodel.h"
@@ -28,6 +29,16 @@ struct RuntimeSnapshotData {
     QString ghostPresenceLabel;
     QString ghostModeLabel;
     QString ghostThesisLabel;
+    QString ghostIntelligenceSummary;
+    QString ghostWebStatusLabel;
+    QString ghostResearchQuery;
+    QString ghostResearchSummary;
+    QString ghostOnboardingTitle;
+    QString ghostOnboardingBody;
+    QString ghostOnboardingUrl;
+    QString ghostOnboardingStatus;
+    QStringList ghostPipelineLines;
+    QStringList ghostCitationLines;
     QString hostRuntimeSummary;
     bool online = false;
     int approvalsCount = 0;

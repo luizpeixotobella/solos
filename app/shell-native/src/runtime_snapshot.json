@@ -2,51 +2,87 @@
   "sessionLabel": "lcpby · SolOS operating layer active",
   "systemLabel": "Linux base system attached · systemd · wayland · online",
   "walletLabel": "Wallet bridge pending · ownership surface visible",
-  "agentStatus": "Ghost active · runtime intermediary attached",
+  "agentStatus": "Ghost active · local pipeline online",
   "runtimeMode": "runtime-intermediary",
   "runtimeSource": "Rust runtime-core mediates between Linux host services and the SolOS operating layer.",
   "runtimeRole": "Intermediary layer between Linux base system and SolOS operating layer",
   "mediationStatus": "Host facts detected and normalized into SolOS-facing runtime state",
   "home": {
-    "summaryTitle": "SolOS v1.0 runs above a runtime intermediary",
-    "summarySubtitle": "Linux is the base system, the runtime mediates, and SolOS delivers the operating layer.",
-    "summaryBody": "This build treats runtime-core as the middle layer between Linux and SolOS. It reads host state from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 4d 22h 41m, and current session plumbing, then exposes that state as stable runtime context for the shell.",
+    "summaryTitle": "Ghost now has a first layered intelligence module",
+    "summarySubtitle": "data + results = algorithms, grounded in host runtime and optional Brave web search.",
+    "summaryBody": "This build gives Ghost a first perceptron-like pipeline with stacked stages: runtime data ingestion, result synthesis, and algorithmic next-action output. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 5d 14h 56m. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
     "nextActionTitle": "Next useful move",
-    "nextActionSubtitle": "Promote mediation into real runtime services",
-    "nextActionBody": "Wire approvals, app launch, wallet bridges, and agent actions through runtime-mediated services instead of leaving the shell coupled to static fixtures."
+    "nextActionSubtitle": "Promote Ghost from research pipeline to task executor",
+    "nextActionBody": "The next module should add task intents and tool actions so Ghost can turn researched guidance into explicit SolOS commands, approval requests, and user-visible outcomes."
   },
   "ghost": {
     "presenceLabel": "Ghost present in shell",
-    "modeLabel": "runtime-mediated · approval-aware · host-integrated",
-    "thesisLabel": "SolOS should sit above a runtime intermediary that translates Linux host reality into stable operating-layer semantics."
+    "modeLabel": "layered-intelligence · approval-aware · web-grounded when configured",
+    "thesisLabel": "Ghost should become a native orchestration layer that combines local runtime reality, web research, and explicit approvals into useful operating behavior.",
+    "intelligenceSummary": "Perceptron-like layered pipeline: input data, synthesized results, then action-shaping algorithms.",
+    "webStatusLabel": "Brave research status: unconfigured",
+    "onboardingTitle": "Brave key onboarding",
+    "onboardingBody": "Ghost should send each SolOS user to Brave's key page, let them subscribe with their own account, then return and paste the key into solos/config/ghost.json so this repo stays isolated from your personal quota. Current status: needs-user-key.",
+    "onboardingUrl": "https://api-dashboard.search.brave.com/app/keys",
+    "onboardingStatus": "needs-user-key",
+    "pipelineStages": [
+      {
+        "name": "data",
+        "status": "active",
+        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 5d 14h 56m, network online."
+      },
+      {
+        "name": "results",
+        "status": "warning",
+        "detail": "Ghost converts raw runtime and web evidence into structured results. Source: missing-config."
+      },
+      {
+        "name": "algorithms",
+        "status": "active",
+        "detail": "Ghost applies a layered decision pipeline: ingest data, score relevance, summarize useful paths, and expose next actions inside SolOS."
+      }
+    ],
+    "lastResearch": {
+      "query": "how to design a layered local AI agent with web search and approval flow for operating system shell",
+      "status": "unconfigured",
+      "resultCount": 0,
+      "source": "missing-config",
+      "summary": "Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment.",
+      "citations": []
+    }
   },
   "quickActions": [
     {
-      "title": "Inspect mediated host services",
-      "subtitle": "Runtime as intermediary",
-      "description": "Read systemd, session, network, and process state through the runtime layer instead of exposing raw host details everywhere in the shell."
+      "title": "Inspect Ghost data layer",
+      "subtitle": "Input signals",
+      "description": "Read host runtime facts, config, network state, and future user context as structured inputs for Ghost."
     },
     {
-      "title": "Bind approvals to mediated commands",
-      "subtitle": "Controlled execution path",
-      "description": "Move approvals from static queue items toward runtime-mediated Linux actions with explicit scope and rollback expectations."
+      "title": "Inspect Ghost results layer",
+      "subtitle": "Synthesis",
+      "description": "Combine local runtime evidence with Brave research results and condense them into useful summaries for the shell."
     },
     {
-      "title": "Assemble ISO demo",
-      "subtitle": "Package all three layers",
-      "description": "Boot Linux first, initialize the runtime intermediary, then launch SolOS as the visible operating layer with documented image assembly steps."
+      "title": "Promote Ghost algorithms into actions",
+      "subtitle": "Next module",
+      "description": "Turn ranked Ghost conclusions into explicit SolOS tasks, approvals, and app-level actions instead of keeping them purely descriptive."
     }
   ],
   "activityFeed": [
     {
       "title": "Linux base system detected",
-      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 4d 22h 41m.",
+      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 5d 14h 56m.",
       "status": "active"
     },
     {
-      "title": "Network state mediated",
-      "detail": "Runtime reports the host as online and can now expose online/offline state as a stable SolOS contract.",
+      "title": "Ghost layered pipeline online",
+      "detail": "Ghost now runs a three-stage intelligence path: data ingestion, result synthesis, and algorithm shaping for next actions.",
       "status": "active"
+    },
+    {
+      "title": "Ghost web research state",
+      "detail": "Research query status is unconfigured. Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment.",
+      "status": "warning"
     },
     {
       "title": "App registry surfaced",
@@ -56,26 +92,26 @@
   ],
   "approvals": [
     {
-      "id": "approval-host-services",
-      "title": "Grant controlled access to mediated system services",
-      "description": "Allow runtime-core to expose selected session, launcher, and service information through a bounded SolOS contract.",
-      "requestedBy": "runtime-core",
-      "capability": "host.service.read",
-      "scope": "runtime intermediary -> systemd / desktop session / launchers",
+      "id": "approval-ghost-web-access",
+      "title": "Bind Ghost web research to the user's own Brave key",
+      "description": "Ghost should open Brave's API key page for the SolOS user, let them pay or subscribe on their own account, then return and configure a repo-local key instead of sharing the developer key.",
+      "requestedBy": "ghost-brain",
+      "capability": "web.search.read",
+      "scope": "ghost onboarding -> Brave key acquisition -> solos/config/ghost.json",
       "risk": "medium",
       "status": "pending",
-      "createdAt": "runtime-bootstrap"
+      "createdAt": "ghost-module-bootstrap"
     },
     {
-      "id": "approval-wallet-broker",
-      "title": "Connect signing and wallet actions to explicit mediated brokers",
-      "description": "Prepare a wallet broker boundary so signing remains visible, scoped, and never hidden behind generic agent behavior.",
-      "requestedBy": "ghost-console",
-      "capability": "wallet.sign.request",
-      "scope": "wallet bridge / secure approvals / runtime mediation",
+      "id": "approval-ghost-task-execution",
+      "title": "Connect Ghost conclusions to executable tasks",
+      "description": "Prepare the next module so Ghost can transform ranked conclusions into app launches, commands, and approval requests inside SolOS.",
+      "requestedBy": "ghost-brain",
+      "capability": "task.intent.dispatch",
+      "scope": "Ghost pipeline -> SolOS task/action router",
       "risk": "high",
       "status": "pending",
-      "createdAt": "runtime-bootstrap"
+      "createdAt": "ghost-module-bootstrap"
     }
   ],
   "apps": [
@@ -96,8 +132,8 @@
     },
     {
       "name": "Ghost Console",
-      "subtitle": "Native agent presence",
-      "description": "Turns runtime-mediated host state into agent-readable, approval-aware orchestration inside SolOS."
+      "subtitle": "Layered intelligence module",
+      "description": "Turns runtime data plus optional Brave research into structured results and next-step algorithms inside SolOS."
     }
   ],
   "hostRuntime": {
@@ -109,12 +145,12 @@
     "shell": "unknown-shell",
     "hostname": "lcpby-HP-ENVY-TS-17-Notebook-PC",
     "user": "lcpby",
-    "uptime": "4d 22h 41m"
+    "uptime": "5d 14h 56m"
   },
   "systemStatus": {
     "online": true,
     "approvalsCount": 2,
-    "notificationsCount": 3,
-    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 4d 22h 41m"
+    "notificationsCount": 4,
+    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 5d 14h 56m"
   }
 }

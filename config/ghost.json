@@ -1,0 +1,20 @@
+{
+  "ghost": {
+    "name": "Ghost",
+    "intelligence": {
+      "pipeline": [
+        "data",
+        "results",
+        "algorithms"
+      ],
+      "webSearch": {
+        "provider": "brave",
+        "apiKey": "",
+        "enabled": false,
+        "maxResults": 5,
+        "onboardingUrl": "https://api-dashboard.search.brave.com/app/keys",
+        "status": "needs-user-key"
+      }
+    }
+  }
+}

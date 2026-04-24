@@ -47,6 +47,32 @@ AppRegistryEntry parseAppEntry(const QJsonObject &object)
         object.value(QStringLiteral("description")).toString()
     };
 }
+
+QStringList parseGhostPipelineLines(const QJsonArray &array)
+{
+    QStringList lines;
+    for (const QJsonValue &value : array) {
+        const QJsonObject object = value.toObject();
+        const QString name = object.value(QStringLiteral("name")).toString();
+        const QString status = object.value(QStringLiteral("status")).toString();
+        const QString detail = object.value(QStringLiteral("detail")).toString();
+        lines.append(QStringLiteral("%1 [%2] %3").arg(name, status, detail));
+    }
+    return lines;
+}
+
+QStringList parseGhostCitationLines(const QJsonArray &array)
+{
+    QStringList lines;
+    for (const QJsonValue &value : array) {
+        const QJsonObject object = value.toObject();
+        const QString title = object.value(QStringLiteral("title")).toString();
+        const QString url = object.value(QStringLiteral("url")).toString();
+        const QString snippet = object.value(QStringLiteral("snippet")).toString();
+        lines.append(QStringLiteral("%1\n%2\n%3").arg(title, url, snippet));
+    }
+    return lines;
+}
 }
 
 RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
@@ -67,6 +93,7 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     const QJsonObject home = root.value(QStringLiteral("home")).toObject();
     const QJsonObject ghost = root.value(QStringLiteral("ghost")).toObject();
     const QJsonObject systemStatus = root.value(QStringLiteral("systemStatus")).toObject();
+    const QJsonObject lastResearch = ghost.value(QStringLiteral("lastResearch")).toObject();
 
     snapshot.sessionLabel = root.value(QStringLiteral("sessionLabel")).toString();
     snapshot.systemLabel = root.value(QStringLiteral("systemLabel")).toString();
@@ -87,6 +114,16 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     snapshot.ghostPresenceLabel = ghost.value(QStringLiteral("presenceLabel")).toString();
     snapshot.ghostModeLabel = ghost.value(QStringLiteral("modeLabel")).toString();
     snapshot.ghostThesisLabel = ghost.value(QStringLiteral("thesisLabel")).toString();
+    snapshot.ghostIntelligenceSummary = ghost.value(QStringLiteral("intelligenceSummary")).toString();
+    snapshot.ghostWebStatusLabel = ghost.value(QStringLiteral("webStatusLabel")).toString();
+    snapshot.ghostResearchQuery = lastResearch.value(QStringLiteral("query")).toString();
+    snapshot.ghostResearchSummary = lastResearch.value(QStringLiteral("summary")).toString();
+    snapshot.ghostOnboardingTitle = ghost.value(QStringLiteral("onboardingTitle")).toString();
+    snapshot.ghostOnboardingBody = ghost.value(QStringLiteral("onboardingBody")).toString();
+    snapshot.ghostOnboardingUrl = ghost.value(QStringLiteral("onboardingUrl")).toString();
+    snapshot.ghostOnboardingStatus = ghost.value(QStringLiteral("onboardingStatus")).toString();
+    snapshot.ghostPipelineLines = parseGhostPipelineLines(ghost.value(QStringLiteral("pipelineStages")).toArray());
+    snapshot.ghostCitationLines = parseGhostCitationLines(lastResearch.value(QStringLiteral("citations")).toArray());
     snapshot.hostRuntimeSummary = systemStatus.value(QStringLiteral("hostRuntimeSummary")).toString();
     snapshot.online = systemStatus.value(QStringLiteral("online")).toBool(false);
     snapshot.approvalsCount = systemStatus.value(QStringLiteral("approvalsCount")).toInt();

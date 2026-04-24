@@ -9,6 +9,12 @@
 - Extended the Qt runtime bridge and `AppController` so the native shell can ingest the richer runtime contract rather than treating approvals and host state as shallow labels.
 - Regenerated the runtime snapshot from the Rust runtime and rebuilt the native shell successfully after the contract expansion.
 - Continued immediately into the shell layer so the new runtime truth became visible: Home now surfaces host runtime summary, online state, approval count, and runtime event count, while Agent approvals now render requester, capability, description, status, and creation metadata instead of only title/scope/risk.
+- Turned the provisional Ghost presence into the first functional Ghost prototype path: a layered intelligence pipeline with `data`, `results`, and `algorithms` stages, exposed through runtime-core and rendered in the native Agent surface.
+- Added optional Brave-grounded research to Ghost, then corrected the ownership model so SolOS no longer assumes a shared developer key for public use.
+- Created a repository-local Ghost config at `solos/config/ghost.json` and established a new rule: Ghost web research must rely on the user's own Brave key, not the developer's global config.
+- Implemented Ghost onboarding inside the Agent surface so users are sent to Brave's API-key page, return to SolOS, paste their own key, validate it live, and only then persist it into the repo-local config.
+- Added safe reset behavior so the repo can remain in a bootstrap state with no embedded Brave key, preserving the new ownership and billing boundary.
+- Documented this normative shift explicitly in `docs/ghost-onboarding-policy.md` so future Ghost work keeps account ownership, approvals, and external-cost boundaries legible.
 
 ## 2026-04-19
 

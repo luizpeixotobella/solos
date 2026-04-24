@@ -34,6 +34,7 @@ class AppController : public QObject
     Q_PROPERTY(int approvalsCount READ approvalsCount NOTIFY runtimeStateChanged)
     Q_PROPERTY(int notificationsCount READ notificationsCount NOTIFY runtimeStateChanged)
     Q_PROPERTY(QString lastRuntimeRefresh READ lastRuntimeRefresh NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString ghostConfigStatus READ ghostConfigStatus NOTIFY runtimeStateChanged)
 
 public:
     explicit AppController(QObject *parent = nullptr);
@@ -59,8 +60,13 @@ public:
     int approvalsCount() const;
     int notificationsCount() const;
     QString lastRuntimeRefresh() const;
+    QString ghostConfigStatus() const;
 
     Q_INVOKABLE void refreshRuntime();
+    Q_INVOKABLE bool saveGhostBraveApiKey(const QString &apiKey);
+    Q_INVOKABLE bool validateAndSaveGhostBraveApiKey(const QString &apiKey);
+    Q_INVOKABLE bool clearGhostBraveApiKey();
+    Q_INVOKABLE void openUrl(const QString &url);
 
 signals:
     void currentScreenChanged();
@@ -81,6 +87,7 @@ private:
     int m_approvalsCount = 0;
     int m_notificationsCount = 0;
     QString m_lastRuntimeRefresh;
+    QString m_ghostConfigStatus;
     AppRegistryModel m_appRegistryModel;
     ActivityFeedModel m_activityFeedModel;
     QuickActionsModel m_quickActionsModel;
