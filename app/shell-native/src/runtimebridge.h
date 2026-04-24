@@ -28,6 +28,10 @@ struct RuntimeSnapshotData {
     QString ghostPresenceLabel;
     QString ghostModeLabel;
     QString ghostThesisLabel;
+    QString hostRuntimeSummary;
+    bool online = false;
+    int approvalsCount = 0;
+    int notificationsCount = 0;
     QVector<QuickActionEntry> quickActions;
     QVector<ActivityFeedEntry> activityFeed;
     QVector<ApprovalQueueEntry> approvals;

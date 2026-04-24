@@ -9,6 +9,10 @@ Item {
     required property var homeState
     required property string runtimeStatus
     required property string runtimeSource
+    required property string hostRuntimeSummary
+    required property bool online
+    required property int approvalsCount
+    required property int notificationsCount
     required property string lastRuntimeRefresh
     required property var appController
 
@@ -45,7 +49,7 @@ Item {
                         Layout.fillWidth: true
                         title: "Runtime pulse"
                         subtitle: runtimeStatus
-                        body: "Source: " + runtimeSource + "\nLast refresh: " + lastRuntimeRefresh + "\n\nEdit the runtime snapshot or re-run the Rust generator and the shell should visibly refresh."
+                        body: "Host summary: " + hostRuntimeSummary + "\nNetwork: " + (online ? "online" : "offline") + "\nApprovals: " + approvalsCount + "\nRuntime events: " + notificationsCount + "\nLast refresh: " + lastRuntimeRefresh + "\n\nSource: " + runtimeSource
                     }
                 }
 
@@ -85,11 +89,25 @@ Item {
                     }
                 }
 
-                SectionCard {
+                GridLayout {
                     Layout.fillWidth: true
-                    title: "Visible progress rule"
-                    subtitle: "Structure must produce perceivable movement"
-                    body: "Each implementation pass should improve architecture and also create a useful visible change in the shell. If users cannot feel the progress, the system is still too inert."
+                    columns: width > 980 ? 2 : 1
+                    columnSpacing: 16
+                    rowSpacing: 16
+
+                    SectionCard {
+                        Layout.fillWidth: true
+                        title: "Runtime contract now visible"
+                        subtitle: online ? "Host attached and mediated" : "Host attached with degraded network state"
+                        body: "Home now shows a real host runtime summary, approval count, runtime event count, and online state coming from runtime-core instead of generic shell prose."
+                    }
+
+                    SectionCard {
+                        Layout.fillWidth: true
+                        title: "Visible progress rule"
+                        subtitle: "Structure must produce perceivable movement"
+                        body: "Each implementation pass should improve architecture and also create a useful visible change in the shell. If users cannot feel the progress, the system is still too inert."
+                    }
                 }
             }
         }

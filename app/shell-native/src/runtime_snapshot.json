@@ -1,6 +1,6 @@
 {
-  "sessionLabel": "Luiz · SolOS operating layer active",
-  "systemLabel": "Linux base system attached · systemd · x11",
+  "sessionLabel": "lcpby · SolOS operating layer active",
+  "systemLabel": "Linux base system attached · systemd · wayland · online",
   "walletLabel": "Wallet bridge pending · ownership surface visible",
   "agentStatus": "Ghost active · runtime intermediary attached",
   "runtimeMode": "runtime-intermediary",
@@ -10,7 +10,7 @@
   "home": {
     "summaryTitle": "SolOS v1.0 runs above a runtime intermediary",
     "summarySubtitle": "Linux is the base system, the runtime mediates, and SolOS delivers the operating layer.",
-    "summaryBody": "This fixture models the correct architecture: Linux is the base system, runtime-core is the intermediary mediation layer, and SolOS is the operating layer above it.",
+    "summaryBody": "This build treats runtime-core as the middle layer between Linux and SolOS. It reads host state from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 4d 22h 41m, and current session plumbing, then exposes that state as stable runtime context for the shell.",
     "nextActionTitle": "Next useful move",
     "nextActionSubtitle": "Promote mediation into real runtime services",
     "nextActionBody": "Wire approvals, app launch, wallet bridges, and agent actions through runtime-mediated services instead of leaving the shell coupled to static fixtures."
@@ -40,30 +40,42 @@
   "activityFeed": [
     {
       "title": "Linux base system detected",
-      "detail": "Runtime intermediary is attached to a Linux host and normalizing host state into shell-visible runtime context.",
+      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 4d 22h 41m.",
       "status": "active"
     },
     {
-      "title": "Runtime role corrected",
-      "detail": "runtime-core is now described as the mediation layer between Linux and SolOS, not as Linux itself and not as a fake replacement runtime.",
+      "title": "Network state mediated",
+      "detail": "Runtime reports the host as online and can now expose online/offline state as a stable SolOS contract.",
       "status": "active"
     },
     {
-      "title": "ISO demo path ready",
-      "detail": "The appliance path now packages Linux base system, runtime mediation, and SolOS operating layer as one coherent demo image story.",
+      "title": "App registry surfaced",
+      "detail": "4 operating-layer modules are now described as registry-backed entries instead of loose shell copy.",
       "status": "active"
     }
   ],
   "approvals": [
     {
+      "id": "approval-host-services",
       "title": "Grant controlled access to mediated system services",
+      "description": "Allow runtime-core to expose selected session, launcher, and service information through a bounded SolOS contract.",
+      "requestedBy": "runtime-core",
+      "capability": "host.service.read",
       "scope": "runtime intermediary -> systemd / desktop session / launchers",
-      "risk": "medium"
+      "risk": "medium",
+      "status": "pending",
+      "createdAt": "runtime-bootstrap"
     },
     {
+      "id": "approval-wallet-broker",
       "title": "Connect signing and wallet actions to explicit mediated brokers",
+      "description": "Prepare a wallet broker boundary so signing remains visible, scoped, and never hidden behind generic agent behavior.",
+      "requestedBy": "ghost-console",
+      "capability": "wallet.sign.request",
       "scope": "wallet bridge / secure approvals / runtime mediation",
-      "risk": "high"
+      "risk": "high",
+      "status": "pending",
+      "createdAt": "runtime-bootstrap"
     }
   ],
   "apps": [
@@ -89,13 +101,20 @@
     }
   ],
   "hostRuntime": {
-    "os": "Linux host",
-    "kernel": "unknown-kernel",
+    "os": "Ubuntu 24.04.4 LTS",
+    "kernel": "7.0.0",
     "initSystem": "systemd",
-    "sessionType": "x11",
-    "desktopSession": "openbox",
-    "shell": "/bin/bash",
-    "hostname": "solos-demo",
-    "user": "Luiz"
+    "sessionType": "wayland",
+    "desktopSession": "ubuntu:GNOME",
+    "shell": "unknown-shell",
+    "hostname": "lcpby-HP-ENVY-TS-17-Notebook-PC",
+    "user": "lcpby",
+    "uptime": "4d 22h 41m"
+  },
+  "systemStatus": {
+    "online": true,
+    "approvalsCount": 2,
+    "notificationsCount": 3,
+    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 4d 22h 41m"
   }
 }

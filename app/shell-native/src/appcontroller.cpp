@@ -25,6 +25,10 @@ AppController::AppController(QObject *parent)
     , m_agentStatus(QStringLiteral("Ghost active · awaiting approval"))
     , m_runtimeStatus(QStringLiteral("Waiting for runtime intermediary snapshot"))
     , m_runtimeSource(runtimeSnapshotPath())
+    , m_hostRuntimeSummary(QStringLiteral("host runtime summary unavailable"))
+    , m_online(false)
+    , m_approvalsCount(0)
+    , m_notificationsCount(0)
     , m_lastRuntimeRefresh(QStringLiteral("not yet refreshed"))
     , m_appRegistryModel(this)
     , m_activityFeedModel(this)
@@ -124,6 +128,26 @@ QString AppController::runtimeSource() const
     return m_runtimeSource;
 }
 
+QString AppController::hostRuntimeSummary() const
+{
+    return m_hostRuntimeSummary;
+}
+
+bool AppController::online() const
+{
+    return m_online;
+}
+
+int AppController::approvalsCount() const
+{
+    return m_approvalsCount;
+}
+
+int AppController::notificationsCount() const
+{
+    return m_notificationsCount;
+}
+
 QString AppController::lastRuntimeRefresh() const
 {
     return m_lastRuntimeRefresh;
@@ -141,6 +165,10 @@ void AppController::loadRuntimeSnapshot()
 
     if (!snapshot.isValid) {
         m_runtimeStatus = QStringLiteral("Runtime intermediary snapshot missing or invalid");
+        m_hostRuntimeSummary = QStringLiteral("host runtime summary unavailable");
+        m_online = false;
+        m_approvalsCount = 0;
+        m_notificationsCount = 0;
         m_lastRuntimeRefresh = now;
         emit runtimeStateChanged();
         return;
@@ -169,6 +197,10 @@ void AppController::loadRuntimeSnapshot()
         m_runtimeSource = snapshot.runtimeSource;
     }
 
+    m_hostRuntimeSummary = snapshot.hostRuntimeSummary;
+    m_online = snapshot.online;
+    m_approvalsCount = snapshot.approvalsCount;
+    m_notificationsCount = snapshot.notificationsCount;
     m_lastRuntimeRefresh = now;
 
     m_homeState.setSummary(snapshot.summaryTitle, snapshot.summarySubtitle, snapshot.summaryBody);

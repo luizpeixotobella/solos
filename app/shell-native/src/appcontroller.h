@@ -29,6 +29,10 @@ class AppController : public QObject
     Q_PROPERTY(GhostRuntime* ghostRuntime READ ghostRuntime CONSTANT)
     Q_PROPERTY(QString runtimeStatus READ runtimeStatus NOTIFY runtimeStateChanged)
     Q_PROPERTY(QString runtimeSource READ runtimeSource NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString hostRuntimeSummary READ hostRuntimeSummary NOTIFY runtimeStateChanged)
+    Q_PROPERTY(bool online READ online NOTIFY runtimeStateChanged)
+    Q_PROPERTY(int approvalsCount READ approvalsCount NOTIFY runtimeStateChanged)
+    Q_PROPERTY(int notificationsCount READ notificationsCount NOTIFY runtimeStateChanged)
     Q_PROPERTY(QString lastRuntimeRefresh READ lastRuntimeRefresh NOTIFY runtimeStateChanged)
 
 public:
@@ -50,6 +54,10 @@ public:
     GhostRuntime *ghostRuntime();
     QString runtimeStatus() const;
     QString runtimeSource() const;
+    QString hostRuntimeSummary() const;
+    bool online() const;
+    int approvalsCount() const;
+    int notificationsCount() const;
     QString lastRuntimeRefresh() const;
 
     Q_INVOKABLE void refreshRuntime();
@@ -68,6 +76,10 @@ private:
     QString m_agentStatus;
     QString m_runtimeStatus;
     QString m_runtimeSource;
+    QString m_hostRuntimeSummary;
+    bool m_online = false;
+    int m_approvalsCount = 0;
+    int m_notificationsCount = 0;
     QString m_lastRuntimeRefresh;
     AppRegistryModel m_appRegistryModel;
     ActivityFeedModel m_activityFeedModel;

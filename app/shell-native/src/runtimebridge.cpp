@@ -27,9 +27,15 @@ ActivityFeedEntry parseActivityEntry(const QJsonObject &object)
 ApprovalQueueEntry parseApprovalEntry(const QJsonObject &object)
 {
     return {
+        object.value(QStringLiteral("id")).toString(),
         object.value(QStringLiteral("title")).toString(),
+        object.value(QStringLiteral("description")).toString(),
+        object.value(QStringLiteral("requestedBy")).toString(),
+        object.value(QStringLiteral("capability")).toString(),
         object.value(QStringLiteral("scope")).toString(),
-        object.value(QStringLiteral("risk")).toString()
+        object.value(QStringLiteral("risk")).toString(),
+        object.value(QStringLiteral("status")).toString(),
+        object.value(QStringLiteral("createdAt")).toString()
     };
 }
 
@@ -60,6 +66,7 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     const QJsonObject root = document.object();
     const QJsonObject home = root.value(QStringLiteral("home")).toObject();
     const QJsonObject ghost = root.value(QStringLiteral("ghost")).toObject();
+    const QJsonObject systemStatus = root.value(QStringLiteral("systemStatus")).toObject();
 
     snapshot.sessionLabel = root.value(QStringLiteral("sessionLabel")).toString();
     snapshot.systemLabel = root.value(QStringLiteral("systemLabel")).toString();
@@ -80,6 +87,10 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     snapshot.ghostPresenceLabel = ghost.value(QStringLiteral("presenceLabel")).toString();
     snapshot.ghostModeLabel = ghost.value(QStringLiteral("modeLabel")).toString();
     snapshot.ghostThesisLabel = ghost.value(QStringLiteral("thesisLabel")).toString();
+    snapshot.hostRuntimeSummary = systemStatus.value(QStringLiteral("hostRuntimeSummary")).toString();
+    snapshot.online = systemStatus.value(QStringLiteral("online")).toBool(false);
+    snapshot.approvalsCount = systemStatus.value(QStringLiteral("approvalsCount")).toInt();
+    snapshot.notificationsCount = systemStatus.value(QStringLiteral("notificationsCount")).toInt();
 
     const QJsonArray quickActions = root.value(QStringLiteral("quickActions")).toArray();
     for (const QJsonValue &value : quickActions) {

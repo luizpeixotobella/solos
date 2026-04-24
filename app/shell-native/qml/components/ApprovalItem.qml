@@ -11,8 +11,13 @@ Rectangle {
     implicitHeight: content.implicitHeight + 28
 
     property string title: ""
+    property string description: ""
+    property string requestedBy: ""
+    property string capability: ""
     property string scope: ""
     property string risk: ""
+    property string status: ""
+    property string createdAt: ""
 
     Layout.fillWidth: true
 
@@ -41,8 +46,29 @@ Rectangle {
         }
 
         Label {
-            text: root.scope
+            text: root.description
+            color: "#d9e4ff"
+            Layout.fillWidth: true
+            wrapMode: Text.WordWrap
+        }
+
+        Label {
+            text: "Scope: " + root.scope
             color: "#9fb0d0"
+            Layout.fillWidth: true
+            wrapMode: Text.WordWrap
+        }
+
+        Label {
+            text: "Requested by: " + root.requestedBy + " · capability: " + root.capability
+            color: "#8fb2ff"
+            Layout.fillWidth: true
+            wrapMode: Text.WordWrap
+        }
+
+        Label {
+            text: "Status: " + root.status + " · created: " + root.createdAt
+            color: "#73d0ff"
             Layout.fillWidth: true
             wrapMode: Text.WordWrap
         }

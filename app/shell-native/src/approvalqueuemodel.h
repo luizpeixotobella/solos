@@ -5,9 +5,15 @@
 #include <QVector>
 
 struct ApprovalQueueEntry {
+    QString id;
     QString title;
+    QString description;
+    QString requestedBy;
+    QString capability;
     QString scope;
     QString risk;
+    QString status;
+    QString createdAt;
 };
 
 class ApprovalQueueModel : public QAbstractListModel
@@ -16,9 +22,15 @@ class ApprovalQueueModel : public QAbstractListModel
 
 public:
     enum Roles {
-        TitleRole = Qt::UserRole + 1,
+        IdRole = Qt::UserRole + 1,
+        TitleRole,
+        DescriptionRole,
+        RequestedByRole,
+        CapabilityRole,
         ScopeRole,
-        RiskRole
+        RiskRole,
+        StatusRole,
+        CreatedAtRole
     };
 
     explicit ApprovalQueueModel(QObject *parent = nullptr);

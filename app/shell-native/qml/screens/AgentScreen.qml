@@ -59,15 +59,26 @@ Item {
                         model: approvalQueueModel
 
                         delegate: ApprovalItem {
+                            required property string id
                             required property string title
+                            required property string description
+                            required property string requestedBy
+                            required property string capability
                             required property string scope
                             required property string risk
+                            required property string status
+                            required property string createdAt
 
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignTop
                             title: model.title
+                            description: model.description
+                            requestedBy: model.requestedBy
+                            capability: model.capability
                             scope: model.scope
                             risk: model.risk
+                            status: model.status
+                            createdAt: model.createdAt
                         }
                     }
                 }

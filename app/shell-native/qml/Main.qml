@@ -47,6 +47,10 @@ ApplicationWindow {
                 systemLabel: appController.systemLabel
                 walletLabel: appController.walletLabel
                 agentStatus: appController.agentStatus
+                hostRuntimeSummary: appController.hostRuntimeSummary
+                online: appController.online
+                approvalsCount: appController.approvalsCount
+                notificationsCount: appController.notificationsCount
             }
 
             StackLayout {
@@ -69,6 +73,10 @@ ApplicationWindow {
                     homeState: root.appController.homeState
                     runtimeStatus: root.appController.runtimeStatus
                     runtimeSource: root.appController.runtimeSource
+                    hostRuntimeSummary: root.appController.hostRuntimeSummary
+                    online: root.appController.online
+                    approvalsCount: root.appController.approvalsCount
+                    notificationsCount: root.appController.notificationsCount
                     lastRuntimeRefresh: root.appController.lastRuntimeRefresh
                     appController: root.appController
                 }

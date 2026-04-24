@@ -1,5 +1,15 @@
 # SolOS Devlog
 
+## 2026-04-24
+
+- Re-read the current SolOS thesis, architecture, roadmap, README, and aligned LBArtes CMS documentation before continuing development, reinforcing the standing rule to document while building.
+- Advanced `app/runtime-core` from a mostly declarative host snapshot toward a more real runtime seam by adding live host facts for hostname, user, kernel, uptime, session type, and coarse online/offline detection.
+- Added a `systemStatus` contract so the shell now receives mediated runtime state for online status, approval count, notification count, and a host-runtime summary instead of inferring everything from loose copy.
+- Upgraded approval modeling from a thin queue item into a more system-like primitive with `id`, `description`, `requestedBy`, `capability`, `status`, and `createdAt`, while keeping the initial entries mock-backed but structurally honest.
+- Extended the Qt runtime bridge and `AppController` so the native shell can ingest the richer runtime contract rather than treating approvals and host state as shallow labels.
+- Regenerated the runtime snapshot from the Rust runtime and rebuilt the native shell successfully after the contract expansion.
+- Continued immediately into the shell layer so the new runtime truth became visible: Home now surfaces host runtime summary, online state, approval count, and runtime event count, while Agent approvals now render requester, capability, description, status, and creation metadata instead of only title/scope/risk.
+
 ## 2026-04-19
 
 - Corrected an architectural inconsistency: SolOS had first been reframed as an operating layer above Linux, but that still collapsed the runtime semantics too directly into the host system.

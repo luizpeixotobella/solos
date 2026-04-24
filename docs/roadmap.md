@@ -24,6 +24,7 @@
 
 - [~] Replace predetermined runtime snapshot content with progressively real Linux-host-derived state
 - [~] Connect shell state to real host runtime data
+- [~] Model approvals as first-class runtime-backed entities before binding them to real command/task state
 - [ ] Connect approvals to real command/task state
 - [ ] Connect wallet panel to real account state
 - [ ] Add launcher bridge for modules/apps
@@ -49,7 +50,8 @@ Current first boundary:
 - C++/Qt/QML shell remains the presentation layer
 - Rust runtime core reads and emits structured host-backed orchestration state
 - JSON snapshot contract acts as the first integration seam before a heavier IPC or FFI decision
-- next iteration should turn this from a structured host snapshot seam into progressively real mediated runtime services
+- the current snapshot now carries live host facts plus a first `systemStatus` contract and richer approval objects
+- next iteration should turn this from a structured host snapshot seam into progressively real mediated runtime services and approval execution boundaries
 
 ## Migration principle
 
