@@ -17,6 +17,24 @@ O papel deste crate é:
 - preparar mediação de serviços, processos, sessões e approvals
 - desacoplar a operating layer dos detalhes crus do host
 
+## Doutrina do Ghost
+
+O Ghost não deve ser entendido como um chatbot colado na shell. Ele está evoluindo como uma camada de inteligência do SolOS baseada na inversão da programação clássica.
+
+Na programação convencional, a fórmula comum é:
+
+```text
+algoritmos + dados = resultados
+```
+
+No eixo de IA que orienta o Ghost, a fórmula passa a ser:
+
+```text
+dados + resultados = algoritmos
+```
+
+Ou seja: dados locais, evidências externas, resultados desejados, respostas aceitas, citações, aprovações e rejeições devem alimentar a síntese progressiva de comportamento. O runtime-core começa essa direção expondo camadas como `data`, `results`, `algorithms` e `knowledge`, preparando o Ghost para agir como um sistema em camadas, inspirado pela linhagem conceitual do perceptron e das redes neurais, sem fingir que toda automação inteligente precisa ser machine learning.
+
 ## O que este crate não é
 
 Ele não é:

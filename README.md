@@ -8,6 +8,23 @@ SolOS is an operating environment built around agency, explicit ownership, and a
 - Clear information architecture for Home, Agent, Wallet, and Apps
 - Converting web-shell semantics into native system surfaces
 - Building the conceptual thesis alongside the implementation
+- Developing Ghost from the AI-era inversion: **data + results = algorithms**
+
+## Ghost intelligence doctrine
+
+Classical programming is usually framed as:
+
+```text
+algorithms + data = results
+```
+
+Ghost is being developed from the inverse AI-era synthesis:
+
+```text
+data + results = algorithms
+```
+
+The point is not that algorithms vanish. The point is that, in learning systems, useful data plus observed or desired results can shape the algorithmic behavior itself. Ghost should therefore collect local/runtime facts, grounded research, cached knowledge, and approval outcomes, then synthesize safer routing and action logic inside SolOS.
 
 ## Repository direction
 
@@ -38,6 +55,7 @@ Current implementation direction:
 
 - `docs/thesis.md` — philosophical and product thesis behind SolOS
 - `docs/architecture.md` — system architecture and component map
+- `docs/ghost-intelligence-doctrine.md` — Ghost doctrine for the AI-era inversion from `algorithms + data = results` to `data + results = algorithms`
 - `docs/architecture-v1.md` — SolOS v1.0 architecture with runtime as intermediary between Linux and SolOS
 - `docs/solos-v1.0.md` — definition of the SolOS 1.0 release posture
 - `docs/roadmap.md` — implementation roadmap

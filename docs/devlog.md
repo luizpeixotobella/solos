@@ -1,5 +1,12 @@
 # SolOS Devlog
 
+## 2026-05-01
+
+- Clarified the intended meaning of Ghost's intelligence formula: classical software follows `algorithms + data = results`, while Ghost should develop from the AI-era synthesis `data + results = algorithms`.
+- Added `docs/ghost-intelligence-doctrine.md` to record the conceptual lineage from Rosenblatt's perceptron toward layered Ghost behavior, while preserving a practical distinction between rule-based AI and machine learning.
+- Reframed Ghost's runtime pipeline as data, results, algorithms, and knowledge layers so the implementation continues from this doctrine rather than treating the phrase as decorative copy.
+- Aligned the SolOS README, architecture notes, and runtime-core README with this direction so future Ghost/SolOS work keeps the same product thesis.
+
 ## 2026-04-24
 
 - Re-read the current SolOS thesis, architecture, roadmap, README, and aligned LBArtes CMS documentation before continuing development, reinforcing the standing rule to document while building.

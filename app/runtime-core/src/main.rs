@@ -310,7 +310,7 @@ impl GhostBrain {
         stages.push(GhostPipelineStage {
             name: "algorithms".into(),
             status: "active".into(),
-            detail: "Ghost applies a layered decision pipeline: ingest data, score relevance, summarize useful paths, and expose next actions inside SolOS.".into(),
+            detail: "Ghost applies the AI-era inversion: data plus observed/desired results shape algorithms for routing, approvals, and next actions inside SolOS.".into(),
         });
 
         let initiation = self.run_initiation(online);
@@ -550,9 +550,9 @@ fn main() {
         mediationStatus: "Host facts detected and normalized into SolOS-facing runtime state".into(),
         home: HomeState {
             summaryTitle: "Ghost now has a first layered intelligence module".into(),
-            summarySubtitle: "data + results = algorithms, grounded in host runtime and optional Brave web search.".into(),
+            summarySubtitle: "AI-era synthesis: data + results = algorithms, grounded in host runtime, outcomes, and optional Brave web search.".into(),
             summaryBody: format!(
-                "This build gives Ghost a first perceptron-like pipeline with stacked stages: runtime data ingestion, result synthesis, and algorithmic next-action output. Host state comes from {}, kernel {}, hostname {}, user {}, uptime {}. Web grounding currently reports: {}.",
+                "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from {}, kernel {}, hostname {}, user {}, uptime {}. Web grounding currently reports: {}.",
                 host.os, host.kernel, host.hostname, host.user, host.uptime, ghost_research.summary
             ),
             nextActionTitle: "Next useful move".into(),
@@ -563,7 +563,7 @@ fn main() {
             presenceLabel: "Ghost present in shell".into(),
             modeLabel: "layered-intelligence · approval-aware · web-grounded when configured".into(),
             thesisLabel: "Ghost should become a native orchestration layer that combines local runtime reality, web research, and explicit approvals into useful operating behavior.".into(),
-            intelligenceSummary: "Perceptron-like layered pipeline: input data, synthesized results, then action-shaping algorithms.".into(),
+            intelligenceSummary: "Perceptron-lineage layered pipeline: data plus results synthesize action-shaping algorithms.".into(),
             webStatusLabel: format!("Brave research status: {}", ghost_research.status),
             onboardingTitle: "Brave key onboarding".into(),
             onboardingBody: if ghost_brain.intelligence.available {
@@ -720,7 +720,7 @@ fn build_activity_feed(
         },
         ActivityEntry {
             title: "Ghost layered pipeline online".into(),
-            detail: "Ghost now runs a three-stage intelligence path: data ingestion, result synthesis, and algorithm shaping for next actions.".into(),
+            detail: "Ghost now runs the intelligence inversion path: data plus results synthesize algorithms for next actions.".into(),
             status: "active".into(),
         },
         ActivityEntry {

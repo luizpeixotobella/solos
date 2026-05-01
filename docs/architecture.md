@@ -115,6 +115,33 @@ A provisional `GhostRuntime` now defines the beginning of a native agent presenc
 
 The shell should eventually become a local orchestrator surface over real services, not a fake dashboard. Mock data is fine in the earliest stage, but every mock should point toward a real model boundary.
 
+## Ghost intelligence model
+
+Ghost's architecture follows an explicit inversion from classical programming to AI-era synthesis.
+
+Classical software usually behaves as:
+
+```text
+algorithms + data = results
+```
+
+Ghost should evolve from:
+
+```text
+data + results = algorithms
+```
+
+In practical SolOS terms, this means Ghost should not merely execute predefined rules over raw state. It should gather host/runtime data, Brave-grounded research, local knowledge-cache entries, user-visible outcomes, and approval decisions, then use those results to shape better routing and action algorithms.
+
+The current `runtime-core` implementation is still modest, but it now points in this direction through layered stages:
+
+- `data` — host facts, network/config status, local runtime signals
+- `results` — synthesized evidence, citations, summaries, approval-relevant outcomes
+- `algorithms` — intent routing and next-action logic derived from those inputs/results
+- `knowledge` — incremental local initiation cache for Ghost's operating knowledge
+
+This framing intentionally keeps both sides of AI in view: deterministic rule-based intelligence is valid when safety and legibility matter; learning-inspired layered synthesis is valuable when examples, outcomes, and feedback should refine behavior.
+
 ## Selective Rust direction
 
 Rust should be introduced where subsystem boundaries become strong enough to justify it.
