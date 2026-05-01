@@ -4,6 +4,7 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 use std::time::Duration;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Serialize)]
 #[allow(non_snake_case)]
@@ -54,6 +55,34 @@ struct GhostState {
     intents: Vec<GhostIntent>,
     pipelineStages: Vec<GhostPipelineStage>,
     lastResearch: GhostResearchSnapshot,
+    initiation: GhostInitiationState,
+    knowledge: GhostKnowledgeSnapshot,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct GhostInitiationState {
+    status: String,
+    budgetMinutes: String,
+    databasePath: String,
+    summary: String,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct GhostKnowledgeSnapshot {
+    topicCount: usize,
+    targetTopicCount: usize,
+    topics: Vec<GhostKnowledgeTopicSnapshot>,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct GhostKnowledgeTopicSnapshot {
+    name: String,
+    status: String,
+    summary: String,
+    sourceCount: usize,
 }
 
 #[derive(Serialize)]
@@ -170,6 +199,41 @@ struct GhostResearchOutcome {
     citations: Vec<GhostCitation>,
 }
 
+#[derive(Serialize, Deserialize, Default)]
+#[allow(non_snake_case)]
+struct GhostKnowledgeDatabase {
+    schema: String,
+    purpose: String,
+    createdAt: String,
+    updatedAt: String,
+    topics: Vec<GhostKnowledgeTopic>,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+#[allow(non_snake_case)]
+struct GhostKnowledgeTopic {
+    id: String,
+    name: String,
+    query: String,
+    summary: String,
+    lastHarvestedAt: String,
+    sources: Vec<GhostKnowledgeSource>,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+struct GhostKnowledgeSource {
+    title: String,
+    url: String,
+    snippet: String,
+}
+
+struct GhostInitiationOutcome {
+    status: String,
+    summary: String,
+    database_path: String,
+    topics: Vec<GhostKnowledgeTopic>,
+}
+
 #[derive(Deserialize)]
 struct BraveSearchResponse {
     #[serde(default)]
@@ -199,7 +263,16 @@ impl GhostBrain {
         }
     }
 
-    fn process(&self, host: &HostRuntime, online: bool) -> (Vec<GhostPipelineStage>, GhostResearchOutcome, Vec<GhostIntent>) {
+    fn process(
+        &self,
+        host: &HostRuntime,
+        online: bool,
+    ) -> (
+        Vec<GhostPipelineStage>,
+        GhostResearchOutcome,
+        Vec<GhostIntent>,
+        GhostInitiationOutcome,
+    ) {
         let query = format!(
             "how to design a layered local AI agent with web search and approval flow for operating system shell"
         );
@@ -222,7 +295,12 @@ impl GhostBrain {
 
         stages.push(GhostPipelineStage {
             name: "results".into(),
-            status: if research.status == "ready" { "ready" } else { "warning" }.into(),
+            status: if research.status == "ready" {
+                "ready"
+            } else {
+                "warning"
+            }
+            .into(),
             detail: format!(
                 "Ghost converts raw runtime and web evidence into structured results. Source: {}.",
                 research.source
@@ -235,8 +313,19 @@ impl GhostBrain {
             detail: "Ghost applies a layered decision pipeline: ingest data, score relevance, summarize useful paths, and expose next actions inside SolOS.".into(),
         });
 
+        let initiation = self.run_initiation(online);
+
+        stages.push(GhostPipelineStage {
+            name: "knowledge".into(),
+            status: initiation.status.clone(),
+            detail: format!(
+                "Ghost keeps a repo-local initiation knowledge database at {}. {}",
+                initiation.database_path, initiation.summary
+            ),
+        });
+
         let intents = self.build_intents(host, online, &research);
-        (stages, research, intents)
+        (stages, research, intents, initiation)
     }
 
     fn run_research(&self, query: &str, online: bool) -> GhostResearchOutcome {
@@ -245,7 +334,8 @@ impl GhostBrain {
                 query: query.into(),
                 status: "offline".into(),
                 source: "network unavailable".into(),
-                summary: "Ghost could not research the web because the host appears offline.".into(),
+                summary: "Ghost could not research the web because the host appears offline."
+                    .into(),
                 citations: vec![],
             };
         }
@@ -253,7 +343,12 @@ impl GhostBrain {
         if !self.intelligence.available {
             return GhostResearchOutcome {
                 query: query.into(),
-                status: if self.intelligence.api_key_found { "degraded" } else { "unconfigured" }.into(),
+                status: if self.intelligence.api_key_found {
+                    "degraded"
+                } else {
+                    "unconfigured"
+                }
+                .into(),
                 source: self.intelligence.source.clone(),
                 summary: if self.intelligence.api_key_found {
                     "Ghost found a Brave key candidate but could not use it from the current runtime configuration.".into()
@@ -295,7 +390,12 @@ impl GhostBrain {
         }
     }
 
-    fn build_intents(&self, host: &HostRuntime, online: bool, research: &GhostResearchOutcome) -> Vec<GhostIntent> {
+    fn build_intents(
+        &self,
+        host: &HostRuntime,
+        online: bool,
+        research: &GhostResearchOutcome,
+    ) -> Vec<GhostIntent> {
         vec![
             GhostIntent {
                 name: "answer-directly".into(),
@@ -327,13 +427,104 @@ impl GhostBrain {
             },
         ]
     }
+
+    fn run_initiation(&self, online: bool) -> GhostInitiationOutcome {
+        let database_path = ghost_knowledge_database_path();
+        let mut database = load_ghost_knowledge_database(&database_path);
+
+        if !online {
+            return GhostInitiationOutcome {
+                status: "offline".into(),
+                summary: "Initiation paused because the host appears offline.".into(),
+                database_path,
+                topics: database.topics,
+            };
+        }
+
+        if !self.intelligence.available {
+            return GhostInitiationOutcome {
+                status: "waiting-for-brave-key".into(),
+                summary: "Initiation will start after the user configures a Brave Search key."
+                    .into(),
+                database_path,
+                topics: database.topics,
+            };
+        }
+
+        let curriculum = ghost_knowledge_curriculum();
+        let mut harvested_this_run = 0usize;
+        let max_topics_per_run = 1usize;
+
+        for seed in &curriculum {
+            if harvested_this_run >= max_topics_per_run {
+                break;
+            }
+
+            if database.topics.iter().any(|topic| topic.id == seed.id) {
+                continue;
+            }
+
+            match brave_search(&seed.query, &self.intelligence.source) {
+                Ok(citations) if !citations.is_empty() => {
+                    let sources: Vec<GhostKnowledgeSource> = citations
+                        .into_iter()
+                        .map(|citation| GhostKnowledgeSource {
+                            title: citation.title,
+                            url: citation.url,
+                            snippet: citation.snippet,
+                        })
+                        .collect();
+
+                    database.topics.push(GhostKnowledgeTopic {
+                        id: seed.id.into(),
+                        name: seed.name.into(),
+                        query: seed.query.clone(),
+                        summary: seed.summary.into(),
+                        lastHarvestedAt: unix_timestamp_string(),
+                        sources,
+                    });
+                    harvested_this_run += 1;
+                }
+                Ok(_) | Err(_) => {
+                    // Keep initiation resilient: one bad topic should not block the shell load.
+                    continue;
+                }
+            }
+        }
+
+        if harvested_this_run > 0 {
+            database.updatedAt = unix_timestamp_string();
+            let _ = save_ghost_knowledge_database(&database_path, &database);
+        }
+
+        let status = if database.topics.len() >= curriculum.len() {
+            "ready"
+        } else if harvested_this_run > 0 {
+            "initiating"
+        } else {
+            "cached"
+        };
+
+        GhostInitiationOutcome {
+            status: status.into(),
+            summary: format!(
+                "{} of {} initiation topics cached; harvested {} topic(s) this runtime pass.",
+                database.topics.len(),
+                curriculum.len(),
+                harvested_this_run
+            ),
+            database_path,
+            topics: database.topics,
+        }
+    }
 }
 
 fn main() {
     let host = detect_host_runtime();
     let online = detect_online();
     let ghost_brain = GhostBrain::new();
-    let (ghost_pipeline, ghost_research, ghost_intents) = ghost_brain.process(&host, online);
+    let (ghost_pipeline, ghost_research, ghost_intents, ghost_initiation) =
+        ghost_brain.process(&host, online);
     let app_registry = build_app_registry();
     let approvals = build_approvals();
     let activity_feed = build_activity_feed(&host, online, app_registry.len(), &ghost_research);
@@ -397,6 +588,26 @@ fn main() {
                 summary: ghost_research.summary,
                 citations: ghost_research.citations,
             },
+            initiation: GhostInitiationState {
+                status: ghost_initiation.status.clone(),
+                budgetMinutes: "5-10 minutes, incremental and cached".into(),
+                databasePath: ghost_initiation.database_path.clone(),
+                summary: ghost_initiation.summary.clone(),
+            },
+            knowledge: GhostKnowledgeSnapshot {
+                topicCount: ghost_initiation.topics.len(),
+                targetTopicCount: ghost_knowledge_curriculum().len(),
+                topics: ghost_initiation
+                    .topics
+                    .iter()
+                    .map(|topic| GhostKnowledgeTopicSnapshot {
+                        name: topic.name.clone(),
+                        status: "cached".into(),
+                        summary: topic.summary.clone(),
+                        sourceCount: topic.sources.len(),
+                    })
+                    .collect(),
+            },
         },
         quickActions: quick_actions,
         activityFeed: activity_feed,
@@ -434,10 +645,16 @@ fn detect_host_runtime() -> HostRuntime {
 }
 
 fn detect_online() -> bool {
-    ["/sys/class/net/wlan0/operstate", "/sys/class/net/eth0/operstate"]
-        .iter()
-        .any(|path| fs::read_to_string(path).map(|v| v.trim() == "up").unwrap_or(false))
-        || run("ip", &["route", "show", "default"]).is_some()
+    [
+        "/sys/class/net/wlan0/operstate",
+        "/sys/class/net/eth0/operstate",
+    ]
+    .iter()
+    .any(|path| {
+        fs::read_to_string(path)
+            .map(|v| v.trim() == "up")
+            .unwrap_or(false)
+    }) || run("ip", &["route", "show", "default"]).is_some()
 }
 
 fn detect_uptime() -> String {
@@ -632,7 +849,9 @@ fn detect_brave_config() -> GhostIntelligenceState {
                     available: true,
                     source: format!("env:{}", name),
                     api_key_found: true,
-                    onboarding_url: read_onboarding_url().unwrap_or_else(|| "https://api-dashboard.search.brave.com/app/keys".into()),
+                    onboarding_url: read_onboarding_url().unwrap_or_else(|| {
+                        "https://api-dashboard.search.brave.com/app/keys".into()
+                    }),
                     onboarding_status: "configured".into(),
                 };
             }
@@ -648,7 +867,9 @@ fn detect_brave_config() -> GhostIntelligenceState {
                     available: true,
                     source: format!("file:{}", path),
                     api_key_found: true,
-                    onboarding_url: read_onboarding_url().unwrap_or_else(|| "https://api-dashboard.search.brave.com/app/keys".into()),
+                    onboarding_url: read_onboarding_url().unwrap_or_else(|| {
+                        "https://api-dashboard.search.brave.com/app/keys".into()
+                    }),
                     onboarding_status: "configured".into(),
                 };
             }
@@ -659,13 +880,15 @@ fn detect_brave_config() -> GhostIntelligenceState {
         available: false,
         source: "missing-config".into(),
         api_key_found: false,
-        onboarding_url: read_onboarding_url().unwrap_or_else(|| "https://api-dashboard.search.brave.com/app/keys".into()),
+        onboarding_url: read_onboarding_url()
+            .unwrap_or_else(|| "https://api-dashboard.search.brave.com/app/keys".into()),
         onboarding_status: read_onboarding_status().unwrap_or_else(|| "needs-user-key".into()),
     }
 }
 
 fn brave_search(query: &str, source: &str) -> Result<Vec<GhostCitation>, String> {
-    let api_key = resolve_brave_key().ok_or_else(|| format!("Brave API key unavailable from {}", source))?;
+    let api_key =
+        resolve_brave_key().ok_or_else(|| format!("Brave API key unavailable from {}", source))?;
     let encoded_query = url_encode(query);
     let command = format!(
         "curl -fsSL --max-time 12 -H 'Accept: application/json' -H 'X-Subscription-Token: {}' 'https://api.search.brave.com/res/v1/web/search?q={}&count=5'",
@@ -688,7 +911,8 @@ fn brave_search(query: &str, source: &str) -> Result<Vec<GhostCitation>, String>
         });
     }
 
-    let body: BraveSearchResponse = serde_json::from_slice(&output.stdout).map_err(|e| e.to_string())?;
+    let body: BraveSearchResponse =
+        serde_json::from_slice(&output.stdout).map_err(|e| e.to_string())?;
     let citations = body
         .web
         .unwrap_or_default()
@@ -763,7 +987,11 @@ fn read_brave_key_from_path(path: &str) -> Option<String> {
             continue;
         }
 
-        for key in ["BRAVE_API_KEY", "BRAVE_SEARCH_API_KEY", "SOLOS_BRAVE_API_KEY"] {
+        for key in [
+            "BRAVE_API_KEY",
+            "BRAVE_SEARCH_API_KEY",
+            "SOLOS_BRAVE_API_KEY",
+        ] {
             let prefix = format!("{}=", key);
             if let Some(value) = trimmed.strip_prefix(&prefix) {
                 return Some(value.trim_matches('"').trim_matches('\'').to_string());
@@ -786,6 +1014,108 @@ fn brave_key_file_candidates() -> Vec<&'static str> {
         "./app/shell/.env",
         "./app/shell/.env.local",
     ]
+}
+
+struct GhostKnowledgeSeed {
+    id: &'static str,
+    name: &'static str,
+    query: String,
+    summary: &'static str,
+}
+
+fn ghost_knowledge_curriculum() -> Vec<GhostKnowledgeSeed> {
+    vec![
+        GhostKnowledgeSeed {
+            id: "natural-language-command-understanding",
+            name: "Natural language command understanding",
+            query: "natural language interface intent recognition command understanding best practices".into(),
+            summary: "How Ghost should translate user language into structured SolOS intents without over-executing vague requests.",
+        },
+        GhostKnowledgeSeed {
+            id: "rag-grounding-and-citations",
+            name: "RAG grounding and citations",
+            query: "retrieval augmented generation grounding citations knowledge base best practices".into(),
+            summary: "How Ghost should use retrieved evidence, source snippets, and citations before answering with external claims.",
+        },
+        GhostKnowledgeSeed {
+            id: "agent-tool-safety-approval-flow",
+            name: "Agent tool safety and approval flow",
+            query: "AI agent tool use safety approval workflow human in the loop best practices".into(),
+            summary: "How Ghost should separate harmless answers from sensitive actions that require explicit user approval.",
+        },
+        GhostKnowledgeSeed {
+            id: "local-first-personal-ai-memory",
+            name: "Local-first personal AI memory",
+            query: "local first personal AI assistant memory privacy knowledge base design".into(),
+            summary: "How Ghost should keep useful user/system context locally while avoiding unsafe or unnecessary data collection.",
+        },
+        GhostKnowledgeSeed {
+            id: "operating-system-assistant-ux",
+            name: "Operating-system assistant UX",
+            query: "operating system AI assistant user experience proactive contextual help natural language".into(),
+            summary: "How Ghost should feel useful inside SolOS: contextual, concise, interrupting only when there is value.",
+        },
+        GhostKnowledgeSeed {
+            id: "planning-task-decomposition",
+            name: "Planning and task decomposition",
+            query: "AI agent planning task decomposition execution monitoring best practices".into(),
+            summary: "How Ghost should break bigger goals into safe steps, monitor progress, and report useful outcomes.",
+        },
+    ]
+}
+
+fn ghost_knowledge_database_path() -> String {
+    let candidates = [
+        "../../config/ghost_knowledge.json",
+        "./config/ghost_knowledge.json",
+        "./solos/config/ghost_knowledge.json",
+    ];
+
+    for candidate in candidates {
+        if let Some(parent) = Path::new(candidate).parent() {
+            if parent.exists() {
+                return candidate.into();
+            }
+        }
+    }
+
+    "../../config/ghost_knowledge.json".into()
+}
+
+fn load_ghost_knowledge_database(path: &str) -> GhostKnowledgeDatabase {
+    if let Ok(content) = fs::read_to_string(path) {
+        if let Ok(database) = serde_json::from_str::<GhostKnowledgeDatabase>(&content) {
+            return database;
+        }
+    }
+
+    let now = unix_timestamp_string();
+    GhostKnowledgeDatabase {
+        schema: "solos.ghost.knowledge.v1".into(),
+        purpose: "Repo-local initiation cache for Ghost: natural-language use, grounded answers, approval-aware agent behavior, and SolOS UX.".into(),
+        createdAt: now.clone(),
+        updatedAt: now,
+        topics: vec![],
+    }
+}
+
+fn save_ghost_knowledge_database(
+    path: &str,
+    database: &GhostKnowledgeDatabase,
+) -> Result<(), String> {
+    if let Some(parent) = Path::new(path).parent() {
+        fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+    }
+
+    let payload = serde_json::to_string_pretty(database).map_err(|e| e.to_string())?;
+    fs::write(path, payload).map_err(|e| e.to_string())
+}
+
+fn unix_timestamp_string() -> String {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|duration| duration.as_secs().to_string())
+        .unwrap_or_else(|_| "0".into())
 }
 
 fn read_onboarding_url() -> Option<String> {
@@ -814,7 +1144,9 @@ fn url_encode(value: &str) -> String {
     let mut encoded = String::new();
     for byte in value.bytes() {
         match byte {
-            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => encoded.push(byte as char),
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
+                encoded.push(byte as char)
+            }
             b' ' => encoded.push_str("%20"),
             _ => encoded.push_str(&format!("%{:02X}", byte)),
         }

@@ -15,6 +15,9 @@ GhostRuntime::GhostRuntime(QObject *parent)
     , m_onboardingStatus(QStringLiteral("needs-user-key"))
     , m_intentsTitle(QStringLiteral("Ghost intents"))
     , m_intentsSummary(QStringLiteral("Intent routing not loaded yet."))
+    , m_initiationStatus(QStringLiteral("waiting"))
+    , m_initiationSummary(QStringLiteral("Ghost initiation has not started yet."))
+    , m_initiationDatabasePath(QStringLiteral("config/ghost_knowledge.json"))
 {
 }
 
@@ -98,6 +101,26 @@ QStringList GhostRuntime::citationLines() const
     return m_citationLines;
 }
 
+QString GhostRuntime::initiationStatus() const
+{
+    return m_initiationStatus;
+}
+
+QString GhostRuntime::initiationSummary() const
+{
+    return m_initiationSummary;
+}
+
+QString GhostRuntime::initiationDatabasePath() const
+{
+    return m_initiationDatabasePath;
+}
+
+QStringList GhostRuntime::knowledgeLines() const
+{
+    return m_knowledgeLines;
+}
+
 void GhostRuntime::setLabels(const QString &presence,
                              const QString &mode,
                              const QString &thesis,
@@ -113,7 +136,11 @@ void GhostRuntime::setLabels(const QString &presence,
                              const QString &intentsSummary,
                              const QStringList &intentLines,
                              const QStringList &pipelineLines,
-                             const QStringList &citationLines)
+                             const QStringList &citationLines,
+                             const QString &initiationStatus,
+                             const QString &initiationSummary,
+                             const QString &initiationDatabasePath,
+                             const QStringList &knowledgeLines)
 {
     m_presenceLabel = presence;
     m_modeLabel = mode;
@@ -131,5 +158,9 @@ void GhostRuntime::setLabels(const QString &presence,
     m_intentLines = intentLines;
     m_pipelineLines = pipelineLines;
     m_citationLines = citationLines;
+    m_initiationStatus = initiationStatus;
+    m_initiationSummary = initiationSummary;
+    m_initiationDatabasePath = initiationDatabasePath;
+    m_knowledgeLines = knowledgeLines;
     emit stateChanged();
 }

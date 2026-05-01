@@ -42,6 +42,10 @@ struct RuntimeSnapshotData {
     QStringList ghostIntentLines;
     QStringList ghostPipelineLines;
     QStringList ghostCitationLines;
+    QString ghostInitiationStatus;
+    QString ghostInitiationSummary;
+    QString ghostInitiationDatabasePath;
+    QStringList ghostKnowledgeLines;
     QString hostRuntimeSummary;
     bool online = false;
     int approvalsCount = 0;

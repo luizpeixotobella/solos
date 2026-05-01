@@ -10,7 +10,7 @@
   "home": {
     "summaryTitle": "Ghost now has a first layered intelligence module",
     "summarySubtitle": "data + results = algorithms, grounded in host runtime and optional Brave web search.",
-    "summaryBody": "This build gives Ghost a first perceptron-like pipeline with stacked stages: runtime data ingestion, result synthesis, and algorithmic next-action output. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 5d 16h 44m. Web grounding currently reports: Ghost found 3 web references about layered agent design, web search grounding, and approval-aware orchestration..",
+    "summaryBody": "This build gives Ghost a first perceptron-like pipeline with stacked stages: runtime data ingestion, result synthesis, and algorithmic next-action output. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 2d 2h 7m. Web grounding currently reports: Ghost found 3 web references about layered agent design, web search grounding, and approval-aware orchestration..",
     "nextActionTitle": "Next useful move",
     "nextActionSubtitle": "Promote Ghost from research pipeline to task executor",
     "nextActionBody": "The next module should add task intents and tool actions so Ghost can turn researched guidance into explicit SolOS commands, approval requests, and user-visible outcomes."
@@ -51,7 +51,7 @@
       {
         "name": "data",
         "status": "active",
-        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 5d 16h 44m, network online."
+        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 2d 2h 7m, network online."
       },
       {
         "name": "results",
@@ -62,6 +62,11 @@
         "name": "algorithms",
         "status": "active",
         "detail": "Ghost applies a layered decision pipeline: ingest data, score relevance, summarize useful paths, and expose next actions inside SolOS."
+      },
+      {
+        "name": "knowledge",
+        "status": "initiating",
+        "detail": "Ghost keeps a repo-local initiation knowledge database at ../../config/ghost_knowledge.json. 2 of 6 initiation topics cached; harvested 1 topic(s) this runtime pass."
       }
     ],
     "lastResearch": {
@@ -87,6 +92,30 @@
           "snippet": "With shell:sh pre-approved at Tier 2, the same agent runs a compound command that probes three locations: [14] assistant_tool_calls call: exec({&quot;command&quot;:&quot;sh -c \\&quot;touch /cannot_write_here 2&gt;&amp;1; ...\\&quot;&quot;}) [15] tool_result tool=exec success=True output: touch: cannot touch &#x27;/cannot_write_here&#x27;: Read-only file system ws_ok=1 tmp_ok=1 [19] attestation chain_head_seq=18 chain_head_hash=6bf35f22df02b496244091e54b4dbf9b3ffdcf6a03485413f0522b84e2eb08a8"
         }
       ]
+    },
+    "initiation": {
+      "status": "initiating",
+      "budgetMinutes": "5-10 minutes, incremental and cached",
+      "databasePath": "../../config/ghost_knowledge.json",
+      "summary": "2 of 6 initiation topics cached; harvested 1 topic(s) this runtime pass."
+    },
+    "knowledge": {
+      "topicCount": 2,
+      "targetTopicCount": 6,
+      "topics": [
+        {
+          "name": "Natural language command understanding",
+          "status": "cached",
+          "summary": "How Ghost should translate user language into structured SolOS intents without over-executing vague requests.",
+          "sourceCount": 3
+        },
+        {
+          "name": "RAG grounding and citations",
+          "status": "cached",
+          "summary": "How Ghost should use retrieved evidence, source snippets, and citations before answering with external claims.",
+          "sourceCount": 3
+        }
+      ]
     }
   },
   "quickActions": [
@@ -109,7 +138,7 @@
   "activityFeed": [
     {
       "title": "Linux base system detected",
-      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 5d 16h 44m.",
+      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 2d 2h 7m.",
       "status": "active"
     },
     {
@@ -183,12 +212,12 @@
     "shell": "unknown-shell",
     "hostname": "lcpby-HP-ENVY-TS-17-Notebook-PC",
     "user": "lcpby",
-    "uptime": "5d 16h 44m"
+    "uptime": "2d 2h 7m"
   },
   "systemStatus": {
     "online": true,
     "approvalsCount": 2,
     "notificationsCount": 4,
-    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 5d 16h 44m"
+    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 2d 2h 7m"
   }
 }

@@ -422,7 +422,11 @@ void AppController::loadRuntimeSnapshot()
                              snapshot.ghostIntentsSummary,
                              snapshot.ghostIntentLines,
                              snapshot.ghostPipelineLines,
-                             snapshot.ghostCitationLines);
+                             snapshot.ghostCitationLines,
+                             snapshot.ghostInitiationStatus,
+                             snapshot.ghostInitiationSummary,
+                             snapshot.ghostInitiationDatabasePath,
+                             snapshot.ghostKnowledgeLines);
     m_quickActionsModel.setEntries(snapshot.quickActions);
     m_activityFeedModel.setEntries(snapshot.activityFeed);
     m_approvalQueueModel.setEntries(snapshot.approvals);

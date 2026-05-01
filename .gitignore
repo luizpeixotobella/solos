@@ -4,6 +4,9 @@ app/runtime-core/target/
 # Qt / CMake build outputs
 app/shell-native/build/
 
+# Local Ghost runtime caches
+config/ghost_knowledge.json
+
 # Generic build artifacts
 *.o
 *.obj

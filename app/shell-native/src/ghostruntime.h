@@ -23,6 +23,10 @@ class GhostRuntime : public QObject
     Q_PROPERTY(QStringList intentLines READ intentLines NOTIFY stateChanged)
     Q_PROPERTY(QStringList pipelineLines READ pipelineLines NOTIFY stateChanged)
     Q_PROPERTY(QStringList citationLines READ citationLines NOTIFY stateChanged)
+    Q_PROPERTY(QString initiationStatus READ initiationStatus NOTIFY stateChanged)
+    Q_PROPERTY(QString initiationSummary READ initiationSummary NOTIFY stateChanged)
+    Q_PROPERTY(QString initiationDatabasePath READ initiationDatabasePath NOTIFY stateChanged)
+    Q_PROPERTY(QStringList knowledgeLines READ knowledgeLines NOTIFY stateChanged)
 
 public:
     explicit GhostRuntime(QObject *parent = nullptr);
@@ -43,6 +47,10 @@ public:
     QStringList intentLines() const;
     QStringList pipelineLines() const;
     QStringList citationLines() const;
+    QString initiationStatus() const;
+    QString initiationSummary() const;
+    QString initiationDatabasePath() const;
+    QStringList knowledgeLines() const;
 
     void setLabels(const QString &presence,
                    const QString &mode,
@@ -59,7 +67,11 @@ public:
                    const QString &intentsSummary,
                    const QStringList &intentLines,
                    const QStringList &pipelineLines,
-                   const QStringList &citationLines);
+                   const QStringList &citationLines,
+                   const QString &initiationStatus,
+                   const QString &initiationSummary,
+                   const QString &initiationDatabasePath,
+                   const QStringList &knowledgeLines);
 
 signals:
     void stateChanged();
@@ -81,4 +93,8 @@ private:
     QStringList m_intentLines;
     QStringList m_pipelineLines;
     QStringList m_citationLines;
+    QString m_initiationStatus;
+    QString m_initiationSummary;
+    QString m_initiationDatabasePath;
+    QStringList m_knowledgeLines;
 };
