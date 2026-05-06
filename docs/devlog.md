@@ -1,5 +1,14 @@
 # SolOS Devlog
 
+## 2026-05-06
+
+- Published the first CMS blog post for the pass, making the Brave/Search ownership model publicly visible while keeping the internal SolOS documentation aligned.
+- Drafted the **SolOS Heart Pass** as the first utility-pass framing for SolOS, anchored by the existing Polygon NFT `Anastacia Our Hearts #1`.
+- Documented the initial Brave Search credit strategy: keep the default model user-owned/BYOK, validate and store each user's Brave key locally, and treat any future sponsored credits as a backend-enforced quota layer rather than a shared client key.
+- Clarified the MetaMask role: wallet ownership/signatures can prove pass ownership or accept explicit payments, but MetaMask should not be treated as a silent SaaS-billing API for Brave/OpenAI credits.
+- Added `docs/solos-heart-pass-brave-credits.md` so the pass concept, Brave pricing assumptions, per-user quota model, and non-financial-product language stay documented before public posting.
+
+
 ## 2026-05-01
 
 - Clarified the intended meaning of Ghost's intelligence formula: classical software follows `algorithms + data = results`, while Ghost should develop from the AI-era synthesis `data + results = algorithms`.

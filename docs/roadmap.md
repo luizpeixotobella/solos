@@ -26,6 +26,9 @@
 - [~] Connect shell state to real host runtime data
 - [~] Model approvals as first-class runtime-backed entities before binding them to real command/task state
 - [~] Add Ghost web onboarding with repository-local Brave key configuration and validate-before-save policy
+- [ ] Add local monthly Brave usage metering so each user can see remaining search allowance
+- [ ] Gate the guided Brave/Ghost onboarding with an optional SolOS Heart Pass ownership check
+- [ ] Design a backend quota/proxy layer for future sponsored Brave/OpenAI credits without exposing shared provider keys
 - [ ] Add callback/deep-link return flow from Brave key onboarding into SolOS
 - [ ] Connect approvals to real command/task state
 - [ ] Connect wallet panel to real account state
