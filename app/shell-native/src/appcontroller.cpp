@@ -426,7 +426,10 @@ void AppController::loadRuntimeSnapshot()
                              snapshot.ghostInitiationStatus,
                              snapshot.ghostInitiationSummary,
                              snapshot.ghostInitiationDatabasePath,
-                             snapshot.ghostKnowledgeLines);
+                             snapshot.ghostKnowledgeLines,
+                             snapshot.ghostLanguageSupportStatus,
+                             snapshot.ghostLanguageSupportSummary,
+                             snapshot.ghostLanguageSupportLines);
     m_quickActionsModel.setEntries(snapshot.quickActions);
     m_activityFeedModel.setEntries(snapshot.activityFeed);
     m_approvalQueueModel.setEntries(snapshot.approvals);

@@ -66,3 +66,30 @@ Not every AI feature is machine learning. Rule-based validation, filters, scorin
 - learning-inspired layered synthesis where context and examples should shape behavior
 
 The operating principle is usefulness with legibility, not pretending every intelligent behavior must be a neural model.
+
+## Multilingual human fluency
+
+Ghost's intelligence layer must treat major human languages as operating context, not as cosmetic localization. The next doctrine layer is: if SolOS is an operating layer for people, Ghost needs to understand and mediate across the languages people actually use.
+
+Initial language support should prioritize broad global coverage while preserving room for regional nuance:
+
+- English
+- Portuguese
+- Spanish
+- French
+- German
+- Italian
+- Arabic
+- Hindi
+- Bengali
+- Mandarin Chinese
+- Japanese
+- Korean
+- Russian
+- Indonesian
+- Turkish
+
+This does not mean every language feature is fully implemented today. It defines the product constraint: Ghost should detect the user's language, reply in that language when appropriate, keep source-language citations attached to translated summaries, and use data-mined cultural context without flattening idiom, register, or local meaning.
+
+The long-term goal is not a translation widget. It is a Ghost that can operate with human language as a first-class runtime signal: intent, tone, cultural context, retrieval language, approval language, and output language all become part of the mediation layer.
+

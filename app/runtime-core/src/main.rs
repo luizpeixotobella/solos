@@ -57,6 +57,16 @@ struct GhostState {
     lastResearch: GhostResearchSnapshot,
     initiation: GhostInitiationState,
     knowledge: GhostKnowledgeSnapshot,
+    languageSupport: GhostLanguageSupport,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct GhostLanguageSupport {
+    status: String,
+    summary: String,
+    primaryLanguages: Vec<String>,
+    operatingPrinciples: Vec<String>,
 }
 
 #[derive(Serialize)]
@@ -322,6 +332,12 @@ impl GhostBrain {
                 "Ghost keeps a repo-local initiation knowledge database at {}. {}",
                 initiation.database_path, initiation.summary
             ),
+        });
+
+        stages.push(GhostPipelineStage {
+            name: "human-language-support".into(),
+            status: "planned".into(),
+            detail: "Ghost should treat major human languages as first-class operating context: detect language, answer in the user's language, preserve meaning across translation, and use data-mined cultural context without flattening local nuance.".into(),
         });
 
         let intents = self.build_intents(host, online, &research);
@@ -607,6 +623,33 @@ fn main() {
                         sourceCount: topic.sources.len(),
                     })
                     .collect(),
+            },
+            languageSupport: GhostLanguageSupport {
+                status: "planned-core-capability".into(),
+                summary: "Ghost is being oriented toward multilingual human fluency: language detection, response in the user's language, translation as mediation, and culturally aware retrieval over the major languages of the world.".into(),
+                primaryLanguages: vec![
+                    "English".into(),
+                    "Portuguese".into(),
+                    "Spanish".into(),
+                    "French".into(),
+                    "German".into(),
+                    "Italian".into(),
+                    "Arabic".into(),
+                    "Hindi".into(),
+                    "Bengali".into(),
+                    "Mandarin Chinese".into(),
+                    "Japanese".into(),
+                    "Korean".into(),
+                    "Russian".into(),
+                    "Indonesian".into(),
+                    "Turkish".into(),
+                ],
+                operatingPrinciples: vec![
+                    "Prefer the user's current language when replying or asking clarifying questions.".into(),
+                    "Use translation as a mediated operating capability, not as cosmetic localization.".into(),
+                    "Keep source-language citations and translated summaries linked when web/data mining is involved.".into(),
+                    "Treat cultural context, idiom, tone, and register as part of Ghost's intelligence layer.".into(),
+                ],
             },
         },
         quickActions: quick_actions,

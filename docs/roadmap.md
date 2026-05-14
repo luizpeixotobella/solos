@@ -71,3 +71,16 @@ Priority targets are the parts most likely to benefit from stronger memory safet
 - future system-facing modules
 
 The current Qt/QML shell can continue evolving in C++ while those boundaries become clearer, and without claiming ownership of the Linux runtime itself.
+
+## Ghost multilingual capability update
+
+The Ghost roadmap now includes multilingual human fluency as a core capability, adjacent to local runtime facts, web-grounded research, approvals, and knowledge caching.
+
+- [~] Represent language support in the runtime snapshot and Agent/Ghost surface.
+- [ ] Add language detection for user requests and runtime events.
+- [ ] Prefer the user's active language for Ghost replies, approval explanations, onboarding, and task summaries.
+- [ ] Preserve source-language citations and translated summaries when Brave/data-mined evidence is used.
+- [ ] Treat cultural context, idiom, tone, and register as part of Ghost's intent layer instead of generic translation cleanup.
+
+This update is intentionally modest in implementation but important in direction: Ghost should grow into a multilingual operating agent, not a monolingual assistant with translated UI strings.
+

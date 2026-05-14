@@ -177,6 +177,13 @@ Item {
 
                     SectionCard {
                         Layout.fillWidth: true
+                        title: "Human language support"
+                        subtitle: ghostRuntime.languageSupportStatus
+                        body: ghostRuntime.languageSupportSummary + "\n\n" + (ghostRuntime.languageSupportLines.length > 0 ? ghostRuntime.languageSupportLines.join("\n\n") : "Ghost should detect the user's language, respond naturally, and preserve meaning across translation and retrieval.")
+                    }
+
+                    SectionCard {
+                        Layout.fillWidth: true
                         title: "Web citations"
                         subtitle: ghostRuntime.citationLines.length > 0 ? "Brave-grounded references" : "No citations yet"
                         body: ghostRuntime.citationLines.length > 0 ? ghostRuntime.citationLines.join("\n\n") : "Ghost will show sourced web references here when Brave research succeeds."

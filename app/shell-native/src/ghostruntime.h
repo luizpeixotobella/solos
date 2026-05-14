@@ -27,6 +27,9 @@ class GhostRuntime : public QObject
     Q_PROPERTY(QString initiationSummary READ initiationSummary NOTIFY stateChanged)
     Q_PROPERTY(QString initiationDatabasePath READ initiationDatabasePath NOTIFY stateChanged)
     Q_PROPERTY(QStringList knowledgeLines READ knowledgeLines NOTIFY stateChanged)
+    Q_PROPERTY(QString languageSupportStatus READ languageSupportStatus NOTIFY stateChanged)
+    Q_PROPERTY(QString languageSupportSummary READ languageSupportSummary NOTIFY stateChanged)
+    Q_PROPERTY(QStringList languageSupportLines READ languageSupportLines NOTIFY stateChanged)
 
 public:
     explicit GhostRuntime(QObject *parent = nullptr);
@@ -51,6 +54,9 @@ public:
     QString initiationSummary() const;
     QString initiationDatabasePath() const;
     QStringList knowledgeLines() const;
+    QString languageSupportStatus() const;
+    QString languageSupportSummary() const;
+    QStringList languageSupportLines() const;
 
     void setLabels(const QString &presence,
                    const QString &mode,
@@ -71,7 +77,10 @@ public:
                    const QString &initiationStatus,
                    const QString &initiationSummary,
                    const QString &initiationDatabasePath,
-                   const QStringList &knowledgeLines);
+                   const QStringList &knowledgeLines,
+                   const QString &languageSupportStatus,
+                   const QString &languageSupportSummary,
+                   const QStringList &languageSupportLines);
 
 signals:
     void stateChanged();
@@ -97,4 +106,7 @@ private:
     QString m_initiationSummary;
     QString m_initiationDatabasePath;
     QStringList m_knowledgeLines;
+    QString m_languageSupportStatus;
+    QString m_languageSupportSummary;
+    QStringList m_languageSupportLines;
 };

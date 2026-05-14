@@ -101,6 +101,18 @@ QStringList parseGhostKnowledgeLines(const QJsonArray &array)
     }
     return lines;
 }
+
+QStringList parseStringArray(const QJsonArray &array)
+{
+    QStringList lines;
+    for (const QJsonValue &value : array) {
+        const QString line = value.toString();
+        if (!line.isEmpty()) {
+            lines.append(line);
+        }
+    }
+    return lines;
+}
 }
 
 RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
@@ -124,6 +136,7 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     const QJsonObject lastResearch = ghost.value(QStringLiteral("lastResearch")).toObject();
     const QJsonObject initiation = ghost.value(QStringLiteral("initiation")).toObject();
     const QJsonObject knowledge = ghost.value(QStringLiteral("knowledge")).toObject();
+    const QJsonObject languageSupport = ghost.value(QStringLiteral("languageSupport")).toObject();
 
     snapshot.sessionLabel = root.value(QStringLiteral("sessionLabel")).toString();
     snapshot.systemLabel = root.value(QStringLiteral("systemLabel")).toString();
@@ -161,6 +174,16 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     snapshot.ghostInitiationSummary = initiation.value(QStringLiteral("summary")).toString();
     snapshot.ghostInitiationDatabasePath = initiation.value(QStringLiteral("databasePath")).toString();
     snapshot.ghostKnowledgeLines = parseGhostKnowledgeLines(knowledge.value(QStringLiteral("topics")).toArray());
+    snapshot.ghostLanguageSupportStatus = languageSupport.value(QStringLiteral("status")).toString();
+    snapshot.ghostLanguageSupportSummary = languageSupport.value(QStringLiteral("summary")).toString();
+    const QStringList languageNames = parseStringArray(languageSupport.value(QStringLiteral("primaryLanguages")).toArray());
+    const QStringList languagePrinciples = parseStringArray(languageSupport.value(QStringLiteral("operatingPrinciples")).toArray());
+    if (!languageNames.isEmpty()) {
+        snapshot.ghostLanguageSupportLines.append(QStringLiteral("Primary language coverage: %1").arg(languageNames.join(QStringLiteral(", "))));
+    }
+    for (const QString &principle : languagePrinciples) {
+        snapshot.ghostLanguageSupportLines.append(QStringLiteral("• %1").arg(principle));
+    }
     snapshot.hostRuntimeSummary = systemStatus.value(QStringLiteral("hostRuntimeSummary")).toString();
     snapshot.online = systemStatus.value(QStringLiteral("online")).toBool(false);
     snapshot.approvalsCount = systemStatus.value(QStringLiteral("approvalsCount")).toInt();

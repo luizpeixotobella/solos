@@ -75,3 +75,15 @@ O output atual é um snapshot JSON que representa o contrato inicial entre:
 3. acrescentar schema e testes
 4. evoluir para serviço local ou biblioteca FFI quando o boundary estabilizar
 5. expor eventos e APIs de mediação em vez de depender só de snapshot estático
+
+## Ghost multilingual support seam
+
+The runtime snapshot now carries a first `ghost.languageSupport` block. This is not a finished translation subsystem; it is a contract seam for making multilingual human fluency a first-class Ghost capability.
+
+Initial responsibilities:
+
+- expose target major-language coverage to the shell
+- describe user-language preference and cultural-context principles
+- keep future language detection, translated summaries, and source-language citation handling inside the runtime/Ghost contract rather than scattering it as UI-only localization
+
+This keeps the Ghost thesis aligned with the broader SolOS architecture: Linux is the base, runtime is the intermediary, and Ghost-mediated language support belongs in the operating layer's intelligence path.

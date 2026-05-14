@@ -18,6 +18,8 @@ GhostRuntime::GhostRuntime(QObject *parent)
     , m_initiationStatus(QStringLiteral("waiting"))
     , m_initiationSummary(QStringLiteral("Ghost initiation has not started yet."))
     , m_initiationDatabasePath(QStringLiteral("config/ghost_knowledge.json"))
+    , m_languageSupportStatus(QStringLiteral("planned-core-capability"))
+    , m_languageSupportSummary(QStringLiteral("Ghost multilingual support is planned as an operating capability, not just UI localization."))
 {
 }
 
@@ -121,6 +123,21 @@ QStringList GhostRuntime::knowledgeLines() const
     return m_knowledgeLines;
 }
 
+QString GhostRuntime::languageSupportStatus() const
+{
+    return m_languageSupportStatus;
+}
+
+QString GhostRuntime::languageSupportSummary() const
+{
+    return m_languageSupportSummary;
+}
+
+QStringList GhostRuntime::languageSupportLines() const
+{
+    return m_languageSupportLines;
+}
+
 void GhostRuntime::setLabels(const QString &presence,
                              const QString &mode,
                              const QString &thesis,
@@ -140,7 +157,10 @@ void GhostRuntime::setLabels(const QString &presence,
                              const QString &initiationStatus,
                              const QString &initiationSummary,
                              const QString &initiationDatabasePath,
-                             const QStringList &knowledgeLines)
+                             const QStringList &knowledgeLines,
+                             const QString &languageSupportStatus,
+                             const QString &languageSupportSummary,
+                             const QStringList &languageSupportLines)
 {
     m_presenceLabel = presence;
     m_modeLabel = mode;
@@ -162,5 +182,8 @@ void GhostRuntime::setLabels(const QString &presence,
     m_initiationSummary = initiationSummary;
     m_initiationDatabasePath = initiationDatabasePath;
     m_knowledgeLines = knowledgeLines;
+    m_languageSupportStatus = languageSupportStatus;
+    m_languageSupportSummary = languageSupportSummary;
+    m_languageSupportLines = languageSupportLines;
     emit stateChanged();
 }
