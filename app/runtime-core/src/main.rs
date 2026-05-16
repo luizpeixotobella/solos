@@ -19,12 +19,50 @@ struct RuntimeSnapshot {
     mediationStatus: String,
     home: HomeState,
     ghost: GhostState,
+    heartPass: HeartPassState,
     quickActions: Vec<QuickAction>,
     activityFeed: Vec<ActivityEntry>,
     approvals: Vec<ApprovalEntry>,
     apps: Vec<AppEntry>,
     hostRuntime: HostRuntime,
     systemStatus: SystemStatus,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct HeartPassState {
+    title: String,
+    status: String,
+    network: String,
+    tokenStandard: String,
+    contract: String,
+    tokenId: String,
+    openSeaUrl: String,
+    summary: String,
+    nextStep: String,
+    walletAddress: String,
+    ownerAddress: String,
+    verificationStatus: String,
+    lastCheckedAt: String,
+    configPath: String,
+    capabilities: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+#[allow(non_snake_case)]
+struct HeartPassConfig {
+    schema: String,
+    title: String,
+    network: String,
+    tokenStandard: String,
+    contract: String,
+    tokenId: String,
+    openSeaUrl: String,
+    walletAddress: String,
+    ownerAddress: String,
+    verificationStatus: String,
+    lastCheckedAt: String,
+    notes: String,
 }
 
 #[derive(Serialize)]
@@ -541,6 +579,26 @@ fn main() {
     let ghost_brain = GhostBrain::new();
     let (ghost_pipeline, ghost_research, ghost_intents, ghost_initiation) =
         ghost_brain.process(&host, online);
+    let heart_pass = build_heart_pass_state();
+    let heart_pass_verified = heart_pass.verificationStatus == "verified-holder";
+    let ghost_onboarding_status = if heart_pass_verified {
+        ghost_brain.intelligence.onboarding_status.clone()
+    } else {
+        "heart-pass-required".into()
+    };
+    let ghost_onboarding_body = if !heart_pass_verified {
+        format!(
+            "Ghost/Brave onboarding is gated by the SolOS Heart Pass. Configure a Polygon wallet in Wallet Hub and verify it holds token #{} before saving a Brave key. Current Heart Pass status: {}.",
+            heart_pass.tokenId, heart_pass.verificationStatus
+        )
+    } else if ghost_brain.intelligence.available {
+        "Heart Pass verified. Ghost already has a repository-local Brave key configured for this SolOS checkout.".into()
+    } else {
+        format!(
+            "Heart Pass verified. Ghost should send this SolOS user to Brave's key page, let them subscribe with their own account, then return and paste the key into solos/config/ghost.json so this repo stays isolated from shared quotas. Current status: {}.",
+            ghost_brain.intelligence.onboarding_status
+        )
+    };
     let app_registry = build_app_registry();
     let approvals = build_approvals();
     let activity_feed = build_activity_feed(&host, online, app_registry.len(), &ghost_research);
@@ -580,18 +638,15 @@ fn main() {
             modeLabel: "layered-intelligence · approval-aware · web-grounded when configured".into(),
             thesisLabel: "Ghost should become a native orchestration layer that combines local runtime reality, web research, and explicit approvals into useful operating behavior.".into(),
             intelligenceSummary: "Perceptron-lineage layered pipeline: data plus results synthesize action-shaping algorithms.".into(),
-            webStatusLabel: format!("Brave research status: {}", ghost_research.status),
-            onboardingTitle: "Brave key onboarding".into(),
-            onboardingBody: if ghost_brain.intelligence.available {
-                "Ghost already has a repository-local Brave key configured for this SolOS checkout.".into()
+            webStatusLabel: if heart_pass_verified {
+                format!("Brave research status: {}", ghost_research.status)
             } else {
-                format!(
-                    "Ghost should send each SolOS user to Brave's key page, let them subscribe with their own account, then return and paste the key into solos/config/ghost.json so this repo stays isolated from your personal quota. Current status: {}.",
-                    ghost_brain.intelligence.onboarding_status
-                )
+                format!("Brave onboarding gated by Heart Pass: {}", heart_pass.verificationStatus)
             },
+            onboardingTitle: "Heart Pass gated Brave onboarding".into(),
+            onboardingBody: ghost_onboarding_body,
             onboardingUrl: ghost_brain.intelligence.onboarding_url.clone(),
-            onboardingStatus: ghost_brain.intelligence.onboarding_status.clone(),
+            onboardingStatus: ghost_onboarding_status,
             intentsTitle: "Ghost intents".into(),
             intentsSummary: "First intent router: answer locally, research externally when grounded, and request approval for sensitive actions.".into(),
             intents: ghost_intents,
@@ -652,6 +707,7 @@ fn main() {
                 ],
             },
         },
+        heartPass: heart_pass,
         quickActions: quick_actions,
         activityFeed: activity_feed,
         approvals,
@@ -1057,6 +1113,163 @@ fn brave_key_file_candidates() -> Vec<&'static str> {
         "./app/shell/.env",
         "./app/shell/.env.local",
     ]
+}
+
+fn heart_pass_config_path() -> String {
+    let candidates = [
+        "../../config/heart_pass.json",
+        "./config/heart_pass.json",
+        "./solos/config/heart_pass.json",
+    ];
+
+    for candidate in candidates {
+        if Path::new(candidate).exists() {
+            return candidate.into();
+        }
+        if let Some(parent) = Path::new(candidate).parent() {
+            if parent.exists() {
+                return candidate.into();
+            }
+        }
+    }
+
+    "../../config/heart_pass.json".into()
+}
+
+fn default_heart_pass_config() -> HeartPassConfig {
+    HeartPassConfig {
+        schema: "solos.heart_pass.v1".into(),
+        title: "SolOS Heart Pass".into(),
+        network: "Polygon".into(),
+        tokenStandard: "ERC-1155".into(),
+        contract: "0x507783149b7abb6ce23414dd0c9742eb9f4549b4".into(),
+        tokenId: "1".into(),
+        openSeaUrl: "https://opensea.io/item/polygon/0x507783149b7abb6ce23414dd0c9742eb9f4549b4/1".into(),
+        walletAddress: "".into(),
+        ownerAddress: "".into(),
+        verificationStatus: "needs-wallet".into(),
+        lastCheckedAt: "never".into(),
+        notes: "Local SolOS Heart Pass state. Stage 2 stores wallet intent locally; Polygon ownership verification is a later stage.".into(),
+    }
+}
+
+fn load_heart_pass_config(path: &str) -> HeartPassConfig {
+    if let Ok(content) = fs::read_to_string(path) {
+        if let Ok(config) = serde_json::from_str::<HeartPassConfig>(&content) {
+            return HeartPassConfig {
+                schema: if config.schema.is_empty() {
+                    "solos.heart_pass.v1".into()
+                } else {
+                    config.schema
+                },
+                title: if config.title.is_empty() {
+                    "SolOS Heart Pass".into()
+                } else {
+                    config.title
+                },
+                network: if config.network.is_empty() {
+                    "Polygon".into()
+                } else {
+                    config.network
+                },
+                tokenStandard: if config.tokenStandard.is_empty() {
+                    "ERC-1155".into()
+                } else {
+                    config.tokenStandard
+                },
+                contract: if config.contract.is_empty() {
+                    "0x507783149b7abb6ce23414dd0c9742eb9f4549b4".into()
+                } else {
+                    config.contract
+                },
+                tokenId: if config.tokenId.is_empty() {
+                    "1".into()
+                } else {
+                    config.tokenId
+                },
+                openSeaUrl: if config.openSeaUrl.is_empty() {
+                    "https://opensea.io/item/polygon/0x507783149b7abb6ce23414dd0c9742eb9f4549b4/1"
+                        .into()
+                } else {
+                    config.openSeaUrl
+                },
+                walletAddress: config.walletAddress,
+                ownerAddress: config.ownerAddress,
+                verificationStatus: if config.verificationStatus.is_empty() {
+                    "needs-wallet".into()
+                } else {
+                    config.verificationStatus
+                },
+                lastCheckedAt: if config.lastCheckedAt.is_empty() {
+                    "never".into()
+                } else {
+                    config.lastCheckedAt
+                },
+                notes: config.notes,
+            };
+        }
+    }
+
+    default_heart_pass_config()
+}
+
+fn ensure_heart_pass_config(path: &str, config: &HeartPassConfig) {
+    if Path::new(path).exists() {
+        return;
+    }
+
+    if let Some(parent) = Path::new(path).parent() {
+        let _ = fs::create_dir_all(parent);
+    }
+    if let Ok(payload) = serde_json::to_string_pretty(config) {
+        let _ = fs::write(path, payload);
+    }
+}
+
+fn build_heart_pass_state() -> HeartPassState {
+    let config_path = heart_pass_config_path();
+    let config = load_heart_pass_config(&config_path);
+    ensure_heart_pass_config(&config_path, &config);
+
+    let has_wallet = !config.walletAddress.trim().is_empty();
+    let status = if has_wallet {
+        format!("local wallet captured · {}", config.verificationStatus)
+    } else {
+        "visible · needs wallet address".into()
+    };
+    let next_step = if has_wallet {
+        "Next implementation slice: verify the configured wallet against Polygon ownership for Anastacia Our Hearts #1.".into()
+    } else {
+        "Add a wallet address locally, then run the future Polygon ownership verification slice."
+            .into()
+    };
+
+    HeartPassState {
+        title: config.title,
+        status,
+        network: config.network,
+        tokenStandard: config.tokenStandard,
+        contract: config.contract,
+        tokenId: config.tokenId,
+        openSeaUrl: config.openSeaUrl,
+        summary: "Local Heart Pass config is now part of the SolOS runtime contract. This preserves ownership intent without claiming on-chain verification yet.".into(),
+        nextStep: next_step,
+        walletAddress: if has_wallet { config.walletAddress } else { "not configured".into() },
+        ownerAddress: if config.ownerAddress.trim().is_empty() {
+            "not checked".into()
+        } else {
+            config.ownerAddress
+        },
+        verificationStatus: config.verificationStatus,
+        lastCheckedAt: config.lastCheckedAt,
+        configPath: config_path,
+        capabilities: vec![
+            "Early-supporter identity surface".into(),
+            "Guided Ghost/Brave key onboarding eligibility".into(),
+            "Future pass-gated experimental Ghost capabilities".into(),
+            "Transparent usage and quota story without investment/yield promises".into(),
+        ],
+    }
 }
 
 struct GhostKnowledgeSeed {

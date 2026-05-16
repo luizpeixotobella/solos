@@ -12,6 +12,7 @@ Initial anchor NFT:
 - **Collection:** Anastacia Gen Art by LBArtes Luiz
 - **Network:** Polygon
 - **Contract:** `0x507783149b7abb6ce23414dd0c9742eb9f4549b4`
+- **Token standard:** ERC-1155
 - **Token ID:** `1`
 - **OpenSea:** <https://opensea.io/item/polygon/0x507783149b7abb6ce23414dd0c9742eb9f4549b4/1>
 
@@ -100,6 +101,16 @@ Minimum LinkedIn/X/Instagram-worthy slice:
 - Product/CMS page links the OpenSea NFT.
 - Ghost onboarding keeps the user-owned Brave API key model.
 - Documentation states the next step: local monthly usage metering and pass-gated guided onboarding.
+
+## Native implementation status
+
+Current SolOS native implementation:
+
+- `config/heart_pass.json` stores local pass state, wallet address, token metadata, last check, and verification status.
+- `runtime-core` includes the Heart Pass in the runtime snapshot.
+- Wallet Hub exposes local wallet capture and explicit Polygon verification.
+- Because the anchor asset is ERC-1155, verification uses `balanceOf(wallet, tokenId)` through Polygon JSON-RPC and maps results to `verified-holder`, `not-holder`, or `verification-error`.
+- Ghost/Brave onboarding is gated by `verified-holder`: the UI disables Brave key entry until Heart Pass verification succeeds, and the controller refuses Brave key save/validation unless the pass is verified.
 
 Success condition:
 

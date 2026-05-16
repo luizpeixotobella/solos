@@ -1,0 +1,14 @@
+{
+  "schema": "solos.heart_pass.v1",
+  "title": "SolOS Heart Pass",
+  "network": "Polygon",
+  "tokenStandard": "ERC-1155",
+  "contract": "0x507783149b7abb6ce23414dd0c9742eb9f4549b4",
+  "tokenId": "1",
+  "openSeaUrl": "https://opensea.io/item/polygon/0x507783149b7abb6ce23414dd0c9742eb9f4549b4/1",
+  "walletAddress": "",
+  "ownerAddress": "",
+  "verificationStatus": "needs-wallet",
+  "lastCheckedAt": "never",
+  "notes": "Local SolOS Heart Pass state. Stage 2 stores wallet intent locally; Polygon ownership verification is a later stage."
+}

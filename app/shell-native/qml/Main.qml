@@ -93,6 +93,7 @@ ApplicationWindow {
                 WalletScreen {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    appController: root.appController
                 }
 
                 AppsScreen {

@@ -132,6 +132,7 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     const QJsonObject root = document.object();
     const QJsonObject home = root.value(QStringLiteral("home")).toObject();
     const QJsonObject ghost = root.value(QStringLiteral("ghost")).toObject();
+    const QJsonObject heartPass = root.value(QStringLiteral("heartPass")).toObject();
     const QJsonObject systemStatus = root.value(QStringLiteral("systemStatus")).toObject();
     const QJsonObject lastResearch = ghost.value(QStringLiteral("lastResearch")).toObject();
     const QJsonObject initiation = ghost.value(QStringLiteral("initiation")).toObject();
@@ -184,6 +185,23 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     for (const QString &principle : languagePrinciples) {
         snapshot.ghostLanguageSupportLines.append(QStringLiteral("• %1").arg(principle));
     }
+
+    snapshot.heartPassTitle = heartPass.value(QStringLiteral("title")).toString();
+    snapshot.heartPassStatus = heartPass.value(QStringLiteral("status")).toString();
+    snapshot.heartPassNetwork = heartPass.value(QStringLiteral("network")).toString();
+    snapshot.heartPassTokenStandard = heartPass.value(QStringLiteral("tokenStandard")).toString();
+    snapshot.heartPassContract = heartPass.value(QStringLiteral("contract")).toString();
+    snapshot.heartPassTokenId = heartPass.value(QStringLiteral("tokenId")).toString();
+    snapshot.heartPassOpenSeaUrl = heartPass.value(QStringLiteral("openSeaUrl")).toString();
+    snapshot.heartPassSummary = heartPass.value(QStringLiteral("summary")).toString();
+    snapshot.heartPassNextStep = heartPass.value(QStringLiteral("nextStep")).toString();
+    snapshot.heartPassWalletAddress = heartPass.value(QStringLiteral("walletAddress")).toString();
+    snapshot.heartPassOwnerAddress = heartPass.value(QStringLiteral("ownerAddress")).toString();
+    snapshot.heartPassVerificationStatus = heartPass.value(QStringLiteral("verificationStatus")).toString();
+    snapshot.heartPassLastCheckedAt = heartPass.value(QStringLiteral("lastCheckedAt")).toString();
+    snapshot.heartPassConfigPath = heartPass.value(QStringLiteral("configPath")).toString();
+    snapshot.heartPassCapabilityLines = parseStringArray(heartPass.value(QStringLiteral("capabilities")).toArray());
+
     snapshot.hostRuntimeSummary = systemStatus.value(QStringLiteral("hostRuntimeSummary")).toString();
     snapshot.online = systemStatus.value(QStringLiteral("online")).toBool(false);
     snapshot.approvalsCount = systemStatus.value(QStringLiteral("approvalsCount")).toInt();

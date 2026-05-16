@@ -6,9 +6,11 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QProcess>
+#include <QRegularExpression>
 #include <QUrl>
 
 #include "runtimebridge.h"
@@ -44,6 +46,20 @@ AppController::AppController(QObject *parent)
     , m_notificationsCount(0)
     , m_lastRuntimeRefresh(QStringLiteral("not yet refreshed"))
     , m_ghostConfigStatus(QStringLiteral("Ghost Brave key not configured"))
+    , m_heartPassTitle(QStringLiteral("SolOS Heart Pass"))
+    , m_heartPassStatus(QStringLiteral("not loaded"))
+    , m_heartPassNetwork(QStringLiteral("Polygon"))
+    , m_heartPassTokenStandard(QStringLiteral("ERC-1155"))
+    , m_heartPassContract(QStringLiteral("0x507783149b7abb6ce23414dd0c9742eb9f4549b4"))
+    , m_heartPassTokenId(QStringLiteral("1"))
+    , m_heartPassOpenSeaUrl(QStringLiteral("https://opensea.io/item/polygon/0x507783149b7abb6ce23414dd0c9742eb9f4549b4/1"))
+    , m_heartPassSummary(QStringLiteral("Heart Pass state has not been loaded from the runtime snapshot yet."))
+    , m_heartPassNextStep(QStringLiteral("Refresh runtime to load the Heart Pass surface."))
+    , m_heartPassWalletAddress(QStringLiteral("not configured"))
+    , m_heartPassOwnerAddress(QStringLiteral("not checked"))
+    , m_heartPassVerificationStatus(QStringLiteral("needs-wallet"))
+    , m_heartPassLastCheckedAt(QStringLiteral("never"))
+    , m_heartPassConfigPath(QStringLiteral("../../../config/heart_pass.json"))
     , m_appRegistryModel(this)
     , m_activityFeedModel(this)
     , m_quickActionsModel(this)
@@ -173,6 +189,81 @@ QString AppController::ghostConfigStatus() const
     return m_ghostConfigStatus;
 }
 
+QString AppController::heartPassTitle() const
+{
+    return m_heartPassTitle;
+}
+
+QString AppController::heartPassStatus() const
+{
+    return m_heartPassStatus;
+}
+
+QString AppController::heartPassNetwork() const
+{
+    return m_heartPassNetwork;
+}
+
+QString AppController::heartPassTokenStandard() const
+{
+    return m_heartPassTokenStandard;
+}
+
+QString AppController::heartPassContract() const
+{
+    return m_heartPassContract;
+}
+
+QString AppController::heartPassTokenId() const
+{
+    return m_heartPassTokenId;
+}
+
+QString AppController::heartPassOpenSeaUrl() const
+{
+    return m_heartPassOpenSeaUrl;
+}
+
+QString AppController::heartPassSummary() const
+{
+    return m_heartPassSummary;
+}
+
+QString AppController::heartPassNextStep() const
+{
+    return m_heartPassNextStep;
+}
+
+QStringList AppController::heartPassCapabilityLines() const
+{
+    return m_heartPassCapabilityLines;
+}
+
+QString AppController::heartPassWalletAddress() const
+{
+    return m_heartPassWalletAddress;
+}
+
+QString AppController::heartPassOwnerAddress() const
+{
+    return m_heartPassOwnerAddress;
+}
+
+QString AppController::heartPassVerificationStatus() const
+{
+    return m_heartPassVerificationStatus;
+}
+
+QString AppController::heartPassLastCheckedAt() const
+{
+    return m_heartPassLastCheckedAt;
+}
+
+QString AppController::heartPassConfigPath() const
+{
+    return m_heartPassConfigPath;
+}
+
 void AppController::refreshRuntime()
 {
     generateRuntimeSnapshot();
@@ -183,6 +274,11 @@ namespace {
 QString ghostConfigPath()
 {
     return QDir::cleanPath(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(QStringLiteral("../../../config/ghost.json")));
+}
+
+QString heartPassConfigPath()
+{
+    return QDir::cleanPath(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(QStringLiteral("../../../config/heart_pass.json")));
 }
 
 bool loadGhostConfigJson(QJsonObject &root)
@@ -212,6 +308,92 @@ bool writeGhostConfigJson(const QJsonObject &root)
     file.write(QJsonDocument(root).toJson(QJsonDocument::Indented));
     file.close();
     return true;
+}
+
+QJsonObject defaultHeartPassConfig()
+{
+    QJsonObject root;
+    root.insert(QStringLiteral("schema"), QStringLiteral("solos.heart_pass.v1"));
+    root.insert(QStringLiteral("title"), QStringLiteral("SolOS Heart Pass"));
+    root.insert(QStringLiteral("network"), QStringLiteral("Polygon"));
+    root.insert(QStringLiteral("tokenStandard"), QStringLiteral("ERC-1155"));
+    root.insert(QStringLiteral("contract"), QStringLiteral("0x507783149b7abb6ce23414dd0c9742eb9f4549b4"));
+    root.insert(QStringLiteral("tokenId"), QStringLiteral("1"));
+    root.insert(QStringLiteral("openSeaUrl"), QStringLiteral("https://opensea.io/item/polygon/0x507783149b7abb6ce23414dd0c9742eb9f4549b4/1"));
+    root.insert(QStringLiteral("walletAddress"), QStringLiteral(""));
+    root.insert(QStringLiteral("ownerAddress"), QStringLiteral(""));
+    root.insert(QStringLiteral("verificationStatus"), QStringLiteral("needs-wallet"));
+    root.insert(QStringLiteral("lastCheckedAt"), QStringLiteral("never"));
+    root.insert(QStringLiteral("notes"), QStringLiteral("Local SolOS Heart Pass state. Stage 2 stores wallet intent locally; Polygon ownership verification is a later stage."));
+    return root;
+}
+
+QJsonObject loadHeartPassConfigJson()
+{
+    QFile file(heartPassConfigPath());
+    if (!file.open(QIODevice::ReadOnly)) {
+        return defaultHeartPassConfig();
+    }
+
+    const QJsonDocument document = QJsonDocument::fromJson(file.readAll());
+    file.close();
+    if (!document.isObject()) {
+        return defaultHeartPassConfig();
+    }
+
+    QJsonObject root = defaultHeartPassConfig();
+    const QJsonObject loaded = document.object();
+    for (auto it = loaded.begin(); it != loaded.end(); ++it) {
+        root.insert(it.key(), it.value());
+    }
+    return root;
+}
+
+bool writeHeartPassConfigJson(const QJsonObject &root)
+{
+    QFileInfo info(heartPassConfigPath());
+    QDir().mkpath(info.absolutePath());
+
+    QFile file(heartPassConfigPath());
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        return false;
+    }
+
+    file.write(QJsonDocument(root).toJson(QJsonDocument::Indented));
+    file.close();
+    return true;
+}
+
+bool isHeartPassVerified()
+{
+    const QJsonObject root = loadHeartPassConfigJson();
+    return root.value(QStringLiteral("verificationStatus")).toString() == QStringLiteral("verified-holder");
+}
+
+QString erc1155BalanceOfCallData(const QString &walletAddress, const QString &tokenId)
+{
+    bool ok = false;
+    const quint64 token = tokenId.toULongLong(&ok, 10);
+    const QString tokenHex = ok ? QString::number(token, 16) : QStringLiteral("1");
+    const QString addressWord = walletAddress.toLower().remove(QStringLiteral("0x")).rightJustified(64, QLatin1Char('0'));
+    return QStringLiteral("0x00fdd58e%1%2").arg(addressWord, tokenHex.rightJustified(64, QLatin1Char('0')));
+}
+
+quint64 extractUintFromEthCall(const QByteArray &payload, bool &ok)
+{
+    ok = false;
+    const QJsonDocument document = QJsonDocument::fromJson(payload);
+    if (!document.isObject()) {
+        return 0;
+    }
+
+    const QString result = document.object().value(QStringLiteral("result")).toString();
+    if (!result.startsWith(QStringLiteral("0x")) || result.length() < 3) {
+        return 0;
+    }
+
+    const quint64 value = result.mid(2).toULongLong(&ok, 16);
+    return value;
 }
 }
 
@@ -246,6 +428,12 @@ bool AppController::generateRuntimeSnapshot()
 
 bool AppController::saveGhostBraveApiKey(const QString &apiKey)
 {
+    if (!isHeartPassVerified()) {
+        m_ghostConfigStatus = QStringLiteral("Heart Pass verification required before saving a Brave key");
+        emit runtimeStateChanged();
+        return false;
+    }
+
     const QString trimmed = apiKey.trimmed();
     if (trimmed.isEmpty()) {
         m_ghostConfigStatus = QStringLiteral("Ghost Brave key is empty");
@@ -286,6 +474,12 @@ bool AppController::saveGhostBraveApiKey(const QString &apiKey)
 
 bool AppController::validateAndSaveGhostBraveApiKey(const QString &apiKey)
 {
+    if (!isHeartPassVerified()) {
+        m_ghostConfigStatus = QStringLiteral("Heart Pass verification required before Brave key validation");
+        emit runtimeStateChanged();
+        return false;
+    }
+
     const QString trimmed = apiKey.trimmed();
     if (trimmed.isEmpty()) {
         m_ghostConfigStatus = QStringLiteral("Ghost Brave key is empty");
@@ -352,6 +546,145 @@ bool AppController::clearGhostBraveApiKey()
     return true;
 }
 
+bool AppController::saveHeartPassWalletAddress(const QString &walletAddress)
+{
+    const QString trimmed = walletAddress.trimmed();
+    const QRegularExpression polygonAddress(QStringLiteral("^0x[0-9a-fA-F]{40}$"));
+    if (!polygonAddress.match(trimmed).hasMatch()) {
+        m_heartPassStatus = QStringLiteral("invalid wallet address");
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    QJsonObject root = loadHeartPassConfigJson();
+    root.insert(QStringLiteral("walletAddress"), trimmed);
+    root.insert(QStringLiteral("ownerAddress"), QStringLiteral(""));
+    root.insert(QStringLiteral("verificationStatus"), QStringLiteral("wallet-configured-unverified"));
+    root.insert(QStringLiteral("lastCheckedAt"), QStringLiteral("never"));
+
+    if (!writeHeartPassConfigJson(root)) {
+        m_heartPassStatus = QStringLiteral("could not write Heart Pass config");
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    m_heartPassStatus = QStringLiteral("Heart Pass wallet saved locally");
+    generateRuntimeSnapshot();
+    loadRuntimeSnapshot();
+    emit runtimeStateChanged();
+    return true;
+}
+
+bool AppController::clearHeartPassWalletAddress()
+{
+    QJsonObject root = loadHeartPassConfigJson();
+    root.insert(QStringLiteral("walletAddress"), QStringLiteral(""));
+    root.insert(QStringLiteral("ownerAddress"), QStringLiteral(""));
+    root.insert(QStringLiteral("verificationStatus"), QStringLiteral("needs-wallet"));
+    root.insert(QStringLiteral("lastCheckedAt"), QStringLiteral("never"));
+
+    if (!writeHeartPassConfigJson(root)) {
+        m_heartPassStatus = QStringLiteral("could not clear Heart Pass config");
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    m_heartPassStatus = QStringLiteral("Heart Pass wallet cleared locally");
+    generateRuntimeSnapshot();
+    loadRuntimeSnapshot();
+    emit runtimeStateChanged();
+    return true;
+}
+
+bool AppController::verifyHeartPassOwnership()
+{
+    QJsonObject root = loadHeartPassConfigJson();
+    const QString walletAddress = root.value(QStringLiteral("walletAddress")).toString().trimmed().toLower();
+    const QString contract = root.value(QStringLiteral("contract")).toString().trimmed().toLower();
+    const QString tokenId = root.value(QStringLiteral("tokenId")).toString().trimmed();
+
+    const QRegularExpression polygonAddress(QStringLiteral("^0x[0-9a-fA-F]{40}$"));
+    if (!polygonAddress.match(walletAddress).hasMatch()) {
+        m_heartPassStatus = QStringLiteral("needs valid wallet before verification");
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    QJsonObject call;
+    call.insert(QStringLiteral("to"), contract);
+    call.insert(QStringLiteral("data"), erc1155BalanceOfCallData(walletAddress, tokenId));
+
+    QJsonObject request;
+    request.insert(QStringLiteral("jsonrpc"), QStringLiteral("2.0"));
+    request.insert(QStringLiteral("id"), 1);
+    request.insert(QStringLiteral("method"), QStringLiteral("eth_call"));
+    request.insert(QStringLiteral("params"), QJsonArray{call, QStringLiteral("latest")});
+
+    QProcess process;
+    process.start(QStringLiteral("curl"), {
+        QStringLiteral("-fsSL"),
+        QStringLiteral("--max-time"),
+        QStringLiteral("20"),
+        QStringLiteral("-H"),
+        QStringLiteral("Content-Type: application/json"),
+        QStringLiteral("--data"),
+        QString::fromUtf8(QJsonDocument(request).toJson(QJsonDocument::Compact)),
+        QStringLiteral("https://polygon-bor-rpc.publicnode.com")
+    });
+
+    if (!process.waitForFinished(25000)) {
+        process.kill();
+        root.insert(QStringLiteral("verificationStatus"), QStringLiteral("verification-error"));
+        root.insert(QStringLiteral("lastCheckedAt"), QDateTime::currentDateTimeUtc().toString(Qt::ISODate));
+        writeHeartPassConfigJson(root);
+        m_heartPassStatus = QStringLiteral("Polygon verification timed out");
+        generateRuntimeSnapshot();
+        loadRuntimeSnapshot();
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    const QString now = QDateTime::currentDateTimeUtc().toString(Qt::ISODate);
+    if (process.exitStatus() != QProcess::NormalExit || process.exitCode() != 0) {
+        root.insert(QStringLiteral("verificationStatus"), QStringLiteral("verification-error"));
+        root.insert(QStringLiteral("lastCheckedAt"), now);
+        writeHeartPassConfigJson(root);
+        m_heartPassStatus = QStringLiteral("Polygon verification failed");
+        generateRuntimeSnapshot();
+        loadRuntimeSnapshot();
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    bool parsedBalance = false;
+    const quint64 balance = extractUintFromEthCall(process.readAllStandardOutput(), parsedBalance);
+    if (!parsedBalance) {
+        root.insert(QStringLiteral("verificationStatus"), QStringLiteral("verification-error"));
+        root.insert(QStringLiteral("lastCheckedAt"), now);
+        writeHeartPassConfigJson(root);
+        m_heartPassStatus = QStringLiteral("Polygon balanceOf response was unreadable");
+        generateRuntimeSnapshot();
+        loadRuntimeSnapshot();
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    root.insert(QStringLiteral("ownerAddress"), QStringLiteral("ERC-1155 balance: %1").arg(balance));
+    root.insert(QStringLiteral("verificationStatus"), balance > 0 ? QStringLiteral("verified-holder") : QStringLiteral("not-holder"));
+    root.insert(QStringLiteral("lastCheckedAt"), now);
+
+    if (!writeHeartPassConfigJson(root)) {
+        m_heartPassStatus = QStringLiteral("could not persist Heart Pass verification");
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    generateRuntimeSnapshot();
+    loadRuntimeSnapshot();
+    emit runtimeStateChanged();
+    return balance > 0;
+}
+
 void AppController::openUrl(const QString &url)
 {
     QDesktopServices::openUrl(QUrl(url));
@@ -404,6 +737,23 @@ void AppController::loadRuntimeSnapshot()
     m_ghostConfigStatus = snapshot.ghostOnboardingStatus == QStringLiteral("configured")
         ? QStringLiteral("Ghost Brave key configured in SolOS repo")
         : QStringLiteral("Ghost Brave key not configured yet, user must bring their own key");
+    if (!snapshot.heartPassTitle.isEmpty()) {
+        m_heartPassTitle = snapshot.heartPassTitle;
+    }
+    m_heartPassStatus = snapshot.heartPassStatus;
+    m_heartPassNetwork = snapshot.heartPassNetwork;
+    m_heartPassTokenStandard = snapshot.heartPassTokenStandard;
+    m_heartPassContract = snapshot.heartPassContract;
+    m_heartPassTokenId = snapshot.heartPassTokenId;
+    m_heartPassOpenSeaUrl = snapshot.heartPassOpenSeaUrl;
+    m_heartPassSummary = snapshot.heartPassSummary;
+    m_heartPassNextStep = snapshot.heartPassNextStep;
+    m_heartPassWalletAddress = snapshot.heartPassWalletAddress;
+    m_heartPassOwnerAddress = snapshot.heartPassOwnerAddress;
+    m_heartPassVerificationStatus = snapshot.heartPassVerificationStatus;
+    m_heartPassLastCheckedAt = snapshot.heartPassLastCheckedAt;
+    m_heartPassConfigPath = snapshot.heartPassConfigPath;
+    m_heartPassCapabilityLines = snapshot.heartPassCapabilityLines;
 
     m_homeState.setSummary(snapshot.summaryTitle, snapshot.summarySubtitle, snapshot.summaryBody);
     m_homeState.setNextAction(snapshot.nextActionTitle, snapshot.nextActionSubtitle, snapshot.nextActionBody);

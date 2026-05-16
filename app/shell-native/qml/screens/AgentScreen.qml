@@ -11,6 +11,7 @@ Item {
     required property var appController
 
     property string braveApiKeyInput: ""
+    property bool heartPassVerified: appController.heartPassVerificationStatus === "verified-holder"
 
     ScrollView {
         anchors.fill: parent
@@ -96,7 +97,8 @@ Item {
 
                             TextField {
                                 Layout.fillWidth: true
-                                placeholderText: "Paste the user's Brave API key here"
+                                enabled: heartPassVerified
+                                placeholderText: heartPassVerified ? "Paste the user's Brave API key here" : "Verify Heart Pass in Wallet Hub before adding Brave key"
                                 text: braveApiKeyInput
                                 echoMode: TextInput.Password
                                 onTextChanged: braveApiKeyInput = text
@@ -107,11 +109,13 @@ Item {
 
                                 Button {
                                     text: "Open Brave key page"
+                                    enabled: heartPassVerified
                                     onClicked: appController.openUrl(ghostRuntime.onboardingUrl)
                                 }
 
                                 Button {
                                     text: "Validate and save Brave key"
+                                    enabled: heartPassVerified
                                     onClicked: appController.validateAndSaveGhostBraveApiKey(braveApiKeyInput)
                                 }
 
@@ -125,8 +129,8 @@ Item {
                             }
 
                             Label {
-                                text: appController.ghostConfigStatus
-                                color: appController.ghostConfigStatus.indexOf("not configured") >= 0 ? "#ffd479" : "#8df0c2"
+                                text: appController.ghostConfigStatus + "\nHeart Pass: " + appController.heartPassVerificationStatus
+                                color: heartPassVerified ? "#8df0c2" : "#ffd479"
                                 Layout.fillWidth: true
                                 wrapMode: Text.WordWrap
                             }
@@ -146,6 +150,15 @@ Item {
                     columns: width > 980 ? 2 : 1
                     columnSpacing: 16
                     rowSpacing: 16
+
+                    SectionCard {
+                        Layout.fillWidth: true
+                        title: appController.heartPassTitle
+                        subtitle: appController.heartPassStatus
+                        body: appController.heartPassSummary
+                              + "\n\nGhost link: " + (appController.heartPassCapabilityLines.length > 1 ? appController.heartPassCapabilityLines[1] : "Guided onboarding eligibility pending")
+                              + "\n\nNext: " + appController.heartPassNextStep
+                    }
 
                     SectionCard {
                         Layout.fillWidth: true

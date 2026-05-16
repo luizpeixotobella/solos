@@ -2,7 +2,7 @@
   "sessionLabel": "lcpby · SolOS operating layer active",
   "systemLabel": "Linux base system attached · systemd · wayland · online",
   "walletLabel": "Wallet bridge pending · ownership surface visible",
-  "agentStatus": "Ghost active · web-grounded · approval-aware",
+  "agentStatus": "Ghost active · local pipeline online",
   "runtimeMode": "runtime-intermediary",
   "runtimeSource": "Rust runtime-core mediates between Linux host services and the SolOS operating layer.",
   "runtimeRole": "Intermediary layer between Linux base system and SolOS operating layer",
@@ -10,7 +10,7 @@
   "home": {
     "summaryTitle": "Ghost now has a first layered intelligence module",
     "summarySubtitle": "AI-era synthesis: data + results = algorithms, grounded in host runtime, outcomes, and optional Brave web search.",
-    "summaryBody": "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 2d 2h 38m. Web grounding currently reports: Ghost found 3 web references about layered agent design, web search grounding, and approval-aware orchestration..",
+    "summaryBody": "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 1d 22h 27m. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
     "nextActionTitle": "Next useful move",
     "nextActionSubtitle": "Promote Ghost from research pipeline to task executor",
     "nextActionBody": "The next module should add task intents and tool actions so Ghost can turn researched guidance into explicit SolOS commands, approval requests, and user-visible outcomes."
@@ -20,11 +20,11 @@
     "modeLabel": "layered-intelligence · approval-aware · web-grounded when configured",
     "thesisLabel": "Ghost should become a native orchestration layer that combines local runtime reality, web research, and explicit approvals into useful operating behavior.",
     "intelligenceSummary": "Perceptron-lineage layered pipeline: data plus results synthesize action-shaping algorithms.",
-    "webStatusLabel": "Brave research status: ready",
-    "onboardingTitle": "Brave key onboarding",
-    "onboardingBody": "Ghost already has a repository-local Brave key configured for this SolOS checkout.",
+    "webStatusLabel": "Brave onboarding gated by Heart Pass: needs-wallet",
+    "onboardingTitle": "Heart Pass gated Brave onboarding",
+    "onboardingBody": "Ghost/Brave onboarding is gated by the SolOS Heart Pass. Configure a Polygon wallet in Wallet Hub and verify it holds token #1 before saving a Brave key. Current Heart Pass status: needs-wallet.",
     "onboardingUrl": "https://api-dashboard.search.brave.com/app/keys",
-    "onboardingStatus": "configured",
+    "onboardingStatus": "heart-pass-required",
     "intentsTitle": "Ghost intents",
     "intentsSummary": "First intent router: answer locally, research externally when grounded, and request approval for sensitive actions.",
     "intents": [
@@ -36,9 +36,9 @@
       },
       {
         "name": "research-web",
-        "status": "ready",
-        "reason": "Ghost web grounding is ready via file:../../config/ghost.json.",
-        "nextAction": "Use Brave-backed evidence when the user asks how to do something or needs fresh external context."
+        "status": "waiting",
+        "reason": "Ghost web grounding is unconfigured via missing-config.",
+        "nextAction": "Require a valid Brave key and network before treating web research as available."
       },
       {
         "name": "request-approval",
@@ -51,12 +51,12 @@
       {
         "name": "data",
         "status": "active",
-        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 2d 2h 38m, network online."
+        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 1d 22h 27m, network online."
       },
       {
         "name": "results",
-        "status": "ready",
-        "detail": "Ghost converts raw runtime and web evidence into structured results. Source: file:../../config/ghost.json."
+        "status": "warning",
+        "detail": "Ghost converts raw runtime and web evidence into structured results. Source: missing-config."
       },
       {
         "name": "algorithms",
@@ -65,42 +65,31 @@
       },
       {
         "name": "knowledge",
-        "status": "initiating",
-        "detail": "Ghost keeps a repo-local initiation knowledge database at ../../config/ghost_knowledge.json. 3 of 6 initiation topics cached; harvested 1 topic(s) this runtime pass."
+        "status": "waiting-for-brave-key",
+        "detail": "Ghost keeps a repo-local initiation knowledge database at ../../config/ghost_knowledge.json. Initiation will start after the user configures a Brave Search key."
+      },
+      {
+        "name": "human-language-support",
+        "status": "planned",
+        "detail": "Ghost should treat major human languages as first-class operating context: detect language, answer in the user's language, preserve meaning across translation, and use data-mined cultural context without flattening local nuance."
       }
     ],
     "lastResearch": {
       "query": "how to design a layered local AI agent with web search and approval flow for operating system shell",
-      "status": "ready",
-      "resultCount": 3,
-      "source": "file:../../config/ghost.json",
-      "summary": "Ghost found 3 web references about layered agent design, web search grounding, and approval-aware orchestration.",
-      "citations": [
-        {
-          "title": "Build a More Secure, Always-On Local AI Agent with OpenClaw and NVIDIA NemoClaw | NVIDIA Technical Blog",
-          "url": "https://developer.nvidia.com/blog/build-a-secure-always-on-local-ai-agent-with-nvidia-nemoclaw-and-openclaw/",
-          "snippet": "Key security features include network and filesystem isolation managed by OpenShell, real-time policy approval for external access, and full local inference to ensure that no data leaves the device during agent operation. AI-generated content may summarize information incompletely. Verify important information. Learn more · Agents are evolving from question-and-answer systems into long-running autonomous assistants that read files, call APIs, and drive multi-step workflows."
-        },
-        {
-          "title": "Build an OpenClaw Free (Secure), Always-On Local AI Agent | flyingpenguin",
-          "url": "https://www.flyingpenguin.com/build-an-openclaw-free-secure-always-on-local-ai-agent/",
-          "snippet": "With shell:sh pre-approved at Tier 2, the same agent runs a compound command that probes three locations: [14] assistant_tool_calls call: exec({&quot;command&quot;:&quot;sh -c \\&quot;touch /cannot_write_here 2&gt;&amp;1; ...\\&quot;&quot;}) [15] tool_result tool=exec success=True output: touch: cannot touch &#x27;/cannot_write_here&#x27;: Read-only file system ws_ok=1 tmp_ok=1 [19] attestation chain_head_seq=18 chain_head_hash=6bf35f22df02b496244091e54b4dbf9b3ffdcf6a03485413f0522b84e2eb08a8"
-        },
-        {
-          "title": "Building Local AI Agents: A Practical Guide to Models, Memory, and Orchestration | by Aashi Dutt | Apr, 2026 | Medium",
-          "url": "https://aashi-dutt3.medium.com/building-local-ai-agents-a-practical-guide-to-models-memory-and-orchestration-12622e9e0269",
-          "snippet": "<strong>Every agent action is a command dispatched to a declared skill like create a file, write code, open a folder, run a shell command</strong>. You write a `SKILL.md` file that declares the skill’s name and dispatch method, and OpenClaw handles routing: ..."
-        }
-      ]
+      "status": "unconfigured",
+      "resultCount": 0,
+      "source": "missing-config",
+      "summary": "Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment.",
+      "citations": []
     },
     "initiation": {
-      "status": "initiating",
+      "status": "waiting-for-brave-key",
       "budgetMinutes": "5-10 minutes, incremental and cached",
       "databasePath": "../../config/ghost_knowledge.json",
-      "summary": "3 of 6 initiation topics cached; harvested 1 topic(s) this runtime pass."
+      "summary": "Initiation will start after the user configures a Brave Search key."
     },
     "knowledge": {
-      "topicCount": 3,
+      "topicCount": 6,
       "targetTopicCount": 6,
       "topics": [
         {
@@ -120,9 +109,76 @@
           "status": "cached",
           "summary": "How Ghost should separate harmless answers from sensitive actions that require explicit user approval.",
           "sourceCount": 3
+        },
+        {
+          "name": "Local-first personal AI memory",
+          "status": "cached",
+          "summary": "How Ghost should keep useful user/system context locally while avoiding unsafe or unnecessary data collection.",
+          "sourceCount": 3
+        },
+        {
+          "name": "Operating-system assistant UX",
+          "status": "cached",
+          "summary": "How Ghost should feel useful inside SolOS: contextual, concise, interrupting only when there is value.",
+          "sourceCount": 3
+        },
+        {
+          "name": "Planning and task decomposition",
+          "status": "cached",
+          "summary": "How Ghost should break bigger goals into safe steps, monitor progress, and report useful outcomes.",
+          "sourceCount": 3
         }
       ]
+    },
+    "languageSupport": {
+      "status": "planned-core-capability",
+      "summary": "Ghost is being oriented toward multilingual human fluency: language detection, response in the user's language, translation as mediation, and culturally aware retrieval over the major languages of the world.",
+      "primaryLanguages": [
+        "English",
+        "Portuguese",
+        "Spanish",
+        "French",
+        "German",
+        "Italian",
+        "Arabic",
+        "Hindi",
+        "Bengali",
+        "Mandarin Chinese",
+        "Japanese",
+        "Korean",
+        "Russian",
+        "Indonesian",
+        "Turkish"
+      ],
+      "operatingPrinciples": [
+        "Prefer the user's current language when replying or asking clarifying questions.",
+        "Use translation as a mediated operating capability, not as cosmetic localization.",
+        "Keep source-language citations and translated summaries linked when web/data mining is involved.",
+        "Treat cultural context, idiom, tone, and register as part of Ghost's intelligence layer."
+      ]
     }
+  },
+  "heartPass": {
+    "title": "SolOS Heart Pass",
+    "status": "visible · needs wallet address",
+    "network": "Polygon",
+    "tokenStandard": "ERC-1155",
+    "contract": "0x507783149b7abb6ce23414dd0c9742eb9f4549b4",
+    "tokenId": "1",
+    "openSeaUrl": "https://opensea.io/item/polygon/0x507783149b7abb6ce23414dd0c9742eb9f4549b4/1",
+    "summary": "Local Heart Pass config is now part of the SolOS runtime contract. This preserves ownership intent without claiming on-chain verification yet.",
+    "nextStep": "Add a wallet address locally, then run the future Polygon ownership verification slice.",
+    "walletAddress": "not configured",
+    "ownerAddress": "not checked",
+    "verificationStatus": "needs-wallet",
+    "lastCheckedAt": "never",
+    "configPath": "../../config/heart_pass.json",
+    "capabilities": [
+      "Early-supporter identity surface",
+      "Guided Ghost/Brave key onboarding eligibility",
+      "Future pass-gated experimental Ghost capabilities",
+      "Transparent usage and quota story without investment/yield promises"
+    ]
   },
   "quickActions": [
     {
@@ -144,7 +200,7 @@
   "activityFeed": [
     {
       "title": "Linux base system detected",
-      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 2d 2h 38m.",
+      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 1d 22h 27m.",
       "status": "active"
     },
     {
@@ -154,8 +210,8 @@
     },
     {
       "title": "Ghost web research state",
-      "detail": "Research query status is ready. Ghost found 3 web references about layered agent design, web search grounding, and approval-aware orchestration.",
-      "status": "ready"
+      "detail": "Research query status is unconfigured. Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment.",
+      "status": "warning"
     },
     {
       "title": "App registry surfaced",
@@ -218,12 +274,12 @@
     "shell": "unknown-shell",
     "hostname": "lcpby-HP-ENVY-TS-17-Notebook-PC",
     "user": "lcpby",
-    "uptime": "2d 2h 38m"
+    "uptime": "1d 22h 27m"
   },
   "systemStatus": {
     "online": true,
     "approvalsCount": 2,
     "notificationsCount": 4,
-    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 2d 2h 38m"
+    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 1d 22h 27m"
   }
 }
