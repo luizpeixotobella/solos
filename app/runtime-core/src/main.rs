@@ -96,6 +96,7 @@ struct GhostState {
     initiation: GhostInitiationState,
     knowledge: GhostKnowledgeSnapshot,
     languageSupport: GhostLanguageSupport,
+    operationalReadiness: GhostOperationalReadiness,
 }
 
 #[derive(Serialize)]
@@ -105,6 +106,23 @@ struct GhostLanguageSupport {
     summary: String,
     primaryLanguages: Vec<String>,
     operatingPrinciples: Vec<String>,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct GhostOperationalReadiness {
+    status: String,
+    summary: String,
+    pillars: Vec<GhostReadinessPillar>,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct GhostReadinessPillar {
+    name: String,
+    status: String,
+    evidence: String,
+    nextAction: String,
 }
 
 #[derive(Serialize)]
@@ -280,6 +298,83 @@ struct GhostInitiationOutcome {
     summary: String,
     database_path: String,
     topics: Vec<GhostKnowledgeTopic>,
+}
+
+fn build_ghost_operational_readiness(
+    research: &GhostResearchOutcome,
+    initiation: &GhostInitiationOutcome,
+    heart_pass_verified: bool,
+) -> GhostOperationalReadiness {
+    let grounding_ready = research.status == "ready";
+    let memory_ready = !initiation.topics.is_empty();
+    let approvals_ready = heart_pass_verified;
+    let status = if grounding_ready && memory_ready && approvals_ready {
+        "operator-preview"
+    } else if memory_ready || grounding_ready {
+        "partially-ready"
+    } else {
+        "foundation"
+    };
+
+    GhostOperationalReadiness {
+        status: status.into(),
+        summary: "Ghost is now measured against the capabilities modern agents need before they should act inside an operating layer: grounded retrieval, durable memory, tool boundaries, approvals, observability, and user-language mediation.".into(),
+        pillars: vec![
+            GhostReadinessPillar {
+                name: "Grounded research and RAG".into(),
+                status: if grounding_ready { "ready" } else { "needs-configuration" }.into(),
+                evidence: format!(
+                    "Web grounding status is {} through {}; local knowledge cache has {} topic(s).",
+                    research.status,
+                    research.source,
+                    initiation.topics.len()
+                ),
+                nextAction: if grounding_ready {
+                    "Use cited web evidence for fresh claims and keep source snippets visible in the shell.".into()
+                } else {
+                    "Configure the user's Brave key or another user-owned retrieval provider before external claims are treated as grounded.".into()
+                },
+            },
+            GhostReadinessPillar {
+                name: "Long-term memory".into(),
+                status: if memory_ready { "seeded" } else { "waiting" }.into(),
+                evidence: format!(
+                    "Repo-local Ghost knowledge database tracks {} of {} initiation topics.",
+                    initiation.topics.len(),
+                    ghost_knowledge_curriculum().len()
+                ),
+                nextAction: "Promote the cache into scoped memory classes: session facts, durable user preferences, project docs, and revocable sensitive context.".into(),
+            },
+            GhostReadinessPillar {
+                name: "Tool and MCP boundary".into(),
+                status: "designed".into(),
+                evidence: "Modern agent platforms expose tools and MCP-style connectors; SolOS keeps Ghost behind runtime-mediated capability descriptions instead of direct host control.".into(),
+                nextAction: "Add a tool manifest with read/write/sensitive scopes, default-deny execution, and per-tool audit records.".into(),
+            },
+            GhostReadinessPillar {
+                name: "Human approval lane".into(),
+                status: if approvals_ready { "gated" } else { "visible" }.into(),
+                evidence: if approvals_ready {
+                    "Heart Pass state allows gated Ghost onboarding and the approval queue is surfaced in the shell.".into()
+                } else {
+                    "Approval queue is visible, but Heart Pass verification is still required for gated Ghost onboarding.".into()
+                },
+                nextAction: "Require explicit approval for account-linked, billable, wallet, filesystem write, shell, network, and public-posting actions.".into(),
+            },
+            GhostReadinessPillar {
+                name: "Observability and evals".into(),
+                status: "planned".into(),
+                evidence: "The runtime snapshot exposes state, citations, approvals, and activity feed, but does not yet preserve traces or task outcome grades.".into(),
+                nextAction: "Persist trace summaries for prompt, retrieval, tool calls, approval decision, action result, and user-visible outcome.".into(),
+            },
+            GhostReadinessPillar {
+                name: "Language and tone mediation".into(),
+                status: "planned-core-capability".into(),
+                evidence: "Ghost already models multilingual support as an operating capability rather than cosmetic localization.".into(),
+                nextAction: "Route intent, approval explanations, retrieved evidence, and final responses through the user's active language and register.".into(),
+            },
+        ],
+    }
 }
 
 #[derive(Deserialize)]
@@ -605,6 +700,11 @@ fn main() {
     let quick_actions = build_quick_actions();
     let approvals_count = approvals.len();
     let notifications_count = activity_feed.len();
+    let ghost_operational_readiness = build_ghost_operational_readiness(
+        &ghost_research,
+        &ghost_initiation,
+        heart_pass_verified,
+    );
 
     let snapshot = RuntimeSnapshot {
         sessionLabel: format!("{} · SolOS operating layer active", host.user),
@@ -706,6 +806,7 @@ fn main() {
                     "Treat cultural context, idiom, tone, and register as part of Ghost's intelligence layer.".into(),
                 ],
             },
+            operationalReadiness: ghost_operational_readiness,
         },
         heartPass: heart_pass,
         quickActions: quick_actions,

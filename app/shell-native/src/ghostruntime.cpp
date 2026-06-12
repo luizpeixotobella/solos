@@ -20,6 +20,8 @@ GhostRuntime::GhostRuntime(QObject *parent)
     , m_initiationDatabasePath(QStringLiteral("config/ghost_knowledge.json"))
     , m_languageSupportStatus(QStringLiteral("planned-core-capability"))
     , m_languageSupportSummary(QStringLiteral("Ghost multilingual support is planned as an operating capability, not just UI localization."))
+    , m_readinessStatus(QStringLiteral("foundation"))
+    , m_readinessSummary(QStringLiteral("Ghost operational readiness has not been loaded yet."))
 {
 }
 
@@ -138,6 +140,21 @@ QStringList GhostRuntime::languageSupportLines() const
     return m_languageSupportLines;
 }
 
+QString GhostRuntime::readinessStatus() const
+{
+    return m_readinessStatus;
+}
+
+QString GhostRuntime::readinessSummary() const
+{
+    return m_readinessSummary;
+}
+
+QStringList GhostRuntime::readinessLines() const
+{
+    return m_readinessLines;
+}
+
 void GhostRuntime::setLabels(const QString &presence,
                              const QString &mode,
                              const QString &thesis,
@@ -160,7 +177,10 @@ void GhostRuntime::setLabels(const QString &presence,
                              const QStringList &knowledgeLines,
                              const QString &languageSupportStatus,
                              const QString &languageSupportSummary,
-                             const QStringList &languageSupportLines)
+                             const QStringList &languageSupportLines,
+                             const QString &readinessStatus,
+                             const QString &readinessSummary,
+                             const QStringList &readinessLines)
 {
     m_presenceLabel = presence;
     m_modeLabel = mode;
@@ -185,5 +205,8 @@ void GhostRuntime::setLabels(const QString &presence,
     m_languageSupportStatus = languageSupportStatus;
     m_languageSupportSummary = languageSupportSummary;
     m_languageSupportLines = languageSupportLines;
+    m_readinessStatus = readinessStatus;
+    m_readinessSummary = readinessSummary;
+    m_readinessLines = readinessLines;
     emit stateChanged();
 }

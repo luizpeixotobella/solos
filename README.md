@@ -56,6 +56,7 @@ Current implementation direction:
 - `docs/thesis.md` — philosophical and product thesis behind SolOS
 - `docs/architecture.md` — system architecture and component map
 - `docs/ghost-intelligence-doctrine.md` — Ghost doctrine for the AI-era inversion from `algorithms + data = results` to `data + results = algorithms`
+- `docs/ghost-operational-readiness-2026.md` — readiness model for Ghost as an operating agent: grounding, memory, tools, approvals, traces, and language mediation
 - `docs/architecture-v1.md` — SolOS v1.0 architecture with runtime as intermediary between Linux and SolOS
 - `docs/solos-v1.0.md` — definition of the SolOS 1.0 release posture
 - `docs/roadmap.md` — implementation roadmap
@@ -83,6 +84,12 @@ The first active boundary is now defined as a **runtime intermediary seam**:
 - SolOS stays an operating layer above the runtime instead of pretending Rust replaced Linux or pretending runtime is just another name for Linux
 
 This gives SolOS a practical migration path instead of an ideological one.
+
+## Ghost readiness
+
+Ghost now exposes operational readiness, not only presence. The native shell can show whether Ghost is merely foundational or ready to operate across grounded research, long-term memory, tool/MCP boundaries, human approvals, observability, and language mediation.
+
+This is the current product rule: Ghost can speak before it acts, research before it executes, and suggest before it writes, signs, pays, posts, or changes host state.
 
 ## Working principle
 

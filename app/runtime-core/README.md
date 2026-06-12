@@ -35,6 +35,17 @@ dados + resultados = algoritmos
 
 Ou seja: dados locais, evidências externas, resultados desejados, respostas aceitas, citações, aprovações e rejeições devem alimentar a síntese progressiva de comportamento. O runtime-core começa essa direção expondo camadas como `data`, `results`, `algorithms` e `knowledge`, preparando o Ghost para agir como um sistema em camadas, inspirado pela linhagem conceitual do perceptron e das redes neurais, sem fingir que toda automação inteligente precisa ser machine learning.
 
+O snapshot agora também expõe `ghost.operationalReadiness`. Essa camada mede se o Ghost está preparado para operar como agente dentro do SolOS, cobrindo:
+
+- pesquisa grounded/RAG
+- memória local de longo prazo
+- fronteira de ferramentas e MCP
+- aprovações humanas
+- observabilidade, traces e evals
+- mediação de idioma e tom
+
+Isso evita confundir presença com autonomia. O Ghost pode estar visível antes de estar autorizado a executar ações sensíveis.
+
 ## O que este crate não é
 
 Ele não é:

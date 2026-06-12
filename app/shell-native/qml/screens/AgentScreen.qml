@@ -173,6 +173,13 @@ Item {
                         subtitle: "Data -> Results -> Algorithms"
                         body: ghostRuntime.pipelineLines.length > 0 ? ghostRuntime.pipelineLines.join("\n\n") : "No pipeline detail yet."
                     }
+
+                    SectionCard {
+                        Layout.fillWidth: true
+                        title: "Operational readiness"
+                        subtitle: ghostRuntime.readinessStatus
+                        body: ghostRuntime.readinessSummary + "\n\n" + (ghostRuntime.readinessLines.length > 0 ? ghostRuntime.readinessLines.join("\n\n") : "No readiness assessment yet.")
+                    }
                 }
 
                 GridLayout {

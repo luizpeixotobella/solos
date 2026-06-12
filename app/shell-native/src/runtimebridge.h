@@ -49,6 +49,9 @@ struct RuntimeSnapshotData {
     QString ghostLanguageSupportStatus;
     QString ghostLanguageSupportSummary;
     QStringList ghostLanguageSupportLines;
+    QString ghostReadinessStatus;
+    QString ghostReadinessSummary;
+    QStringList ghostReadinessLines;
     QString heartPassTitle;
     QString heartPassStatus;
     QString heartPassNetwork;

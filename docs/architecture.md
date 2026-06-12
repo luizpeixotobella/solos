@@ -103,6 +103,8 @@ Home is also beginning the transition via a `QuickActionsModel`, which gives the
 
 A provisional `GhostRuntime` now defines the beginning of a native agent presence inside the shell, alongside an `ApprovalQueueModel` that can later be connected to real approval requests.
 
+The next Ghost layer is operational readiness. The runtime now emits a readiness assessment for grounded research, long-term memory, tool/MCP boundaries, human approvals, observability, and language mediation. This keeps Ghost from being judged only by presence. In SolOS, an agent can be visible before it is fully trusted to execute.
+
 ### QML layer
 
 - shell chrome
@@ -141,6 +143,8 @@ The current `runtime-core` implementation is still modest, but it now points in 
 - `knowledge` — incremental local initiation cache for Ghost's operating knowledge
 
 This framing intentionally keeps both sides of AI in view: deterministic rule-based intelligence is valid when safety and legibility matter; learning-inspired layered synthesis is valuable when examples, outcomes, and feedback should refine behavior.
+
+`docs/ghost-operational-readiness-2026.md` defines the current agent-readiness model and the external AI-platform research behind it.
 
 ## Selective Rust direction
 

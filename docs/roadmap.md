@@ -84,3 +84,15 @@ The Ghost roadmap now includes multilingual human fluency as a core capability, 
 
 This update is intentionally modest in implementation but important in direction: Ghost should grow into a multilingual operating agent, not a monolingual assistant with translated UI strings.
 
+## Ghost operational readiness update
+
+Ghost now has an explicit readiness layer in the runtime snapshot and native shell.
+
+- [x] Add `ghost.operationalReadiness` to the runtime-core snapshot.
+- [x] Surface readiness status and pillars in the native Agent/Ghost screen.
+- [x] Document the 2026 agent-readiness model in `docs/ghost-operational-readiness-2026.md`.
+- [ ] Add a typed tool manifest with read/write/sensitive scopes.
+- [ ] Persist trace summaries for retrieval, tool calls, approvals, and outcomes.
+- [ ] Split Ghost memory into scoped classes with revocation semantics.
+- [ ] Add provider-neutral retrieval adapters beyond Brave.
+- [ ] Connect readiness results to the future task/action router.

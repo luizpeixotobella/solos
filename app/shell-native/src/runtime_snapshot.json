@@ -10,7 +10,7 @@
   "home": {
     "summaryTitle": "Ghost now has a first layered intelligence module",
     "summarySubtitle": "AI-era synthesis: data + results = algorithms, grounded in host runtime, outcomes, and optional Brave web search.",
-    "summaryBody": "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 1d 22h 27m. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
+    "summaryBody": "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 1h 7m. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
     "nextActionTitle": "Next useful move",
     "nextActionSubtitle": "Promote Ghost from research pipeline to task executor",
     "nextActionBody": "The next module should add task intents and tool actions so Ghost can turn researched guidance into explicit SolOS commands, approval requests, and user-visible outcomes."
@@ -51,7 +51,7 @@
       {
         "name": "data",
         "status": "active",
-        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 1d 22h 27m, network online."
+        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 1h 7m, network online."
       },
       {
         "name": "results",
@@ -156,6 +156,48 @@
         "Keep source-language citations and translated summaries linked when web/data mining is involved.",
         "Treat cultural context, idiom, tone, and register as part of Ghost's intelligence layer."
       ]
+    },
+    "operationalReadiness": {
+      "status": "partially-ready",
+      "summary": "Ghost is now measured against the capabilities modern agents need before they should act inside an operating layer: grounded retrieval, durable memory, tool boundaries, approvals, observability, and user-language mediation.",
+      "pillars": [
+        {
+          "name": "Grounded research and RAG",
+          "status": "needs-configuration",
+          "evidence": "Web grounding status is unconfigured through missing-config; local knowledge cache has 6 topic(s).",
+          "nextAction": "Configure the user's Brave key or another user-owned retrieval provider before external claims are treated as grounded."
+        },
+        {
+          "name": "Long-term memory",
+          "status": "seeded",
+          "evidence": "Repo-local Ghost knowledge database tracks 6 of 6 initiation topics.",
+          "nextAction": "Promote the cache into scoped memory classes: session facts, durable user preferences, project docs, and revocable sensitive context."
+        },
+        {
+          "name": "Tool and MCP boundary",
+          "status": "designed",
+          "evidence": "Modern agent platforms expose tools and MCP-style connectors; SolOS keeps Ghost behind runtime-mediated capability descriptions instead of direct host control.",
+          "nextAction": "Add a tool manifest with read/write/sensitive scopes, default-deny execution, and per-tool audit records."
+        },
+        {
+          "name": "Human approval lane",
+          "status": "visible",
+          "evidence": "Approval queue is visible, but Heart Pass verification is still required for gated Ghost onboarding.",
+          "nextAction": "Require explicit approval for account-linked, billable, wallet, filesystem write, shell, network, and public-posting actions."
+        },
+        {
+          "name": "Observability and evals",
+          "status": "planned",
+          "evidence": "The runtime snapshot exposes state, citations, approvals, and activity feed, but does not yet preserve traces or task outcome grades.",
+          "nextAction": "Persist trace summaries for prompt, retrieval, tool calls, approval decision, action result, and user-visible outcome."
+        },
+        {
+          "name": "Language and tone mediation",
+          "status": "planned-core-capability",
+          "evidence": "Ghost already models multilingual support as an operating capability rather than cosmetic localization.",
+          "nextAction": "Route intent, approval explanations, retrieved evidence, and final responses through the user's active language and register."
+        }
+      ]
     }
   },
   "heartPass": {
@@ -200,7 +242,7 @@
   "activityFeed": [
     {
       "title": "Linux base system detected",
-      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 1d 22h 27m.",
+      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 1h 7m.",
       "status": "active"
     },
     {
@@ -271,15 +313,15 @@
     "initSystem": "systemd",
     "sessionType": "wayland",
     "desktopSession": "ubuntu:GNOME",
-    "shell": "unknown-shell",
+    "shell": "/bin/bash",
     "hostname": "lcpby-HP-ENVY-TS-17-Notebook-PC",
     "user": "lcpby",
-    "uptime": "1d 22h 27m"
+    "uptime": "1h 7m"
   },
   "systemStatus": {
     "online": true,
     "approvalsCount": 2,
     "notificationsCount": 4,
-    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 1d 22h 27m"
+    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 1h 7m"
   }
 }

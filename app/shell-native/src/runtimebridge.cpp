@@ -102,6 +102,20 @@ QStringList parseGhostKnowledgeLines(const QJsonArray &array)
     return lines;
 }
 
+QStringList parseGhostReadinessLines(const QJsonArray &array)
+{
+    QStringList lines;
+    for (const QJsonValue &value : array) {
+        const QJsonObject object = value.toObject();
+        const QString name = object.value(QStringLiteral("name")).toString();
+        const QString status = object.value(QStringLiteral("status")).toString();
+        const QString evidence = object.value(QStringLiteral("evidence")).toString();
+        const QString nextAction = object.value(QStringLiteral("nextAction")).toString();
+        lines.append(QStringLiteral("%1 [%2]\n%3\nNext: %4").arg(name, status, evidence, nextAction));
+    }
+    return lines;
+}
+
 QStringList parseStringArray(const QJsonArray &array)
 {
     QStringList lines;
@@ -138,6 +152,7 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     const QJsonObject initiation = ghost.value(QStringLiteral("initiation")).toObject();
     const QJsonObject knowledge = ghost.value(QStringLiteral("knowledge")).toObject();
     const QJsonObject languageSupport = ghost.value(QStringLiteral("languageSupport")).toObject();
+    const QJsonObject operationalReadiness = ghost.value(QStringLiteral("operationalReadiness")).toObject();
 
     snapshot.sessionLabel = root.value(QStringLiteral("sessionLabel")).toString();
     snapshot.systemLabel = root.value(QStringLiteral("systemLabel")).toString();
@@ -185,6 +200,9 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     for (const QString &principle : languagePrinciples) {
         snapshot.ghostLanguageSupportLines.append(QStringLiteral("• %1").arg(principle));
     }
+    snapshot.ghostReadinessStatus = operationalReadiness.value(QStringLiteral("status")).toString();
+    snapshot.ghostReadinessSummary = operationalReadiness.value(QStringLiteral("summary")).toString();
+    snapshot.ghostReadinessLines = parseGhostReadinessLines(operationalReadiness.value(QStringLiteral("pillars")).toArray());
 
     snapshot.heartPassTitle = heartPass.value(QStringLiteral("title")).toString();
     snapshot.heartPassStatus = heartPass.value(QStringLiteral("status")).toString();

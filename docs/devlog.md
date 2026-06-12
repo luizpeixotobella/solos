@@ -99,3 +99,11 @@
 - Began the Home transition with a `QuickActionsModel` and `QuickActionTile`, replacing static quick-action copy with a first-class model-backed surface.
 - Introduced a provisional `GhostRuntime`, an `ApprovalQueueModel`, and an `ApprovalItem` component so the Agent screen can start representing Ghost as a native shell presence instead of only as text.
 - Next technical milestone: validate and extend the model-backed approach into richer wallet and approval-specific surfaces, then connect Ghost-facing models to real runtime data.
+# 2026-06-12 - Ghost operational readiness
+
+- Added `ghost.operationalReadiness` to the runtime-core snapshot.
+- Exposed readiness status, summary, and pillar lines through the C++ runtime bridge and `GhostRuntime`.
+- Added an Operational Readiness card to the native Agent/Ghost screen.
+- Documented the readiness model in `docs/ghost-operational-readiness-2026.md`.
+- Readiness pillars now track grounded research/RAG, long-term memory, tool/MCP boundary, approval lane, observability/evals, and language mediation.
+- Public CMS docs and blog/social materials were prepared in the LBArtes CMS to keep the external narrative aligned with the SolOS repo.
