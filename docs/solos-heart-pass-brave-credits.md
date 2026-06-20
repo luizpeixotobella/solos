@@ -102,6 +102,22 @@ Minimum LinkedIn/X/Instagram-worthy slice:
 - Ghost onboarding keeps the user-owned Brave API key model.
 - Documentation states the next step: local monthly usage metering and pass-gated guided onboarding.
 
+## Next step: Quota Layer
+
+The next product step is the **Heart Pass Quota Layer**.
+
+The pass already has a clearer technical path: local wallet capture, Polygon ERC-1155 verification, and Ghost/Brave onboarding gated by `verified-holder`. The next layer should make the pass useful in a measurable way by showing a monthly usage allowance for Ghost research.
+
+Recommended interpretation:
+
+- Heart Pass verification proves eligibility.
+- A quota layer explains the current monthly allowance.
+- Ghost can use sponsored capacity only through a server-side quota service.
+- BYOK remains the fallback when sponsored quota is unavailable, exhausted, or not yet implemented.
+- The UI must always show whether usage is sponsored or user-owned.
+
+This is documented as Case 003 in `docs/cases/003-heart-pass-quota-layer.md`.
+
 ## Native implementation status
 
 Current SolOS native implementation:

@@ -1,5 +1,11 @@
 # SolOS Devlog
 
+## 2026-06-19
+
+- Re-checked the Heart Pass documentation and interpreted the next product step as the **Heart Pass Quota Layer**: a transparent monthly usage allowance that converts verified ERC-1155 ownership into measurable Ghost research utility.
+- Added `docs/cases/003-heart-pass-quota-layer.md` to specify the hybrid sponsored-quota + BYOK fallback architecture, runtime contract draft, supervision requirements, public wording, and staged implementation plan.
+- Updated `docs/solos-heart-pass-brave-credits.md` so the current state now points from wallet verification and Ghost gating toward quota visibility before any backend spending is introduced.
+
 ## 2026-05-06
 
 - Published the first CMS blog post for the pass, making the Brave/Search ownership model publicly visible while keeping the internal SolOS documentation aligned.
