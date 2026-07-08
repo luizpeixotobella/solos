@@ -16,7 +16,7 @@
 - [~] Home quick actions model
 - [~] Home summary / next-action state via `HomeState`
 - [~] Agent surface with task/activity feed
-- [ ] Wallet overview model
+- [~] Wallet overview model
 - [~] App registry surface with richer metadata
 - [~] Approval queue UI
 
@@ -26,8 +26,8 @@
 - [~] Connect shell state to real host runtime data
 - [~] Model approvals as first-class runtime-backed entities before binding them to real command/task state
 - [~] Add Ghost web onboarding with repository-local Brave key configuration and validate-before-save policy
-- [ ] Add local monthly Brave usage metering so each user can see remaining search allowance
-- [ ] Gate the guided Brave/Ghost onboarding with an optional SolOS Heart Pass ownership check
+- [~] Add local monthly Brave usage metering so each user can see remaining search allowance
+- [x] Gate the guided Brave/Ghost onboarding with an optional SolOS Heart Pass ownership check
 - [ ] Design a backend quota/proxy layer for future sponsored Brave/OpenAI credits without exposing shared provider keys
 - [ ] Add callback/deep-link return flow from Brave key onboarding into SolOS
 - [ ] Connect approvals to real command/task state
@@ -58,6 +58,7 @@ Current first boundary:
 - the current snapshot now carries live host facts plus a first `systemStatus` contract and richer approval objects
 - next iteration should turn this from a structured host snapshot seam into progressively real mediated runtime services and approval execution boundaries
 - Ghost now has a first functional prototype path: layered runtime data + optional Brave-grounded research + user-owned key onboarding inside the SolOS repo
+- Heart Pass now exposes a local `quotaLayer` contract beside verified ownership state, making planned allowance, usage, fallback, and provider-cost boundaries visible before any sponsored backend exists
 
 ## Migration principle
 
@@ -96,3 +97,16 @@ Ghost now has an explicit readiness layer in the runtime snapshot and native she
 - [ ] Split Ghost memory into scoped classes with revocation semantics.
 - [ ] Add provider-neutral retrieval adapters beyond Brave.
 - [ ] Connect readiness results to the future task/action router.
+
+## Heart Pass Quota Layer update
+
+The first local quota slice is now implemented.
+
+- [x] Add `quotaLayer` to `config/heart_pass.json`.
+- [x] Emit `heartPass.quotaLayer` from `runtime-core`.
+- [x] Parse quota fields through the Qt runtime bridge and `AppController`.
+- [x] Render quota cards in Wallet and Agent/Ghost.
+- [x] Keep sponsored quota disabled until Heart Pass verification succeeds.
+- [ ] Add real usage decrementing when Ghost research executes.
+- [ ] Define the server-side quota/proxy endpoint.
+- [ ] Add signed holder/session proof before sponsored provider calls.

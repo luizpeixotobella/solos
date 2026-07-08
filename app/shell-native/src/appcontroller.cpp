@@ -60,6 +60,19 @@ AppController::AppController(QObject *parent)
     , m_heartPassVerificationStatus(QStringLiteral("needs-wallet"))
     , m_heartPassLastCheckedAt(QStringLiteral("never"))
     , m_heartPassConfigPath(QStringLiteral("../../../config/heart_pass.json"))
+    , m_heartPassQuotaTitle(QStringLiteral("Heart Pass Quota Layer"))
+    , m_heartPassQuotaStatus(QStringLiteral("verification-required"))
+    , m_heartPassQuotaMode(QStringLiteral("hybrid-sponsored-byok"))
+    , m_heartPassQuotaPeriod(QStringLiteral("local-pilot"))
+    , m_heartPassQuotaIncludedQueries(25)
+    , m_heartPassQuotaUsedQueries(0)
+    , m_heartPassQuotaRemainingQueries(25)
+    , m_heartPassQuotaFallback(QStringLiteral("byok"))
+    , m_heartPassQuotaUsageSource(QStringLiteral("waiting-for-pass-verification"))
+    , m_heartPassQuotaLastSync(QStringLiteral("never"))
+    , m_heartPassQuotaResetPolicy(QStringLiteral("manual until quota service exists"))
+    , m_heartPassQuotaSummary(QStringLiteral("Heart Pass quota state has not been loaded from the runtime snapshot yet."))
+    , m_heartPassQuotaNextStep(QStringLiteral("Verify Heart Pass ownership before using quota as holder utility."))
     , m_appRegistryModel(this)
     , m_activityFeedModel(this)
     , m_quickActionsModel(this)
@@ -239,6 +252,71 @@ QStringList AppController::heartPassCapabilityLines() const
     return m_heartPassCapabilityLines;
 }
 
+QString AppController::heartPassQuotaTitle() const
+{
+    return m_heartPassQuotaTitle;
+}
+
+QString AppController::heartPassQuotaStatus() const
+{
+    return m_heartPassQuotaStatus;
+}
+
+QString AppController::heartPassQuotaMode() const
+{
+    return m_heartPassQuotaMode;
+}
+
+QString AppController::heartPassQuotaPeriod() const
+{
+    return m_heartPassQuotaPeriod;
+}
+
+int AppController::heartPassQuotaIncludedQueries() const
+{
+    return m_heartPassQuotaIncludedQueries;
+}
+
+int AppController::heartPassQuotaUsedQueries() const
+{
+    return m_heartPassQuotaUsedQueries;
+}
+
+int AppController::heartPassQuotaRemainingQueries() const
+{
+    return m_heartPassQuotaRemainingQueries;
+}
+
+QString AppController::heartPassQuotaFallback() const
+{
+    return m_heartPassQuotaFallback;
+}
+
+QString AppController::heartPassQuotaUsageSource() const
+{
+    return m_heartPassQuotaUsageSource;
+}
+
+QString AppController::heartPassQuotaLastSync() const
+{
+    return m_heartPassQuotaLastSync;
+}
+
+QString AppController::heartPassQuotaResetPolicy() const
+{
+    return m_heartPassQuotaResetPolicy;
+}
+
+QString AppController::heartPassQuotaSummary() const
+{
+    return m_heartPassQuotaSummary;
+}
+
+QString AppController::heartPassQuotaNextStep() const
+{
+    return m_heartPassQuotaNextStep;
+}
+
 QString AppController::heartPassWalletAddress() const
 {
     return m_heartPassWalletAddress;
@@ -324,7 +402,21 @@ QJsonObject defaultHeartPassConfig()
     root.insert(QStringLiteral("ownerAddress"), QStringLiteral(""));
     root.insert(QStringLiteral("verificationStatus"), QStringLiteral("needs-wallet"));
     root.insert(QStringLiteral("lastCheckedAt"), QStringLiteral("never"));
-    root.insert(QStringLiteral("notes"), QStringLiteral("Local SolOS Heart Pass state. Stage 2 stores wallet intent locally; Polygon ownership verification is a later stage."));
+    root.insert(QStringLiteral("notes"), QStringLiteral("Local SolOS Heart Pass state. Wallet capture, Polygon verification, Ghost gating, and the planned quota contract stay visible before any sponsored backend is introduced."));
+
+    QJsonObject quotaLayer;
+    quotaLayer.insert(QStringLiteral("status"), QStringLiteral("planned"));
+    quotaLayer.insert(QStringLiteral("mode"), QStringLiteral("hybrid-sponsored-byok"));
+    quotaLayer.insert(QStringLiteral("period"), QStringLiteral("local-pilot"));
+    quotaLayer.insert(QStringLiteral("includedQueries"), 25);
+    quotaLayer.insert(QStringLiteral("usedQueries"), 0);
+    quotaLayer.insert(QStringLiteral("remainingQueries"), 25);
+    quotaLayer.insert(QStringLiteral("fallback"), QStringLiteral("byok"));
+    quotaLayer.insert(QStringLiteral("usageSource"), QStringLiteral("not-active"));
+    quotaLayer.insert(QStringLiteral("lastSync"), QStringLiteral("never"));
+    quotaLayer.insert(QStringLiteral("resetPolicy"), QStringLiteral("manual until quota service exists"));
+    quotaLayer.insert(QStringLiteral("notes"), QStringLiteral("Local placeholder for the Heart Pass Quota Layer. No sponsored provider key is used until a server-side quota service exists."));
+    root.insert(QStringLiteral("quotaLayer"), quotaLayer);
     return root;
 }
 
@@ -754,6 +846,19 @@ void AppController::loadRuntimeSnapshot()
     m_heartPassLastCheckedAt = snapshot.heartPassLastCheckedAt;
     m_heartPassConfigPath = snapshot.heartPassConfigPath;
     m_heartPassCapabilityLines = snapshot.heartPassCapabilityLines;
+    m_heartPassQuotaTitle = snapshot.heartPassQuotaTitle;
+    m_heartPassQuotaStatus = snapshot.heartPassQuotaStatus;
+    m_heartPassQuotaMode = snapshot.heartPassQuotaMode;
+    m_heartPassQuotaPeriod = snapshot.heartPassQuotaPeriod;
+    m_heartPassQuotaIncludedQueries = snapshot.heartPassQuotaIncludedQueries;
+    m_heartPassQuotaUsedQueries = snapshot.heartPassQuotaUsedQueries;
+    m_heartPassQuotaRemainingQueries = snapshot.heartPassQuotaRemainingQueries;
+    m_heartPassQuotaFallback = snapshot.heartPassQuotaFallback;
+    m_heartPassQuotaUsageSource = snapshot.heartPassQuotaUsageSource;
+    m_heartPassQuotaLastSync = snapshot.heartPassQuotaLastSync;
+    m_heartPassQuotaResetPolicy = snapshot.heartPassQuotaResetPolicy;
+    m_heartPassQuotaSummary = snapshot.heartPassQuotaSummary;
+    m_heartPassQuotaNextStep = snapshot.heartPassQuotaNextStep;
 
     m_homeState.setSummary(snapshot.summaryTitle, snapshot.summarySubtitle, snapshot.summaryBody);
     m_homeState.setNextAction(snapshot.nextActionTitle, snapshot.nextActionSubtitle, snapshot.nextActionBody);

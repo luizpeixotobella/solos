@@ -1,5 +1,13 @@
 # SolOS Devlog
 
+## 2026-07-08
+
+- Re-read the SolOS repository docs, the CMS docs/public content, and the CMS private Executive pages before continuing the next implementation pass.
+- Implemented the first local **Heart Pass Quota Layer** slice: `config/heart_pass.json` now carries a `quotaLayer` contract with planned hybrid sponsored/BYOK mode, included/used/remaining query counts, fallback, usage source, sync state, and reset policy.
+- Extended `runtime-core` so `heartPass.quotaLayer` is emitted in the runtime snapshot and visible in the activity feed as a real runtime contract, while remaining disabled until Heart Pass ownership is verified.
+- Extended the Qt runtime bridge and `AppController` with quota properties, then rendered Heart Pass Quota cards in both Wallet and Agent/Ghost surfaces.
+- Regenerated `app/shell-native/src/runtime_snapshot.json` and rebuilt the native shell successfully.
+
 ## 2026-06-19
 
 - Re-checked the Heart Pass documentation and interpreted the next product step as the **Heart Pass Quota Layer**: a transparent monthly usage allowance that converts verified ERC-1155 ownership into measurable Ghost research utility.

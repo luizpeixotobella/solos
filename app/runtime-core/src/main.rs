@@ -45,6 +45,7 @@ struct HeartPassState {
     verificationStatus: String,
     lastCheckedAt: String,
     configPath: String,
+    quotaLayer: QuotaLayerState,
     capabilities: Vec<String>,
 }
 
@@ -62,6 +63,42 @@ struct HeartPassConfig {
     ownerAddress: String,
     verificationStatus: String,
     lastCheckedAt: String,
+    notes: String,
+    #[serde(default)]
+    quotaLayer: QuotaLayerConfig,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct QuotaLayerState {
+    title: String,
+    status: String,
+    mode: String,
+    period: String,
+    includedQueries: u32,
+    usedQueries: u32,
+    remainingQueries: u32,
+    fallback: String,
+    usageSource: String,
+    lastSync: String,
+    resetPolicy: String,
+    summary: String,
+    nextStep: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+#[allow(non_snake_case)]
+struct QuotaLayerConfig {
+    status: String,
+    mode: String,
+    period: String,
+    includedQueries: u32,
+    usedQueries: u32,
+    remainingQueries: u32,
+    fallback: String,
+    usageSource: String,
+    lastSync: String,
+    resetPolicy: String,
     notes: String,
 }
 
@@ -696,15 +733,18 @@ fn main() {
     };
     let app_registry = build_app_registry();
     let approvals = build_approvals();
-    let activity_feed = build_activity_feed(&host, online, app_registry.len(), &ghost_research);
+    let activity_feed = build_activity_feed(
+        &host,
+        online,
+        app_registry.len(),
+        &ghost_research,
+        &heart_pass,
+    );
     let quick_actions = build_quick_actions();
     let approvals_count = approvals.len();
     let notifications_count = activity_feed.len();
-    let ghost_operational_readiness = build_ghost_operational_readiness(
-        &ghost_research,
-        &ghost_initiation,
-        heart_pass_verified,
-    );
+    let ghost_operational_readiness =
+        build_ghost_operational_readiness(&ghost_research, &ghost_initiation, heart_pass_verified);
 
     let snapshot = RuntimeSnapshot {
         sessionLabel: format!("{} · SolOS operating layer active", host.user),
@@ -908,6 +948,7 @@ fn build_activity_feed(
     online: bool,
     app_count: usize,
     research: &GhostResearchOutcome,
+    heart_pass: &HeartPassState,
 ) -> Vec<ActivityEntry> {
     vec![
         ActivityEntry {
@@ -933,6 +974,22 @@ fn build_activity_feed(
                 "ready".into()
             } else if online {
                 "warning".into()
+            } else {
+                "warning".into()
+            },
+        },
+        ActivityEntry {
+            title: "Heart Pass quota contract visible".into(),
+            detail: format!(
+                "Quota status is {}; {} of {} local pilot queries remain for period {}, with {} fallback.",
+                heart_pass.quotaLayer.status,
+                heart_pass.quotaLayer.remainingQueries,
+                heart_pass.quotaLayer.includedQueries,
+                heart_pass.quotaLayer.period,
+                heart_pass.quotaLayer.fallback
+            ),
+            status: if heart_pass.quotaLayer.status == "planned" {
+                "planned".into()
             } else {
                 "warning".into()
             },
@@ -1250,7 +1307,81 @@ fn default_heart_pass_config() -> HeartPassConfig {
         ownerAddress: "".into(),
         verificationStatus: "needs-wallet".into(),
         lastCheckedAt: "never".into(),
-        notes: "Local SolOS Heart Pass state. Stage 2 stores wallet intent locally; Polygon ownership verification is a later stage.".into(),
+        notes: "Local SolOS Heart Pass state. Wallet capture, Polygon verification, Ghost gating, and the planned quota contract stay visible before any sponsored backend is introduced.".into(),
+        quotaLayer: default_quota_layer_config(),
+    }
+}
+
+fn default_quota_layer_config() -> QuotaLayerConfig {
+    QuotaLayerConfig {
+        status: "planned".into(),
+        mode: "hybrid-sponsored-byok".into(),
+        period: "local-pilot".into(),
+        includedQueries: 25,
+        usedQueries: 0,
+        remainingQueries: 25,
+        fallback: "byok".into(),
+        usageSource: "not-active".into(),
+        lastSync: "never".into(),
+        resetPolicy: "manual until quota service exists".into(),
+        notes: "Local placeholder for the Heart Pass Quota Layer. No sponsored provider key is used until a server-side quota service exists.".into(),
+    }
+}
+
+fn merge_quota_layer_config(config: QuotaLayerConfig) -> QuotaLayerConfig {
+    let default = default_quota_layer_config();
+    let included = if config.includedQueries == 0 {
+        default.includedQueries
+    } else {
+        config.includedQueries
+    };
+    let used = config.usedQueries.min(included);
+    let remaining = included.saturating_sub(used);
+
+    QuotaLayerConfig {
+        status: if config.status.is_empty() {
+            default.status
+        } else {
+            config.status
+        },
+        mode: if config.mode.is_empty() {
+            default.mode
+        } else {
+            config.mode
+        },
+        period: if config.period.is_empty() {
+            default.period
+        } else {
+            config.period
+        },
+        includedQueries: included,
+        usedQueries: used,
+        remainingQueries: remaining,
+        fallback: if config.fallback.is_empty() {
+            default.fallback
+        } else {
+            config.fallback
+        },
+        usageSource: if config.usageSource.is_empty() {
+            default.usageSource
+        } else {
+            config.usageSource
+        },
+        lastSync: if config.lastSync.is_empty() {
+            default.lastSync
+        } else {
+            config.lastSync
+        },
+        resetPolicy: if config.resetPolicy.is_empty() {
+            default.resetPolicy
+        } else {
+            config.resetPolicy
+        },
+        notes: if config.notes.is_empty() {
+            default.notes
+        } else {
+            config.notes
+        },
     }
 }
 
@@ -1306,7 +1437,16 @@ fn load_heart_pass_config(path: &str) -> HeartPassConfig {
                 } else {
                     config.lastCheckedAt
                 },
-                notes: config.notes,
+                notes: if config.notes.trim().is_empty()
+                    || config
+                        .notes
+                        .contains("Polygon ownership verification is a later stage")
+                {
+                    "Local SolOS Heart Pass state. Wallet capture, Polygon verification, Ghost gating, and the planned quota contract stay visible before any sponsored backend is introduced.".into()
+                } else {
+                    config.notes
+                },
+                quotaLayer: merge_quota_layer_config(config.quotaLayer),
             };
         }
     }
@@ -1333,16 +1473,35 @@ fn build_heart_pass_state() -> HeartPassState {
     ensure_heart_pass_config(&config_path, &config);
 
     let has_wallet = !config.walletAddress.trim().is_empty();
-    let status = if has_wallet {
-        format!("local wallet captured · {}", config.verificationStatus)
-    } else {
-        "visible · needs wallet address".into()
+    let quota_layer = build_quota_layer_state(&config.quotaLayer, &config.verificationStatus);
+    let status = match config.verificationStatus.as_str() {
+        "verified-holder" => "verified holder · quota visible".into(),
+        "not-holder" => "wallet checked · pass not found".into(),
+        "verification-error" => "wallet checked · verification error".into(),
+        "wallet-configured-unverified" => {
+            "local wallet captured · needs Polygon verification".into()
+        }
+        _ if has_wallet => format!("local wallet captured · {}", config.verificationStatus),
+        _ => "visible · needs wallet address".into(),
     };
-    let next_step = if has_wallet {
-        "Next implementation slice: verify the configured wallet against Polygon ownership for Anastacia Our Hearts #1.".into()
-    } else {
-        "Add a wallet address locally, then run the future Polygon ownership verification slice."
-            .into()
+    let next_step = match config.verificationStatus.as_str() {
+        "verified-holder" => {
+            "Use the visible quota contract in Ghost research UX, then design the server-side quota service before sponsoring real provider calls.".into()
+        }
+        "not-holder" => {
+            "Use a wallet that holds the Heart Pass or keep Ghost research on BYOK without sponsored quota.".into()
+        }
+        "verification-error" => {
+            "Retry Polygon verification and keep BYOK as the fallback until holder state is clear.".into()
+        }
+        _ if has_wallet => {
+            "Verify the configured wallet against Polygon balanceOf for Anastacia Our Hearts #1.".into()
+        }
+        _ => "Add a Polygon wallet address locally, then verify Heart Pass ownership.".into(),
+    };
+    let summary = match config.verificationStatus.as_str() {
+        "verified-holder" => "Heart Pass ownership is verified in the local runtime contract. Ghost onboarding and the planned quota layer can now explain holder utility without hiding cost or provider ownership.".into(),
+        _ => "Heart Pass state is part of the SolOS runtime contract. Wallet capture, Polygon verification, Ghost gating, and quota visibility stay explicit before any sponsored backend is introduced.".into(),
     };
 
     HeartPassState {
@@ -1353,9 +1512,13 @@ fn build_heart_pass_state() -> HeartPassState {
         contract: config.contract,
         tokenId: config.tokenId,
         openSeaUrl: config.openSeaUrl,
-        summary: "Local Heart Pass config is now part of the SolOS runtime contract. This preserves ownership intent without claiming on-chain verification yet.".into(),
+        summary,
         nextStep: next_step,
-        walletAddress: if has_wallet { config.walletAddress } else { "not configured".into() },
+        walletAddress: if has_wallet {
+            config.walletAddress
+        } else {
+            "not configured".into()
+        },
         ownerAddress: if config.ownerAddress.trim().is_empty() {
             "not checked".into()
         } else {
@@ -1364,12 +1527,71 @@ fn build_heart_pass_state() -> HeartPassState {
         verificationStatus: config.verificationStatus,
         lastCheckedAt: config.lastCheckedAt,
         configPath: config_path,
+        quotaLayer: quota_layer,
         capabilities: vec![
             "Early-supporter identity surface".into(),
             "Guided Ghost/Brave key onboarding eligibility".into(),
+            format!(
+                "Quota Layer: {} local pilot queries, {} fallback, status {}",
+                config.quotaLayer.includedQueries,
+                config.quotaLayer.fallback,
+                config.quotaLayer.status
+            ),
             "Future pass-gated experimental Ghost capabilities".into(),
             "Transparent usage and quota story without investment/yield promises".into(),
         ],
+    }
+}
+
+fn build_quota_layer_state(
+    config: &QuotaLayerConfig,
+    verification_status: &str,
+) -> QuotaLayerState {
+    let included = config.includedQueries;
+    let used = config.usedQueries.min(included);
+    let remaining = included.saturating_sub(used);
+    let verified = verification_status == "verified-holder";
+    let status = if verified {
+        config.status.clone()
+    } else {
+        "verification-required".into()
+    };
+    let usage_source = if verified {
+        config.usageSource.clone()
+    } else {
+        "waiting-for-pass-verification".into()
+    };
+    let summary = if verified {
+        format!(
+            "The Heart Pass Quota Layer is visible as a local runtime contract: {} included Ghost research queries for {}, {} used, {} remaining. Sponsored calls are still planned; BYOK remains the active fallback.",
+            included, config.period, used, remaining
+        )
+    } else {
+        format!(
+            "The Quota Layer is defined but disabled until Heart Pass ownership is verified. The planned local allowance is {} Ghost research queries with {} fallback.",
+            included, config.fallback
+        )
+    };
+    let next_step = if verified {
+        "Keep the local quota visible in Wallet and Agent/Ghost, then add a signed server-side quota service before any sponsored Brave/OpenAI usage.".into()
+    } else {
+        "Verify the Heart Pass in Wallet Hub before treating quota as holder utility. Until then, Ghost research stays BYOK-only.".into()
+    };
+
+    QuotaLayerState {
+        title: "Heart Pass Quota Layer".into(),
+        status,
+        mode: config.mode.clone(),
+        period: config.period.clone(),
+        includedQueries: included,
+        usedQueries: used,
+        remainingQueries: remaining,
+        fallback: config.fallback.clone(),
+        usageSource: usage_source,
+        lastSync: config.lastSync.clone(),
+        resetPolicy: config.resetPolicy.clone(),
+        summary,
+        nextStep: next_step,
     }
 }
 

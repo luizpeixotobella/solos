@@ -147,6 +147,7 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     const QJsonObject home = root.value(QStringLiteral("home")).toObject();
     const QJsonObject ghost = root.value(QStringLiteral("ghost")).toObject();
     const QJsonObject heartPass = root.value(QStringLiteral("heartPass")).toObject();
+    const QJsonObject heartPassQuotaLayer = heartPass.value(QStringLiteral("quotaLayer")).toObject();
     const QJsonObject systemStatus = root.value(QStringLiteral("systemStatus")).toObject();
     const QJsonObject lastResearch = ghost.value(QStringLiteral("lastResearch")).toObject();
     const QJsonObject initiation = ghost.value(QStringLiteral("initiation")).toObject();
@@ -219,6 +220,19 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     snapshot.heartPassLastCheckedAt = heartPass.value(QStringLiteral("lastCheckedAt")).toString();
     snapshot.heartPassConfigPath = heartPass.value(QStringLiteral("configPath")).toString();
     snapshot.heartPassCapabilityLines = parseStringArray(heartPass.value(QStringLiteral("capabilities")).toArray());
+    snapshot.heartPassQuotaTitle = heartPassQuotaLayer.value(QStringLiteral("title")).toString();
+    snapshot.heartPassQuotaStatus = heartPassQuotaLayer.value(QStringLiteral("status")).toString();
+    snapshot.heartPassQuotaMode = heartPassQuotaLayer.value(QStringLiteral("mode")).toString();
+    snapshot.heartPassQuotaPeriod = heartPassQuotaLayer.value(QStringLiteral("period")).toString();
+    snapshot.heartPassQuotaIncludedQueries = heartPassQuotaLayer.value(QStringLiteral("includedQueries")).toInt();
+    snapshot.heartPassQuotaUsedQueries = heartPassQuotaLayer.value(QStringLiteral("usedQueries")).toInt();
+    snapshot.heartPassQuotaRemainingQueries = heartPassQuotaLayer.value(QStringLiteral("remainingQueries")).toInt();
+    snapshot.heartPassQuotaFallback = heartPassQuotaLayer.value(QStringLiteral("fallback")).toString();
+    snapshot.heartPassQuotaUsageSource = heartPassQuotaLayer.value(QStringLiteral("usageSource")).toString();
+    snapshot.heartPassQuotaLastSync = heartPassQuotaLayer.value(QStringLiteral("lastSync")).toString();
+    snapshot.heartPassQuotaResetPolicy = heartPassQuotaLayer.value(QStringLiteral("resetPolicy")).toString();
+    snapshot.heartPassQuotaSummary = heartPassQuotaLayer.value(QStringLiteral("summary")).toString();
+    snapshot.heartPassQuotaNextStep = heartPassQuotaLayer.value(QStringLiteral("nextStep")).toString();
 
     snapshot.hostRuntimeSummary = systemStatus.value(QStringLiteral("hostRuntimeSummary")).toString();
     snapshot.online = systemStatus.value(QStringLiteral("online")).toBool(false);

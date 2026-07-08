@@ -1,12 +1,14 @@
 # Case 003 — Heart Pass Quota Layer
 
-Status: next product step after ERC-1155 verification and Ghost/Brave gating.
+Status: first local runtime/UI slice implemented; sponsored backend and real usage accounting still pending.
 
 ## 1. Interpretation
 
 The Heart Pass is no longer only a public concept or a wallet-verification experiment. The current SolOS implementation can already identify the anchor asset as ERC-1155, check `balanceOf(wallet, tokenId)` on Polygon, and gate Ghost/Brave onboarding behind `verified-holder`.
 
 The next useful step is therefore not another pass explanation. It is the **Quota Layer**: a small, legible usage contract that turns verified ownership into measurable Ghost research utility.
+
+As of 2026-07-08, SolOS now implements the first local slice of that contract: `config/heart_pass.json` carries `quotaLayer`, `runtime-core` emits `heartPass.quotaLayer`, and the Wallet plus Agent/Ghost surfaces render quota state. The status remains `verification-required` until the pass is verified, and no sponsored backend is called yet.
 
 ## 2. Product thesis
 
@@ -59,7 +61,7 @@ Behavior:
 
 ## 4. Runtime contract draft
 
-The native shell should receive a quota object beside Heart Pass status:
+The native shell receives a quota object inside Heart Pass runtime state:
 
 ```json
 {
@@ -69,17 +71,19 @@ The native shell should receive a quota object beside Heart Pass status:
     "network": "polygon",
     "contract": "0x507783149b7abb6ce23414dd0c9742eb9f4549b4",
     "tokenId": "1",
-    "standard": "ERC-1155"
-  },
-  "quotaLayer": {
-    "status": "planned",
-    "mode": "hybrid-sponsored-byok",
-    "period": "2026-06",
-    "includedQueries": 25,
-    "usedQueries": 0,
-    "remainingQueries": 25,
-    "fallback": "byok",
-    "lastSync": null
+    "standard": "ERC-1155",
+    "quotaLayer": {
+      "status": "planned",
+      "mode": "hybrid-sponsored-byok",
+      "period": "local-pilot",
+      "includedQueries": 25,
+      "usedQueries": 0,
+      "remainingQueries": 25,
+      "fallback": "byok",
+      "usageSource": "not-active",
+      "lastSync": "never",
+      "resetPolicy": "manual until quota service exists"
+    }
   }
 }
 ```
@@ -98,12 +102,12 @@ Status values should stay explicit:
 
 The next engineering pass should be deliberately small:
 
-1. Add a local `quotaLayer` field to `solos/config/heart_pass.json`.
-2. Load it into the runtime snapshot as `planned`.
-3. Render a Heart Pass Quota card in Wallet and Agent/Ghost surfaces.
-4. Do not call a backend yet.
-5. Use UI copy that says the quota layer is planned and explains the hybrid model.
-6. Add a smoke test that verifies the shell can show `verified-holder + planned quota`.
+1. [x] Add a local `quotaLayer` field to `solos/config/heart_pass.json`.
+2. [x] Load it into the runtime snapshot.
+3. [x] Render a Heart Pass Quota card in Wallet and Agent/Ghost surfaces.
+4. [x] Do not call a backend yet.
+5. [x] Use UI copy that explains verification requirement, planned quota, and BYOK fallback.
+6. [x] Smoke-check that `heartPass.quotaLayer` appears in the generated runtime snapshot and the native shell builds.
 
 This creates the user-facing contract before infrastructure cost is introduced.
 

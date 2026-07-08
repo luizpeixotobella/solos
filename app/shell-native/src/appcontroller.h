@@ -50,6 +50,19 @@ class AppController : public QObject
     Q_PROPERTY(QString heartPassLastCheckedAt READ heartPassLastCheckedAt NOTIFY runtimeStateChanged)
     Q_PROPERTY(QString heartPassConfigPath READ heartPassConfigPath NOTIFY runtimeStateChanged)
     Q_PROPERTY(QStringList heartPassCapabilityLines READ heartPassCapabilityLines NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString heartPassQuotaTitle READ heartPassQuotaTitle NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString heartPassQuotaStatus READ heartPassQuotaStatus NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString heartPassQuotaMode READ heartPassQuotaMode NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString heartPassQuotaPeriod READ heartPassQuotaPeriod NOTIFY runtimeStateChanged)
+    Q_PROPERTY(int heartPassQuotaIncludedQueries READ heartPassQuotaIncludedQueries NOTIFY runtimeStateChanged)
+    Q_PROPERTY(int heartPassQuotaUsedQueries READ heartPassQuotaUsedQueries NOTIFY runtimeStateChanged)
+    Q_PROPERTY(int heartPassQuotaRemainingQueries READ heartPassQuotaRemainingQueries NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString heartPassQuotaFallback READ heartPassQuotaFallback NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString heartPassQuotaUsageSource READ heartPassQuotaUsageSource NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString heartPassQuotaLastSync READ heartPassQuotaLastSync NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString heartPassQuotaResetPolicy READ heartPassQuotaResetPolicy NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString heartPassQuotaSummary READ heartPassQuotaSummary NOTIFY runtimeStateChanged)
+    Q_PROPERTY(QString heartPassQuotaNextStep READ heartPassQuotaNextStep NOTIFY runtimeStateChanged)
 
 public:
     explicit AppController(QObject *parent = nullptr);
@@ -91,6 +104,19 @@ public:
     QString heartPassLastCheckedAt() const;
     QString heartPassConfigPath() const;
     QStringList heartPassCapabilityLines() const;
+    QString heartPassQuotaTitle() const;
+    QString heartPassQuotaStatus() const;
+    QString heartPassQuotaMode() const;
+    QString heartPassQuotaPeriod() const;
+    int heartPassQuotaIncludedQueries() const;
+    int heartPassQuotaUsedQueries() const;
+    int heartPassQuotaRemainingQueries() const;
+    QString heartPassQuotaFallback() const;
+    QString heartPassQuotaUsageSource() const;
+    QString heartPassQuotaLastSync() const;
+    QString heartPassQuotaResetPolicy() const;
+    QString heartPassQuotaSummary() const;
+    QString heartPassQuotaNextStep() const;
 
     Q_INVOKABLE void refreshRuntime();
     Q_INVOKABLE bool saveGhostBraveApiKey(const QString &apiKey);
@@ -137,6 +163,19 @@ private:
     QString m_heartPassLastCheckedAt;
     QString m_heartPassConfigPath;
     QStringList m_heartPassCapabilityLines;
+    QString m_heartPassQuotaTitle;
+    QString m_heartPassQuotaStatus;
+    QString m_heartPassQuotaMode;
+    QString m_heartPassQuotaPeriod;
+    int m_heartPassQuotaIncludedQueries = 0;
+    int m_heartPassQuotaUsedQueries = 0;
+    int m_heartPassQuotaRemainingQueries = 0;
+    QString m_heartPassQuotaFallback;
+    QString m_heartPassQuotaUsageSource;
+    QString m_heartPassQuotaLastSync;
+    QString m_heartPassQuotaResetPolicy;
+    QString m_heartPassQuotaSummary;
+    QString m_heartPassQuotaNextStep;
     AppRegistryModel m_appRegistryModel;
     ActivityFeedModel m_activityFeedModel;
     QuickActionsModel m_quickActionsModel;

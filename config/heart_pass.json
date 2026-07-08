@@ -10,5 +10,18 @@
   "ownerAddress": "",
   "verificationStatus": "needs-wallet",
   "lastCheckedAt": "never",
-  "notes": "Local SolOS Heart Pass state. Stage 2 stores wallet intent locally; Polygon ownership verification is a later stage."
+  "notes": "Local SolOS Heart Pass state. Wallet capture, Polygon verification, Ghost gating, and the planned quota contract stay visible before any sponsored backend is introduced.",
+  "quotaLayer": {
+    "status": "planned",
+    "mode": "hybrid-sponsored-byok",
+    "period": "local-pilot",
+    "includedQueries": 25,
+    "usedQueries": 0,
+    "remainingQueries": 25,
+    "fallback": "byok",
+    "usageSource": "not-active",
+    "lastSync": "never",
+    "resetPolicy": "manual until quota service exists",
+    "notes": "Local placeholder for the Heart Pass Quota Layer. No sponsored provider key is used until a server-side quota service exists."
+  }
 }

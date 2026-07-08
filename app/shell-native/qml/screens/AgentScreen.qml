@@ -162,6 +162,18 @@ Item {
 
                     SectionCard {
                         Layout.fillWidth: true
+                        title: appController.heartPassQuotaTitle
+                        subtitle: appController.heartPassQuotaStatus + " · " + appController.heartPassQuotaRemainingQueries + "/" + appController.heartPassQuotaIncludedQueries + " remaining"
+                        body: appController.heartPassQuotaSummary
+                              + "\n\nMode: " + appController.heartPassQuotaMode
+                              + "\nPeriod: " + appController.heartPassQuotaPeriod
+                              + "\nUsage source: " + appController.heartPassQuotaUsageSource
+                              + "\nFallback: " + appController.heartPassQuotaFallback
+                              + "\n\nNext: " + appController.heartPassQuotaNextStep
+                    }
+
+                    SectionCard {
+                        Layout.fillWidth: true
                         title: ghostRuntime.intentsTitle
                         subtitle: ghostRuntime.intentsSummary
                         body: ghostRuntime.intentLines.length > 0 ? ghostRuntime.intentLines.join("\n\n") : "No Ghost intents yet."

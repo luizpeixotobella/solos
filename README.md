@@ -9,6 +9,7 @@ SolOS is an operating environment built around agency, explicit ownership, and a
 - Converting web-shell semantics into native system surfaces
 - Building the conceptual thesis alongside the implementation
 - Developing Ghost from the AI-era inversion: **data + results = algorithms**
+- Making the Heart Pass Quota Layer visible as a local runtime contract before adding sponsored backend calls
 
 ## Ghost intelligence doctrine
 
@@ -57,6 +58,7 @@ Current implementation direction:
 - `docs/architecture.md` — system architecture and component map
 - `docs/ghost-intelligence-doctrine.md` — Ghost doctrine for the AI-era inversion from `algorithms + data = results` to `data + results = algorithms`
 - `docs/ghost-operational-readiness-2026.md` — readiness model for Ghost as an operating agent: grounding, memory, tools, approvals, traces, and language mediation
+- `docs/cases/003-heart-pass-quota-layer.md` — local quota contract and next backend path for Heart Pass holder utility
 - `docs/architecture-v1.md` — SolOS v1.0 architecture with runtime as intermediary between Linux and SolOS
 - `docs/solos-v1.0.md` — definition of the SolOS 1.0 release posture
 - `docs/roadmap.md` — implementation roadmap
