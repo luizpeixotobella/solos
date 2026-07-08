@@ -27,6 +27,7 @@
 - [~] Model approvals as first-class runtime-backed entities before binding them to real command/task state
 - [~] Add Ghost web onboarding with repository-local Brave key configuration and validate-before-save policy
 - [~] Add local monthly Brave usage metering so each user can see remaining search allowance
+- [~] Add Ghost request classification, action trace, and route explanation to the runtime/UI contract
 - [x] Gate the guided Brave/Ghost onboarding with an optional SolOS Heart Pass ownership check
 - [ ] Design a backend quota/proxy layer for future sponsored Brave/OpenAI credits without exposing shared provider keys
 - [ ] Add callback/deep-link return flow from Brave key onboarding into SolOS
@@ -93,6 +94,7 @@ Ghost now has an explicit readiness layer in the runtime snapshot and native she
 - [x] Surface readiness status and pillars in the native Agent/Ghost screen.
 - [x] Document the 2026 agent-readiness model in `docs/ghost-operational-readiness-2026.md`.
 - [ ] Add a typed tool manifest with read/write/sensitive scopes.
+- [~] Represent trace summaries for request classification, route selection, quota impact, approval policy, and outcome.
 - [ ] Persist trace summaries for retrieval, tool calls, approvals, and outcomes.
 - [ ] Split Ghost memory into scoped classes with revocation semantics.
 - [ ] Add provider-neutral retrieval adapters beyond Brave.

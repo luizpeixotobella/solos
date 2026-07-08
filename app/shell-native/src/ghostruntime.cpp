@@ -22,6 +22,10 @@ GhostRuntime::GhostRuntime(QObject *parent)
     , m_languageSupportSummary(QStringLiteral("Ghost multilingual support is planned as an operating capability, not just UI localization."))
     , m_readinessStatus(QStringLiteral("foundation"))
     , m_readinessSummary(QStringLiteral("Ghost operational readiness has not been loaded yet."))
+    , m_requestClassifierTitle(QStringLiteral("Ghost request classifier"))
+    , m_requestClassifierSummary(QStringLiteral("Request classification has not been loaded yet."))
+    , m_actionTraceSummary(QStringLiteral("No Ghost action trace loaded yet."))
+    , m_routeExplanationSummary(QStringLiteral("No Ghost route explanation loaded yet."))
 {
 }
 
@@ -155,6 +159,31 @@ QStringList GhostRuntime::readinessLines() const
     return m_readinessLines;
 }
 
+QString GhostRuntime::requestClassifierTitle() const
+{
+    return m_requestClassifierTitle;
+}
+
+QString GhostRuntime::requestClassifierSummary() const
+{
+    return m_requestClassifierSummary;
+}
+
+QStringList GhostRuntime::requestClassificationLines() const
+{
+    return m_requestClassificationLines;
+}
+
+QString GhostRuntime::actionTraceSummary() const
+{
+    return m_actionTraceSummary;
+}
+
+QString GhostRuntime::routeExplanationSummary() const
+{
+    return m_routeExplanationSummary;
+}
+
 void GhostRuntime::setLabels(const QString &presence,
                              const QString &mode,
                              const QString &thesis,
@@ -180,7 +209,12 @@ void GhostRuntime::setLabels(const QString &presence,
                              const QStringList &languageSupportLines,
                              const QString &readinessStatus,
                              const QString &readinessSummary,
-                             const QStringList &readinessLines)
+                             const QStringList &readinessLines,
+                             const QString &requestClassifierTitle,
+                             const QString &requestClassifierSummary,
+                             const QStringList &requestClassificationLines,
+                             const QString &actionTraceSummary,
+                             const QString &routeExplanationSummary)
 {
     m_presenceLabel = presence;
     m_modeLabel = mode;
@@ -208,5 +242,10 @@ void GhostRuntime::setLabels(const QString &presence,
     m_readinessStatus = readinessStatus;
     m_readinessSummary = readinessSummary;
     m_readinessLines = readinessLines;
+    m_requestClassifierTitle = requestClassifierTitle;
+    m_requestClassifierSummary = requestClassifierSummary;
+    m_requestClassificationLines = requestClassificationLines;
+    m_actionTraceSummary = actionTraceSummary;
+    m_routeExplanationSummary = routeExplanationSummary;
     emit stateChanged();
 }

@@ -2,6 +2,11 @@
 
 ## 2026-07-08
 
+- Promoted the archived W3Schools AI/Machine Learning notes into the first concrete AI Ghost implementation slice.
+- Added `ghost.requestClassifier`, `ghost.actionTrace`, and `ghost.routeExplanation` to the runtime snapshot so Ghost can show class, safety, tools, approval needs, quota cost, selected route, and outcome before implying execution.
+- Extended the Qt runtime bridge and `GhostRuntime` with classification/trace/route properties, then rendered the new cards in the native Agent/Ghost screen.
+- Mirrored the same classification and trace concept in the web/mock Agent surface so prototype and native shell stay aligned.
+- Documented the slice in `docs/cases/004-ai-ghost-classification-trace.md` and updated the W3Schools archive status.
 - Re-read the SolOS repository docs, the CMS docs/public content, and the CMS private Executive pages before continuing the next implementation pass.
 - Implemented the first local **Heart Pass Quota Layer** slice: `config/heart_pass.json` now carries a `quotaLayer` contract with planned hybrid sponsored/BYOK mode, included/used/remaining query counts, fallback, usage source, sync state, and reset policy.
 - Extended `runtime-core` so `heartPass.quotaLayer` is emitted in the runtime snapshot and visible in the activity feed as a real runtime contract, while remaining disabled until Heart Pass ownership is verified.

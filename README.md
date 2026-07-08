@@ -10,6 +10,7 @@ SolOS is an operating environment built around agency, explicit ownership, and a
 - Building the conceptual thesis alongside the implementation
 - Developing Ghost from the AI-era inversion: **data + results = algorithms**
 - Making the Heart Pass Quota Layer visible as a local runtime contract before adding sponsored backend calls
+- Promoting Ghost from broad intelligence doctrine into visible request classification, action trace, and route explanation
 
 ## Ghost intelligence doctrine
 
@@ -59,6 +60,8 @@ Current implementation direction:
 - `docs/ghost-intelligence-doctrine.md` — Ghost doctrine for the AI-era inversion from `algorithms + data = results` to `data + results = algorithms`
 - `docs/ghost-operational-readiness-2026.md` — readiness model for Ghost as an operating agent: grounding, memory, tools, approvals, traces, and language mediation
 - `docs/cases/003-heart-pass-quota-layer.md` — local quota contract and next backend path for Heart Pass holder utility
+- `docs/cases/004-ai-ghost-classification-trace.md` — first W3Schools-inspired Ghost classifier, action trace, and route explanation slice
+- `docs/ai-ghost-w3schools-ai-archive-2026-07-08.md` — archived W3Schools AI/Machine Learning topics translated into the Ghost backlog
 - `docs/architecture-v1.md` — SolOS v1.0 architecture with runtime as intermediary between Linux and SolOS
 - `docs/solos-v1.0.md` — definition of the SolOS 1.0 release posture
 - `docs/roadmap.md` — implementation roadmap
@@ -92,6 +95,8 @@ This gives SolOS a practical migration path instead of an ideological one.
 Ghost now exposes operational readiness, not only presence. The native shell can show whether Ghost is merely foundational or ready to operate across grounded research, long-term memory, tool/MCP boundaries, human approvals, observability, and language mediation.
 
 This is the current product rule: Ghost can speak before it acts, research before it executes, and suggest before it writes, signs, pays, posts, or changes host state.
+
+Ghost now also exposes its first deterministic request classifier and action trace. Before a route is treated as executable, the shell can show the request class, safety level, required tools, approval needs, quota cost, selected route, and plain-language route explanation.
 
 ## Working principle
 

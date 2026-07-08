@@ -10,7 +10,7 @@
   "home": {
     "summaryTitle": "Ghost now has a first layered intelligence module",
     "summarySubtitle": "AI-era synthesis: data + results = algorithms, grounded in host runtime, outcomes, and optional Brave web search.",
-    "summaryBody": "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 33m. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
+    "summaryBody": "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 3h 6m. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
     "nextActionTitle": "Next useful move",
     "nextActionSubtitle": "Promote Ghost from research pipeline to task executor",
     "nextActionBody": "The next module should add task intents and tool actions so Ghost can turn researched guidance into explicit SolOS commands, approval requests, and user-visible outcomes."
@@ -51,7 +51,7 @@
       {
         "name": "data",
         "status": "active",
-        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 33m, network online."
+        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 3h 6m, network online."
       },
       {
         "name": "results",
@@ -62,6 +62,11 @@
         "name": "algorithms",
         "status": "active",
         "detail": "Ghost applies the AI-era inversion: data plus observed/desired results shape algorithms for routing, approvals, and next actions inside SolOS."
+      },
+      {
+        "name": "classification",
+        "status": "active",
+        "detail": "Ghost now exposes a deterministic request classifier before action: class, safety, required tools, approval needs, quota cost, and route."
       },
       {
         "name": "knowledge",
@@ -198,6 +203,104 @@
           "nextAction": "Route intent, approval explanations, retrieved evidence, and final responses through the user's active language and register."
         }
       ]
+    },
+    "requestClassifier": {
+      "title": "Ghost request classifier",
+      "summary": "The first W3Schools-inspired classifier turns user language into visible request classes before Ghost chooses a route, asks for approval, or spends quota.",
+      "exampleRequest": "Turn the archived W3Schools AI material into the next AI Ghost implementation slice.",
+      "classes": [
+        {
+          "name": "research request",
+          "status": "byok-or-local-only",
+          "safetyLevel": "low-to-medium",
+          "requiredTools": "local cache, optional web.search.read",
+          "approvalNeeds": "approval only when the route consumes paid/sponsored quota or opens account-linked setup",
+          "quotaCost": "0 local queries now; web research must use BYOK until pass quota is active",
+          "route": "answer from local docs first; use Brave-grounded retrieval only when configured and justified"
+        },
+        {
+          "name": "system action request",
+          "status": "approval-gated",
+          "safetyLevel": "high",
+          "requiredTools": "task.intent.dispatch, filesystem or command capability after policy review",
+          "approvalNeeds": "explicit user approval before shell commands, filesystem writes, host changes, or app launches",
+          "quotaCost": "0 model/web quota by itself; execution trace must still be recorded",
+          "route": "classify, explain, request approval, then execute through a mediated task boundary"
+        },
+        {
+          "name": "wallet/pass request",
+          "status": "needs-wallet",
+          "safetyLevel": "high",
+          "requiredTools": "wallet identity, Polygon read call, optional signature lane",
+          "approvalNeeds": "explicit approval for signatures, payments, account linking, or wallet address persistence",
+          "quotaCost": "0 Ghost research queries; may unlock holder quota after verification",
+          "route": "keep ownership, verification, and quota state visible in Wallet and Agent surfaces"
+        },
+        {
+          "name": "documentation task",
+          "status": "ready",
+          "safetyLevel": "low",
+          "requiredTools": "repo docs and structured runtime state",
+          "approvalNeeds": "no approval for local docs; approval required before public publishing",
+          "quotaCost": "0",
+          "route": "update docs alongside code so product doctrine and implementation do not drift"
+        },
+        {
+          "name": "content/publishing task",
+          "status": "approval-required",
+          "safetyLevel": "medium",
+          "requiredTools": "CMS, media, social connectors when configured",
+          "approvalNeeds": "approval before posting publicly or sending from the user's accounts",
+          "quotaCost": "0-1 research query only when fresh external facts are needed",
+          "route": "draft locally, attach evidence/media, then wait for explicit publish authorization"
+        },
+        {
+          "name": "risky external action",
+          "status": "default-deny",
+          "safetyLevel": "critical",
+          "requiredTools": "network, account, payment, public-send, or destructive host capability",
+          "approvalNeeds": "must be stopped or escalated before execution",
+          "quotaCost": "not relevant until safety route is accepted",
+          "route": "refuse unsafe requests or move into a narrow approval lane with full impact text"
+        },
+        {
+          "name": "memory/update request",
+          "status": "ready-with-scope",
+          "safetyLevel": "medium",
+          "requiredTools": "scoped memory store and session notes",
+          "approvalNeeds": "approval or strong user intent before durable personal memory is written",
+          "quotaCost": "0",
+          "route": "capture only durable, useful context with source and revocation path"
+        },
+        {
+          "name": "unclear request",
+          "status": "clarify-first",
+          "safetyLevel": "unknown",
+          "requiredTools": "none until intent is resolved",
+          "approvalNeeds": "ask a concise clarifying question when a safe assumption would be risky",
+          "quotaCost": "0",
+          "route": "hold execution, explain ambiguity, and ask for the missing constraint"
+        }
+      ]
+    },
+    "actionTrace": {
+      "traceId": "ghost-trace-w3schools-classification-v1",
+      "request": "Turn the archived W3Schools AI material into the next AI Ghost implementation slice.",
+      "data": "W3Schools AI archive, SolOS runtime snapshot, Heart Pass quota contract, Ghost readiness doctrine, and local repository state.",
+      "resultTarget": "A visible Ghost classifier, action trace, and route explanation in Agent/Ghost without public posting or account-linked actions.",
+      "algorithmRoute": "classify request -> score safety/quota/approval needs -> choose local implementation route -> document the outcome.",
+      "outcome": "local-implementation-prepared",
+      "quotaCost": "0 holder queries; no web research is consumed because the archive already exists and quota is verification-gated.",
+      "approvalRequired": "No external approval for local repo work; explicit approval remains required before public posting, wallet signing, paid provider use, or destructive host actions."
+    },
+    "routeExplanation": {
+      "selectedClass": "documentation task + system action request",
+      "selectedRoute": "local-implementation-from-archived-evidence",
+      "safetyLevel": "medium",
+      "explanation": "The request asks Ghost to continue product implementation from an already archived learning source. The safe route is local code/docs work with a visible trace, not fresh web spending or public publishing.",
+      "approvalPolicy": "Repo edits and local builds can proceed in the development workspace. External messages, social posts, wallet signatures, paid-provider calls, and destructive commands stay approval-gated.",
+      "quotaPolicy": "Heart Pass quota is verification-required with 25 remaining in hybrid-sponsored-byok mode; this route spends 0 research queries.",
+      "nextStep": "Persist trace outcomes and accepted/rejected examples so Ghost can compare future routes against expected behavior."
     }
   },
   "heartPass": {
@@ -258,7 +361,7 @@
   "activityFeed": [
     {
       "title": "Linux base system detected",
-      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 33m.",
+      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 3h 6m.",
       "status": "active"
     },
     {
@@ -337,12 +440,12 @@
     "shell": "/bin/bash",
     "hostname": "lcpby-HP-ENVY-TS-17-Notebook-PC",
     "user": "lcpby",
-    "uptime": "33m"
+    "uptime": "3h 6m"
   },
   "systemStatus": {
     "online": true,
     "approvalsCount": 2,
     "notificationsCount": 5,
-    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 33m"
+    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 3h 6m"
   }
 }

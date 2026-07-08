@@ -46,6 +46,14 @@ O snapshot agora também expõe `ghost.operationalReadiness`. Essa camada mede s
 
 Isso evita confundir presença com autonomia. O Ghost pode estar visível antes de estar autorizado a executar ações sensíveis.
 
+O snapshot agora também expõe a primeira camada de classificação e trace:
+
+- `ghost.requestClassifier`
+- `ghost.actionTrace`
+- `ghost.routeExplanation`
+
+Essa camada mostra classe do pedido, nível de segurança, ferramentas necessárias, aprovação, custo de cota, rota escolhida e resultado esperado antes de o Ghost sugerir execução.
+
 ## O que este crate não é
 
 Ele não é:
@@ -82,10 +90,11 @@ O output atual é um snapshot JSON que representa o contrato inicial entre:
 ## Próximos passos
 
 1. acrescentar schema e testes para os contratos emitidos
-2. conectar uso real de Ghost research ao `heartPass.quotaLayer`
-3. definir endpoint/prova para a futura quota service sem expor chaves de provedor no cliente
-4. evoluir para serviço local ou biblioteca FFI quando o boundary estabilizar
-5. expor eventos e APIs de mediação em vez de depender só de snapshot estático
+2. persistir resultados aceitos/rejeitados a partir de `ghost.actionTrace`
+3. conectar uso real de Ghost research ao `heartPass.quotaLayer`
+4. definir endpoint/prova para a futura quota service sem expor chaves de provedor no cliente
+5. evoluir para serviço local ou biblioteca FFI quando o boundary estabilizar
+6. expor eventos e APIs de mediação em vez de depender só de snapshot estático
 
 ## Heart Pass Quota Layer
 

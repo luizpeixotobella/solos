@@ -116,6 +116,57 @@ QStringList parseGhostReadinessLines(const QJsonArray &array)
     return lines;
 }
 
+QStringList parseGhostRequestClassificationLines(const QJsonArray &array)
+{
+    QStringList lines;
+    for (const QJsonValue &value : array) {
+        const QJsonObject object = value.toObject();
+        const QString name = object.value(QStringLiteral("name")).toString();
+        const QString status = object.value(QStringLiteral("status")).toString();
+        const QString safetyLevel = object.value(QStringLiteral("safetyLevel")).toString();
+        const QString requiredTools = object.value(QStringLiteral("requiredTools")).toString();
+        const QString approvalNeeds = object.value(QStringLiteral("approvalNeeds")).toString();
+        const QString quotaCost = object.value(QStringLiteral("quotaCost")).toString();
+        const QString route = object.value(QStringLiteral("route")).toString();
+        lines.append(QStringLiteral("%1 [%2 · %3]\nTools: %4\nApproval: %5\nQuota: %6\nRoute: %7")
+            .arg(name, status, safetyLevel, requiredTools, approvalNeeds, quotaCost, route));
+    }
+    return lines;
+}
+
+QString summarizeGhostActionTrace(const QJsonObject &object)
+{
+    if (object.isEmpty()) {
+        return QStringLiteral("No Ghost action trace is present in the runtime snapshot.");
+    }
+
+    return QStringLiteral("%1\nRequest: %2\nData: %3\nTarget: %4\nRoute: %5\nOutcome: %6\nQuota: %7\nApproval: %8")
+        .arg(object.value(QStringLiteral("traceId")).toString(),
+             object.value(QStringLiteral("request")).toString(),
+             object.value(QStringLiteral("data")).toString(),
+             object.value(QStringLiteral("resultTarget")).toString(),
+             object.value(QStringLiteral("algorithmRoute")).toString(),
+             object.value(QStringLiteral("outcome")).toString(),
+             object.value(QStringLiteral("quotaCost")).toString(),
+             object.value(QStringLiteral("approvalRequired")).toString());
+}
+
+QString summarizeGhostRouteExplanation(const QJsonObject &object)
+{
+    if (object.isEmpty()) {
+        return QStringLiteral("No Ghost route explanation is present in the runtime snapshot.");
+    }
+
+    return QStringLiteral("%1 -> %2 [%3]\n%4\nApproval: %5\nQuota: %6\nNext: %7")
+        .arg(object.value(QStringLiteral("selectedClass")).toString(),
+             object.value(QStringLiteral("selectedRoute")).toString(),
+             object.value(QStringLiteral("safetyLevel")).toString(),
+             object.value(QStringLiteral("explanation")).toString(),
+             object.value(QStringLiteral("approvalPolicy")).toString(),
+             object.value(QStringLiteral("quotaPolicy")).toString(),
+             object.value(QStringLiteral("nextStep")).toString());
+}
+
 QStringList parseStringArray(const QJsonArray &array)
 {
     QStringList lines;
@@ -154,6 +205,9 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     const QJsonObject knowledge = ghost.value(QStringLiteral("knowledge")).toObject();
     const QJsonObject languageSupport = ghost.value(QStringLiteral("languageSupport")).toObject();
     const QJsonObject operationalReadiness = ghost.value(QStringLiteral("operationalReadiness")).toObject();
+    const QJsonObject requestClassifier = ghost.value(QStringLiteral("requestClassifier")).toObject();
+    const QJsonObject actionTrace = ghost.value(QStringLiteral("actionTrace")).toObject();
+    const QJsonObject routeExplanation = ghost.value(QStringLiteral("routeExplanation")).toObject();
 
     snapshot.sessionLabel = root.value(QStringLiteral("sessionLabel")).toString();
     snapshot.systemLabel = root.value(QStringLiteral("systemLabel")).toString();
@@ -204,6 +258,15 @@ RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
     snapshot.ghostReadinessStatus = operationalReadiness.value(QStringLiteral("status")).toString();
     snapshot.ghostReadinessSummary = operationalReadiness.value(QStringLiteral("summary")).toString();
     snapshot.ghostReadinessLines = parseGhostReadinessLines(operationalReadiness.value(QStringLiteral("pillars")).toArray());
+    snapshot.ghostRequestClassifierTitle = requestClassifier.value(QStringLiteral("title")).toString();
+    const QString requestClassifierSummary = requestClassifier.value(QStringLiteral("summary")).toString();
+    const QString exampleRequest = requestClassifier.value(QStringLiteral("exampleRequest")).toString();
+    snapshot.ghostRequestClassifierSummary = exampleRequest.isEmpty()
+        ? requestClassifierSummary
+        : QStringLiteral("%1\nExample: %2").arg(requestClassifierSummary, exampleRequest);
+    snapshot.ghostRequestClassificationLines = parseGhostRequestClassificationLines(requestClassifier.value(QStringLiteral("classes")).toArray());
+    snapshot.ghostActionTraceSummary = summarizeGhostActionTrace(actionTrace);
+    snapshot.ghostRouteExplanationSummary = summarizeGhostRouteExplanation(routeExplanation);
 
     snapshot.heartPassTitle = heartPass.value(QStringLiteral("title")).toString();
     snapshot.heartPassStatus = heartPass.value(QStringLiteral("status")).toString();

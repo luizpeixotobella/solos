@@ -188,6 +188,27 @@ Item {
 
                     SectionCard {
                         Layout.fillWidth: true
+                        title: ghostRuntime.requestClassifierTitle
+                        subtitle: "Class, safety, tools, approval, quota, route"
+                        body: ghostRuntime.requestClassifierSummary + "\n\n" + (ghostRuntime.requestClassificationLines.length > 0 ? ghostRuntime.requestClassificationLines.join("\n\n") : "No request classes yet.")
+                    }
+
+                    SectionCard {
+                        Layout.fillWidth: true
+                        title: "Ghost action trace"
+                        subtitle: "Data -> target -> route -> outcome"
+                        body: ghostRuntime.actionTraceSummary
+                    }
+
+                    SectionCard {
+                        Layout.fillWidth: true
+                        title: "Route explanation"
+                        subtitle: "Why Ghost chose this path"
+                        body: ghostRuntime.routeExplanationSummary
+                    }
+
+                    SectionCard {
+                        Layout.fillWidth: true
                         title: "Operational readiness"
                         subtitle: ghostRuntime.readinessStatus
                         body: ghostRuntime.readinessSummary + "\n\n" + (ghostRuntime.readinessLines.length > 0 ? ghostRuntime.readinessLines.join("\n\n") : "No readiness assessment yet.")
