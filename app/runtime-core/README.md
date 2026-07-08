@@ -81,11 +81,24 @@ O output atual é um snapshot JSON que representa o contrato inicial entre:
 
 ## Próximos passos
 
-1. gerar snapshot em arquivo consumido automaticamente pela shell
-2. substituir fixture estática por coleta e mediação real de estado
-3. acrescentar schema e testes
+1. acrescentar schema e testes para os contratos emitidos
+2. conectar uso real de Ghost research ao `heartPass.quotaLayer`
+3. definir endpoint/prova para a futura quota service sem expor chaves de provedor no cliente
 4. evoluir para serviço local ou biblioteca FFI quando o boundary estabilizar
 5. expor eventos e APIs de mediação em vez de depender só de snapshot estático
+
+## Heart Pass Quota Layer
+
+O snapshot agora expõe `heartPass.quotaLayer` como primeiro contrato local de cota:
+
+- modo hibrido patrocinado + BYOK
+- periodo de piloto local
+- queries incluidas, usadas e restantes
+- fonte de uso e fallback
+- politica de reset
+- status bloqueado por verificacao quando o Heart Pass ainda nao foi confirmado
+
+Isto ainda nao consome cota patrocinada nem chama backend. A funcao do slice atual e tornar a promessa visivel na Wallet e no Agent/Ghost antes de introduzir custo operacional real.
 
 ## Ghost multilingual support seam
 

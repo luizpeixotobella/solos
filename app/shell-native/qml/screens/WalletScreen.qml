@@ -45,6 +45,22 @@ Item {
                   + "\n\nNext: " + appController.heartPassNextStep
         }
 
+        SectionCard {
+            Layout.fillWidth: true
+            title: appController.heartPassQuotaTitle
+            subtitle: appController.heartPassQuotaStatus + " · " + appController.heartPassQuotaMode
+            body: appController.heartPassQuotaSummary
+                  + "\n\nPeriod: " + appController.heartPassQuotaPeriod
+                  + "\nIncluded queries: " + appController.heartPassQuotaIncludedQueries
+                  + "\nUsed queries: " + appController.heartPassQuotaUsedQueries
+                  + "\nRemaining queries: " + appController.heartPassQuotaRemainingQueries
+                  + "\nUsage source: " + appController.heartPassQuotaUsageSource
+                  + "\nFallback: " + appController.heartPassQuotaFallback
+                  + "\nLast sync: " + appController.heartPassQuotaLastSync
+                  + "\nReset policy: " + appController.heartPassQuotaResetPolicy
+                  + "\n\nNext: " + appController.heartPassQuotaNextStep
+        }
+
         Rectangle {
             Layout.fillWidth: true
             radius: 20

@@ -10,7 +10,7 @@
   "home": {
     "summaryTitle": "Ghost now has a first layered intelligence module",
     "summarySubtitle": "AI-era synthesis: data + results = algorithms, grounded in host runtime, outcomes, and optional Brave web search.",
-    "summaryBody": "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 1h 7m. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
+    "summaryBody": "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 33m. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
     "nextActionTitle": "Next useful move",
     "nextActionSubtitle": "Promote Ghost from research pipeline to task executor",
     "nextActionBody": "The next module should add task intents and tool actions so Ghost can turn researched guidance into explicit SolOS commands, approval requests, and user-visible outcomes."
@@ -51,7 +51,7 @@
       {
         "name": "data",
         "status": "active",
-        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 1h 7m, network online."
+        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 33m, network online."
       },
       {
         "name": "results",
@@ -208,16 +208,32 @@
     "contract": "0x507783149b7abb6ce23414dd0c9742eb9f4549b4",
     "tokenId": "1",
     "openSeaUrl": "https://opensea.io/item/polygon/0x507783149b7abb6ce23414dd0c9742eb9f4549b4/1",
-    "summary": "Local Heart Pass config is now part of the SolOS runtime contract. This preserves ownership intent without claiming on-chain verification yet.",
-    "nextStep": "Add a wallet address locally, then run the future Polygon ownership verification slice.",
+    "summary": "Heart Pass state is part of the SolOS runtime contract. Wallet capture, Polygon verification, Ghost gating, and quota visibility stay explicit before any sponsored backend is introduced.",
+    "nextStep": "Add a Polygon wallet address locally, then verify Heart Pass ownership.",
     "walletAddress": "not configured",
     "ownerAddress": "not checked",
     "verificationStatus": "needs-wallet",
     "lastCheckedAt": "never",
     "configPath": "../../config/heart_pass.json",
+    "quotaLayer": {
+      "title": "Heart Pass Quota Layer",
+      "status": "verification-required",
+      "mode": "hybrid-sponsored-byok",
+      "period": "local-pilot",
+      "includedQueries": 25,
+      "usedQueries": 0,
+      "remainingQueries": 25,
+      "fallback": "byok",
+      "usageSource": "waiting-for-pass-verification",
+      "lastSync": "never",
+      "resetPolicy": "manual until quota service exists",
+      "summary": "The Quota Layer is defined but disabled until Heart Pass ownership is verified. The planned local allowance is 25 Ghost research queries with byok fallback.",
+      "nextStep": "Verify the Heart Pass in Wallet Hub before treating quota as holder utility. Until then, Ghost research stays BYOK-only."
+    },
     "capabilities": [
       "Early-supporter identity surface",
       "Guided Ghost/Brave key onboarding eligibility",
+      "Quota Layer: 25 local pilot queries, byok fallback, status planned",
       "Future pass-gated experimental Ghost capabilities",
       "Transparent usage and quota story without investment/yield promises"
     ]
@@ -242,7 +258,7 @@
   "activityFeed": [
     {
       "title": "Linux base system detected",
-      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 1h 7m.",
+      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 33m.",
       "status": "active"
     },
     {
@@ -253,6 +269,11 @@
     {
       "title": "Ghost web research state",
       "detail": "Research query status is unconfigured. Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment.",
+      "status": "warning"
+    },
+    {
+      "title": "Heart Pass quota contract visible",
+      "detail": "Quota status is verification-required; 25 of 25 local pilot queries remain for period local-pilot, with byok fallback.",
       "status": "warning"
     },
     {
@@ -316,12 +337,12 @@
     "shell": "/bin/bash",
     "hostname": "lcpby-HP-ENVY-TS-17-Notebook-PC",
     "user": "lcpby",
-    "uptime": "1h 7m"
+    "uptime": "33m"
   },
   "systemStatus": {
     "online": true,
     "approvalsCount": 2,
-    "notificationsCount": 4,
-    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 1h 7m"
+    "notificationsCount": 5,
+    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 33m"
   }
 }

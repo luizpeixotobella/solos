@@ -123,10 +123,14 @@ This is documented as Case 003 in `docs/cases/003-heart-pass-quota-layer.md`.
 Current SolOS native implementation:
 
 - `config/heart_pass.json` stores local pass state, wallet address, token metadata, last check, and verification status.
+- `config/heart_pass.json` now also stores a local `quotaLayer` contract with planned hybrid sponsored/BYOK mode, included/used/remaining query counts, fallback, usage source, last sync, and reset policy.
 - `runtime-core` includes the Heart Pass in the runtime snapshot.
+- `runtime-core` includes `heartPass.quotaLayer` in the runtime snapshot, disabled as `verification-required` until the pass is verified.
 - Wallet Hub exposes local wallet capture and explicit Polygon verification.
+- Wallet Hub and Agent/Ghost both render a Heart Pass Quota card so the allowance and fallback model are visible before a sponsored backend exists.
 - Because the anchor asset is ERC-1155, verification uses `balanceOf(wallet, tokenId)` through Polygon JSON-RPC and maps results to `verified-holder`, `not-holder`, or `verification-error`.
 - Ghost/Brave onboarding is gated by `verified-holder`: the UI disables Brave key entry until Heart Pass verification succeeds, and the controller refuses Brave key save/validation unless the pass is verified.
+- Sponsored provider calls are not implemented yet. The next technical layer is signed holder/session proof plus a server-side quota/proxy service.
 
 Success condition:
 
