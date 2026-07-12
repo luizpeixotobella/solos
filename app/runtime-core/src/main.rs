@@ -134,6 +134,55 @@ struct GhostState {
     knowledge: GhostKnowledgeSnapshot,
     languageSupport: GhostLanguageSupport,
     operationalReadiness: GhostOperationalReadiness,
+    requestClassifier: GhostRequestClassifier,
+    actionTrace: GhostActionTrace,
+    routeExplanation: GhostRouteExplanation,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct GhostRequestClassifier {
+    title: String,
+    summary: String,
+    exampleRequest: String,
+    classes: Vec<GhostRequestClass>,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct GhostRequestClass {
+    name: String,
+    status: String,
+    safetyLevel: String,
+    requiredTools: String,
+    approvalNeeds: String,
+    quotaCost: String,
+    route: String,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct GhostActionTrace {
+    traceId: String,
+    request: String,
+    data: String,
+    resultTarget: String,
+    algorithmRoute: String,
+    outcome: String,
+    quotaCost: String,
+    approvalRequired: String,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct GhostRouteExplanation {
+    selectedClass: String,
+    selectedRoute: String,
+    safetyLevel: String,
+    explanation: String,
+    approvalPolicy: String,
+    quotaPolicy: String,
+    nextStep: String,
 }
 
 #[derive(Serialize)]
@@ -414,6 +463,145 @@ fn build_ghost_operational_readiness(
     }
 }
 
+fn build_ghost_request_classifier(
+    online: bool,
+    research: &GhostResearchOutcome,
+    heart_pass: &HeartPassState,
+) -> GhostRequestClassifier {
+    let web_grounded = online && research.status == "ready";
+    let quota_active = heart_pass.quotaLayer.status != "verification-required"
+        && heart_pass.quotaLayer.remainingQueries > 0;
+    let research_quota_cost = if quota_active {
+        "1 Heart Pass holder query when web research executes; BYOK fallback remains available"
+    } else {
+        "0 local queries now; web research must use BYOK until pass quota is active"
+    };
+
+    GhostRequestClassifier {
+        title: "Ghost request classifier".into(),
+        summary: "The first W3Schools-inspired classifier turns user language into visible request classes before Ghost chooses a route, asks for approval, or spends quota.".into(),
+        exampleRequest: "Turn the archived W3Schools AI material into the next AI Ghost implementation slice.".into(),
+        classes: vec![
+            GhostRequestClass {
+                name: "research request".into(),
+                status: if web_grounded { "ready" } else { "byok-or-local-only" }.into(),
+                safetyLevel: "low-to-medium".into(),
+                requiredTools: "local cache, optional web.search.read".into(),
+                approvalNeeds: "approval only when the route consumes paid/sponsored quota or opens account-linked setup".into(),
+                quotaCost: research_quota_cost.into(),
+                route: "answer from local docs first; use Brave-grounded retrieval only when configured and justified".into(),
+            },
+            GhostRequestClass {
+                name: "system action request".into(),
+                status: "approval-gated".into(),
+                safetyLevel: "high".into(),
+                requiredTools: "task.intent.dispatch, filesystem or command capability after policy review".into(),
+                approvalNeeds: "explicit user approval before shell commands, filesystem writes, host changes, or app launches".into(),
+                quotaCost: "0 model/web quota by itself; execution trace must still be recorded".into(),
+                route: "classify, explain, request approval, then execute through a mediated task boundary".into(),
+            },
+            GhostRequestClass {
+                name: "wallet/pass request".into(),
+                status: heart_pass.verificationStatus.clone(),
+                safetyLevel: "high".into(),
+                requiredTools: "wallet identity, Polygon read call, optional signature lane".into(),
+                approvalNeeds: "explicit approval for signatures, payments, account linking, or wallet address persistence".into(),
+                quotaCost: "0 Ghost research queries; may unlock holder quota after verification".into(),
+                route: "keep ownership, verification, and quota state visible in Wallet and Agent surfaces".into(),
+            },
+            GhostRequestClass {
+                name: "documentation task".into(),
+                status: "ready".into(),
+                safetyLevel: "low".into(),
+                requiredTools: "repo docs and structured runtime state".into(),
+                approvalNeeds: "no approval for local docs; approval required before public publishing".into(),
+                quotaCost: "0".into(),
+                route: "update docs alongside code so product doctrine and implementation do not drift".into(),
+            },
+            GhostRequestClass {
+                name: "content/publishing task".into(),
+                status: "approval-required".into(),
+                safetyLevel: "medium".into(),
+                requiredTools: "CMS, media, social connectors when configured".into(),
+                approvalNeeds: "approval before posting publicly or sending from the user's accounts".into(),
+                quotaCost: "0-1 research query only when fresh external facts are needed".into(),
+                route: "draft locally, attach evidence/media, then wait for explicit publish authorization".into(),
+            },
+            GhostRequestClass {
+                name: "risky external action".into(),
+                status: "default-deny".into(),
+                safetyLevel: "critical".into(),
+                requiredTools: "network, account, payment, public-send, or destructive host capability".into(),
+                approvalNeeds: "must be stopped or escalated before execution".into(),
+                quotaCost: "not relevant until safety route is accepted".into(),
+                route: "refuse unsafe requests or move into a narrow approval lane with full impact text".into(),
+            },
+            GhostRequestClass {
+                name: "memory/update request".into(),
+                status: "ready-with-scope".into(),
+                safetyLevel: "medium".into(),
+                requiredTools: "scoped memory store and session notes".into(),
+                approvalNeeds: "approval or strong user intent before durable personal memory is written".into(),
+                quotaCost: "0".into(),
+                route: "capture only durable, useful context with source and revocation path".into(),
+            },
+            GhostRequestClass {
+                name: "unclear request".into(),
+                status: "clarify-first".into(),
+                safetyLevel: "unknown".into(),
+                requiredTools: "none until intent is resolved".into(),
+                approvalNeeds: "ask a concise clarifying question when a safe assumption would be risky".into(),
+                quotaCost: "0".into(),
+                route: "hold execution, explain ambiguity, and ask for the missing constraint".into(),
+            },
+        ],
+    }
+}
+
+fn build_ghost_action_trace(heart_pass: &HeartPassState) -> GhostActionTrace {
+    GhostActionTrace {
+        traceId: "ghost-trace-w3schools-classification-v1".into(),
+        request: "Turn the archived W3Schools AI material into the next AI Ghost implementation slice.".into(),
+        data: "W3Schools AI archive, SolOS runtime snapshot, Heart Pass quota contract, Ghost readiness doctrine, and local repository state.".into(),
+        resultTarget: "A visible Ghost classifier, action trace, and route explanation in Agent/Ghost without public posting or account-linked actions.".into(),
+        algorithmRoute: "classify request -> score safety/quota/approval needs -> choose local implementation route -> document the outcome.".into(),
+        outcome: "local-implementation-prepared".into(),
+        quotaCost: if heart_pass.quotaLayer.status == "verification-required" {
+            "0 holder queries; no web research is consumed because the archive already exists and quota is verification-gated.".into()
+        } else {
+            "0 holder queries for this local implementation slice; future web-grounded research will decrement quota.".into()
+        },
+        approvalRequired: "No external approval for local repo work; explicit approval remains required before public posting, wallet signing, paid provider use, or destructive host actions.".into(),
+    }
+}
+
+fn build_ghost_route_explanation(
+    online: bool,
+    research: &GhostResearchOutcome,
+    heart_pass: &HeartPassState,
+) -> GhostRouteExplanation {
+    let selected_route = if online && research.status == "ready" {
+        "local-implementation-with-grounded-research-available"
+    } else {
+        "local-implementation-from-archived-evidence"
+    };
+
+    GhostRouteExplanation {
+        selectedClass: "documentation task + system action request".into(),
+        selectedRoute: selected_route.into(),
+        safetyLevel: "medium".into(),
+        explanation: "The request asks Ghost to continue product implementation from an already archived learning source. The safe route is local code/docs work with a visible trace, not fresh web spending or public publishing.".into(),
+        approvalPolicy: "Repo edits and local builds can proceed in the development workspace. External messages, social posts, wallet signatures, paid-provider calls, and destructive commands stay approval-gated.".into(),
+        quotaPolicy: format!(
+            "Heart Pass quota is {} with {} remaining in {} mode; this route spends 0 research queries.",
+            heart_pass.quotaLayer.status,
+            heart_pass.quotaLayer.remainingQueries,
+            heart_pass.quotaLayer.mode
+        ),
+        nextStep: "Persist trace outcomes and accepted/rejected examples so Ghost can compare future routes against expected behavior.".into(),
+    }
+}
+
 #[derive(Deserialize)]
 struct BraveSearchResponse {
     #[serde(default)]
@@ -491,6 +679,12 @@ impl GhostBrain {
             name: "algorithms".into(),
             status: "active".into(),
             detail: "Ghost applies the AI-era inversion: data plus observed/desired results shape algorithms for routing, approvals, and next actions inside SolOS.".into(),
+        });
+
+        stages.push(GhostPipelineStage {
+            name: "classification".into(),
+            status: "active".into(),
+            detail: "Ghost now exposes a deterministic request classifier before action: class, safety, required tools, approval needs, quota cost, and route.".into(),
         });
 
         let initiation = self.run_initiation(online);
@@ -709,9 +903,9 @@ fn main() {
     let host = detect_host_runtime();
     let online = detect_online();
     let ghost_brain = GhostBrain::new();
+    let heart_pass = build_heart_pass_state();
     let (ghost_pipeline, ghost_research, ghost_intents, ghost_initiation) =
         ghost_brain.process(&host, online);
-    let heart_pass = build_heart_pass_state();
     let heart_pass_verified = heart_pass.verificationStatus == "verified-holder";
     let ghost_onboarding_status = if heart_pass_verified {
         ghost_brain.intelligence.onboarding_status.clone()
@@ -745,6 +939,11 @@ fn main() {
     let notifications_count = activity_feed.len();
     let ghost_operational_readiness =
         build_ghost_operational_readiness(&ghost_research, &ghost_initiation, heart_pass_verified);
+    let ghost_request_classifier =
+        build_ghost_request_classifier(online, &ghost_research, &heart_pass);
+    let ghost_action_trace = build_ghost_action_trace(&heart_pass);
+    let ghost_route_explanation =
+        build_ghost_route_explanation(online, &ghost_research, &heart_pass);
 
     let snapshot = RuntimeSnapshot {
         sessionLabel: format!("{} · SolOS operating layer active", host.user),
@@ -847,6 +1046,9 @@ fn main() {
                 ],
             },
             operationalReadiness: ghost_operational_readiness,
+            requestClassifier: ghost_request_classifier,
+            actionTrace: ghost_action_trace,
+            routeExplanation: ghost_route_explanation,
         },
         heartPass: heart_pass,
         quickActions: quick_actions,

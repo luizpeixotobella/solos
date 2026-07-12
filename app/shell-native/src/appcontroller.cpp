@@ -887,7 +887,12 @@ void AppController::loadRuntimeSnapshot()
                              snapshot.ghostLanguageSupportLines,
                              snapshot.ghostReadinessStatus,
                              snapshot.ghostReadinessSummary,
-                             snapshot.ghostReadinessLines);
+                             snapshot.ghostReadinessLines,
+                             snapshot.ghostRequestClassifierTitle,
+                             snapshot.ghostRequestClassifierSummary,
+                             snapshot.ghostRequestClassificationLines,
+                             snapshot.ghostActionTraceSummary,
+                             snapshot.ghostRouteExplanationSummary);
     m_quickActionsModel.setEntries(snapshot.quickActions);
     m_activityFeedModel.setEntries(snapshot.activityFeed);
     m_approvalQueueModel.setEntries(snapshot.approvals);

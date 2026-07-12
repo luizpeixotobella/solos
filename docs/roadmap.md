@@ -8,6 +8,7 @@
 - [x] Add basic section cards
 - [x] Fix first-pass layout issues in cards
 - [x] Split `Main.qml` into screen components
+- [x] Establish a living completion plan for SolOS v1.0 in `docs/product-completion-plan.md`
 - [ ] Introduce reusable shell theme tokens
 - [ ] Add scroll support for content-heavy screens
 
@@ -27,6 +28,7 @@
 - [~] Model approvals as first-class runtime-backed entities before binding them to real command/task state
 - [~] Add Ghost web onboarding with repository-local Brave key configuration and validate-before-save policy
 - [~] Add local monthly Brave usage metering so each user can see remaining search allowance
+- [~] Add Ghost request classification, action trace, and route explanation to the runtime/UI contract
 - [x] Gate the guided Brave/Ghost onboarding with an optional SolOS Heart Pass ownership check
 - [ ] Design a backend quota/proxy layer for future sponsored Brave/OpenAI credits without exposing shared provider keys
 - [ ] Add callback/deep-link return flow from Brave key onboarding into SolOS
@@ -93,6 +95,7 @@ Ghost now has an explicit readiness layer in the runtime snapshot and native she
 - [x] Surface readiness status and pillars in the native Agent/Ghost screen.
 - [x] Document the 2026 agent-readiness model in `docs/ghost-operational-readiness-2026.md`.
 - [ ] Add a typed tool manifest with read/write/sensitive scopes.
+- [~] Represent trace summaries for request classification, route selection, quota impact, approval policy, and outcome.
 - [ ] Persist trace summaries for retrieval, tool calls, approvals, and outcomes.
 - [ ] Split Ghost memory into scoped classes with revocation semantics.
 - [ ] Add provider-neutral retrieval adapters beyond Brave.
@@ -110,3 +113,19 @@ The first local quota slice is now implemented.
 - [ ] Add real usage decrementing when Ghost research executes.
 - [ ] Define the server-side quota/proxy endpoint.
 - [ ] Add signed holder/session proof before sponsored provider calls.
+
+## Product completion plan update
+
+SolOS now has a living completion plan in `docs/product-completion-plan.md`.
+
+Current v1.0 path:
+
+1. [x] Publish the current baseline and make status visible.
+2. [ ] Persist Ghost trace outcomes and evaluation examples.
+3. [ ] Add typed tool/capability manifest and approval policy.
+4. [ ] Execute the first low-risk mediated action through runtime state.
+5. [ ] Connect Ghost research usage to quota accounting.
+6. [ ] Harden Wallet and Heart Pass proof for future sponsored quota.
+7. [ ] Turn Apps into a real launcher/capability boundary.
+8. [ ] Smoke-test the demo appliance path.
+9. [ ] Stabilize UI polish, release checklist, and v1 demo candidate.

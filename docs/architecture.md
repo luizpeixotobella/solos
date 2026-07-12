@@ -105,6 +105,8 @@ A provisional `GhostRuntime` now defines the beginning of a native agent presenc
 
 The next Ghost layer is operational readiness. The runtime now emits a readiness assessment for grounded research, long-term memory, tool/MCP boundaries, human approvals, observability, and language mediation. This keeps Ghost from being judged only by presence. In SolOS, an agent can be visible before it is fully trusted to execute.
 
+The first practical follow-up to readiness is now request classification and action trace. Ghost exposes a deterministic classifier, trace, and route explanation so the shell can show what class of request it sees, what tools and approvals are needed, what quota would be spent, and why a route was selected before execution is implied.
+
 ### QML layer
 
 - shell chrome
@@ -140,6 +142,7 @@ The current `runtime-core` implementation is still modest, but it now points in 
 - `data` — host facts, network/config status, local runtime signals
 - `results` — synthesized evidence, citations, summaries, approval-relevant outcomes
 - `algorithms` — intent routing and next-action logic derived from those inputs/results
+- `classification` — request class, safety level, tools, approval needs, quota cost, and selected route
 - `knowledge` — incremental local initiation cache for Ghost's operating knowledge
 
 This framing intentionally keeps both sides of AI in view: deterministic rule-based intelligence is valid when safety and legibility matter; learning-inspired layered synthesis is valuable when examples, outcomes, and feedback should refine behavior.

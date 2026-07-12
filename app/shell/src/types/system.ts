@@ -14,6 +14,44 @@ export type WalletStatus = "disconnected" | "connecting" | "connected" | "signat
 
 export type AppKind = "local" | "web" | "dapp" | "hybrid";
 
+export type GhostRequestClass = {
+  name: string;
+  status: string;
+  safetyLevel: string;
+  requiredTools: string;
+  approvalNeeds: string;
+  quotaCost: string;
+  route: string;
+};
+
+export type GhostRequestClassifier = {
+  title: string;
+  summary: string;
+  exampleRequest: string;
+  classes: GhostRequestClass[];
+};
+
+export type GhostActionTrace = {
+  traceId: string;
+  request: string;
+  data: string;
+  resultTarget: string;
+  algorithmRoute: string;
+  outcome: string;
+  quotaCost: string;
+  approvalRequired: string;
+};
+
+export type GhostRouteExplanation = {
+  selectedClass: string;
+  selectedRoute: string;
+  safetyLevel: string;
+  explanation: string;
+  approvalPolicy: string;
+  quotaPolicy: string;
+  nextStep: string;
+};
+
 export type UserSession = {
   id: string;
   displayName: string;
@@ -34,6 +72,9 @@ export type AgentState = {
   currentTask: string | null;
   recentActions: string[];
   pendingApprovals: number;
+  requestClassifier: GhostRequestClassifier;
+  actionTrace: GhostActionTrace;
+  routeExplanation: GhostRouteExplanation;
 };
 
 export type AgentConversationMessage = {
