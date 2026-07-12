@@ -11,6 +11,7 @@ SolOS is an operating environment built around agency, explicit ownership, and a
 - Developing Ghost from the AI-era inversion: **data + results = algorithms**
 - Making the Heart Pass Quota Layer visible as a local runtime contract before adding sponsored backend calls
 - Promoting Ghost from broad intelligence doctrine into visible request classification, action trace, and route explanation
+- Tracking SolOS to v1.0 through a living completion plan with done, partial, next, prototype, and release milestones
 
 ## Ghost intelligence doctrine
 
@@ -62,6 +63,7 @@ Current implementation direction:
 - `docs/cases/003-heart-pass-quota-layer.md` — local quota contract and next backend path for Heart Pass holder utility
 - `docs/cases/004-ai-ghost-classification-trace.md` — first W3Schools-inspired Ghost classifier, action trace, and route explanation slice
 - `docs/ai-ghost-w3schools-ai-archive-2026-07-08.md` — archived W3Schools AI/Machine Learning topics translated into the Ghost backlog
+- `docs/product-completion-plan.md` — live engineering plan for finishing SolOS v1.0, with current status, milestones, prototype board, and discussion decisions
 - `docs/architecture-v1.md` — SolOS v1.0 architecture with runtime as intermediary between Linux and SolOS
 - `docs/solos-v1.0.md` — definition of the SolOS 1.0 release posture
 - `docs/roadmap.md` — implementation roadmap

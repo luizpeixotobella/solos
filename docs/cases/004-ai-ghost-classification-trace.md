@@ -69,3 +69,5 @@ The web/mock Agent screen mirrors the same concept so the prototype and native s
 ## Next step
 
 Persist trace outcomes and accepted/rejected examples. The next slice should let Ghost compare future requests against expected classes and routes before the UI claims the action is safe or ready.
+
+This next slice is now tracked as **Ghost Trace Persistence and Evaluation Seed** in `docs/product-completion-plan.md`.

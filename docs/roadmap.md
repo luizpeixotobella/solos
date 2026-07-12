@@ -8,6 +8,7 @@
 - [x] Add basic section cards
 - [x] Fix first-pass layout issues in cards
 - [x] Split `Main.qml` into screen components
+- [x] Establish a living completion plan for SolOS v1.0 in `docs/product-completion-plan.md`
 - [ ] Introduce reusable shell theme tokens
 - [ ] Add scroll support for content-heavy screens
 
@@ -112,3 +113,19 @@ The first local quota slice is now implemented.
 - [ ] Add real usage decrementing when Ghost research executes.
 - [ ] Define the server-side quota/proxy endpoint.
 - [ ] Add signed holder/session proof before sponsored provider calls.
+
+## Product completion plan update
+
+SolOS now has a living completion plan in `docs/product-completion-plan.md`.
+
+Current v1.0 path:
+
+1. [x] Publish the current baseline and make status visible.
+2. [ ] Persist Ghost trace outcomes and evaluation examples.
+3. [ ] Add typed tool/capability manifest and approval policy.
+4. [ ] Execute the first low-risk mediated action through runtime state.
+5. [ ] Connect Ghost research usage to quota accounting.
+6. [ ] Harden Wallet and Heart Pass proof for future sponsored quota.
+7. [ ] Turn Apps into a real launcher/capability boundary.
+8. [ ] Smoke-test the demo appliance path.
+9. [ ] Stabilize UI polish, release checklist, and v1 demo candidate.
