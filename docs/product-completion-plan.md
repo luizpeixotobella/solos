@@ -34,6 +34,7 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [x] Wallet and Agent/Ghost surfaces render Heart Pass quota status, usage, fallback, and verification requirement.
 - [x] Ghost operational readiness exists in runtime and native Agent/Ghost UI.
 - [x] Ghost request classification, action trace, and route explanation exist in runtime, native UI, and web/mock UI.
+- [x] SolOS Pulso and Pulso Credits are documented as a future social/credit app surface.
 - [x] Demo ISO / Linux appliance path is documented and scaffolded.
 - [x] CMS documentation, blog, social copy, and executive pages are aligned with the Heart Pass quota-runtime public narrative.
 
@@ -43,6 +44,7 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [~] Agent shows readiness, classification, trace, approvals, and quota state, but does not yet persist trace outcomes or execute real task routes.
 - [~] Wallet shows pass/quota semantics, but real wallet/account state remains limited to the current Heart Pass path.
 - [~] Apps has registry-style structure, but not yet a real launcher/capability bridge.
+- [~] Pulso appears as a planned app/roadmap surface, but not yet as a real data-capture or credit-ledger system.
 - [~] Runtime state is structured and partly host-derived, but still depends on snapshot output rather than a durable service/API/event layer.
 - [~] Demo appliance documentation exists, but the current native shell has not yet replaced the browser-kiosk path as the tested primary demo session.
 - [~] CMS and public narrative are aligned through the last quota-runtime cycle, but now need a standing completion dashboard rather than only campaign updates.
@@ -55,6 +57,8 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [ ] Connect approvals to real mediated command/task execution.
 - [ ] Connect Ghost research usage to quota accounting.
 - [ ] Define and prototype the server-side quota/proxy endpoint for sponsored Brave/OpenAI usage.
+- [ ] Define Pulso Credits ledger, caps, anti-fraud, expiry, and cost guardrails.
+- [ ] Add Pulso consent/export/delete/moderation before real social capture.
 - [ ] Add signed holder/session proof before sponsored quota calls.
 - [ ] Add provider-neutral retrieval adapters beyond Brave.
 - [ ] Add scoped Ghost memory classes with revocation semantics.
@@ -178,6 +182,7 @@ Acceptance:
 - [ ] Turn Apps from registry surface into launcher bridge.
 - [ ] Map each app/module to declared capabilities.
 - [ ] Feed launcher actions into trace and approval policy.
+- [ ] Keep SolOS Pulso visible as planned until consent, credit ledger, and cost model are real.
 
 Acceptance:
 
@@ -233,11 +238,18 @@ Question: can SolOS be shown as a Linux-based operating layer in a repeatable VM
 
 Deliverable: built shell assets, appliance context, VM smoke notes, release candidate checklist.
 
+### Prototype E - Pulso Credits ledger
+
+Question: can SolOS return social-signal value as internal utility credit without creating hidden cost or false financial promises?
+
+Deliverable: credit ledger schema, caps, expiry, anti-fraud rules, Wallet-facing summary, and non-financial public wording.
+
 ## Decisions to discuss with Luiz
 
 - Which demo story should define SolOS v1.0: Ghost trace, Heart Pass utility, app launcher, or Linux appliance boot?
 - What is the first low-risk mediated action worth making real?
 - What quota numbers should the first public Heart Pass experiment use?
+- What should the first Pulso Credits redemption be: Ghost usage, upload allowance, access, discount, or creator tool?
 - Should v1.0 prioritize native shell as the primary demo, or keep browser kiosk as the first externally repeatable path?
 - What public promise should be avoided until the quota backend and approval router are real?
 

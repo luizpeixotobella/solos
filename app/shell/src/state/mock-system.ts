@@ -139,6 +139,14 @@ export const initialApps: AppDefinition[] = [
     capabilities: ["storage", "agent"],
     status: "available",
   },
+  {
+    id: "solos-pulso",
+    name: "SolOS Pulso",
+    kind: "hybrid",
+    description: "Planned social signal surface for posts, topics, video signals, and Pulso Credits.",
+    capabilities: ["social", "agent", "wallet", "approvals"],
+    status: "available",
+  },
 ];
 
 export const initialTasks: TaskItem[] = [

@@ -381,7 +381,7 @@
     },
     {
       "title": "App registry surfaced",
-      "detail": "4 operating-layer modules are now described as registry-backed entries instead of loose shell copy.",
+      "detail": "5 operating-layer modules are now described as registry-backed entries instead of loose shell copy.",
       "status": "active"
     }
   ],
@@ -429,6 +429,11 @@
       "name": "Ghost Console",
       "subtitle": "Layered intelligence module",
       "description": "Turns runtime data plus optional Brave research into structured results and next-step algorithms inside SolOS."
+    },
+    {
+      "name": "SolOS Pulso",
+      "subtitle": "Planned social signal surface",
+      "description": "Future consented social layer for posts, topics, video signals, and Pulso Credits with Wallet, Ghost, and Approvals mediation."
     }
   ],
   "hostRuntime": {

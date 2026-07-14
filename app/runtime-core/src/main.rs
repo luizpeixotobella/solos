@@ -1256,6 +1256,11 @@ fn build_app_registry() -> Vec<AppEntry> {
             subtitle: "Layered intelligence module".into(),
             description: "Turns runtime data plus optional Brave research into structured results and next-step algorithms inside SolOS.".into(),
         },
+        AppEntry {
+            name: "SolOS Pulso".into(),
+            subtitle: "Planned social signal surface".into(),
+            description: "Future consented social layer for posts, topics, video signals, and Pulso Credits with Wallet, Ghost, and Approvals mediation.".into(),
+        },
     ]
 }
 

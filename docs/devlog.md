@@ -1,5 +1,12 @@
 # SolOS Devlog
 
+## 2026-07-14
+
+- Documented **SolOS Pulso** as a planned social app surface for consented human signals, with a CMS public read-only preview at `/solos/pulso`.
+- Added `docs/solos-pulso-credits.md` to define Pulso Credits as internal utility credit, not money, yield, passive income, or guaranteed revenue share.
+- Updated roadmap and completion plan so Pulso is integrated with future Apps, Wallet, Ghost, Approvals, identity/Heart Pass, consent, and cost guardrails.
+- Added Pulso to the app registry as a planned module so the shell can show the direction without claiming live data capture.
+
 ## 2026-07-12
 
 - Re-read the SolOS documentation set, including product thesis, architecture, roadmap, devlog, Ghost docs, Heart Pass docs, cases, native migration notes, UI blueprint, and demo appliance docs.

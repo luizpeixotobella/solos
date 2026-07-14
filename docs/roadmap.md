@@ -30,11 +30,13 @@
 - [~] Add local monthly Brave usage metering so each user can see remaining search allowance
 - [~] Add Ghost request classification, action trace, and route explanation to the runtime/UI contract
 - [x] Gate the guided Brave/Ghost onboarding with an optional SolOS Heart Pass ownership check
+- [~] Define SolOS Pulso as a planned social app surface with consented signals and Pulso Credits
 - [ ] Design a backend quota/proxy layer for future sponsored Brave/OpenAI credits without exposing shared provider keys
 - [ ] Add callback/deep-link return flow from Brave key onboarding into SolOS
 - [ ] Connect approvals to real command/task state
 - [ ] Connect wallet panel to real account state
 - [ ] Add launcher bridge for modules/apps
+- [ ] Add Pulso as a real app module after consent, credit ledger, and cost guardrails exist
 - [ ] Introduce clearer capability boundaries so controllers stop behaving like staging points for semi-static copy
 
 ## Phase 3 — OS identity
@@ -125,7 +127,19 @@ Current v1.0 path:
 3. [ ] Add typed tool/capability manifest and approval policy.
 4. [ ] Execute the first low-risk mediated action through runtime state.
 5. [ ] Connect Ghost research usage to quota accounting.
-6. [ ] Harden Wallet and Heart Pass proof for future sponsored quota.
-7. [ ] Turn Apps into a real launcher/capability boundary.
-8. [ ] Smoke-test the demo appliance path.
-9. [ ] Stabilize UI polish, release checklist, and v1 demo candidate.
+6. [ ] Model Pulso Credits as internal utility ledger with caps, anti-fraud, expiry, and cost guardrails.
+7. [ ] Harden Wallet and Heart Pass proof for future sponsored quota.
+8. [ ] Turn Apps into a real launcher/capability boundary, including Pulso as a planned social app surface.
+9. [ ] Smoke-test the demo appliance path.
+10. [ ] Stabilize UI polish, release checklist, and v1 demo candidate.
+
+## SolOS Pulso update
+
+Pulso is now part of the roadmap as a planned social app surface, not a live data-capture feature.
+
+- [x] Document Pulso and Pulso Credits in `docs/solos-pulso-credits.md`.
+- [x] Expose a public read-only preview through the CMS at `/solos/pulso`.
+- [~] Show Pulso as a planned module in the SolOS app registry.
+- [ ] Add consent, auth, moderation, export/delete, and anti-fraud before real capture.
+- [ ] Add a credit ledger before showing Pulso Credits in Wallet.
+- [ ] Connect Ghost topics and aggregate summaries only after consent rules exist.
