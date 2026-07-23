@@ -107,6 +107,22 @@ The next Ghost layer is operational readiness. The runtime now emits a readiness
 
 The first practical follow-up to readiness is now request classification and action trace. Ghost exposes a deterministic classifier, trace, and route explanation so the shell can show what class of request it sees, what tools and approvals are needed, what quota would be spent, and why a route was selected before execution is implied.
 
+## SolOS Pulso as a planned app surface
+
+SolOS Pulso should be treated as a future app/module inside the operating layer, not as an external social site bolted onto the brand.
+
+Architectural role:
+
+- Apps exposes Pulso as a planned module.
+- Ghost can propose themes and summarize aggregate signal patterns after consent rules exist.
+- Wallet can later show Pulso Credits and participation utility.
+- Approvals mediate consent and sensitive data use.
+- Identity/Heart Pass can gate pilot access or paid utility.
+
+The public CMS preview at `/solos/pulso` is deliberately read-only. It is a campaign/prototype surface, not a live capture system.
+
+Pulso Credits should remain internal utility credits until there is a real ledger, cost model, anti-fraud layer, revenue path, and legal review.
+
 ### QML layer
 
 - shell chrome

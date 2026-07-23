@@ -5,7 +5,8 @@ AppRegistryModel::AppRegistryModel(QObject *parent)
     , m_entries({
         {QStringLiteral("Workspace"), QStringLiteral("Core environment"), QStringLiteral("Tasks, notes, and active operational context for the system and the user.")},
         {QStringLiteral("Wallet Hub"), QStringLiteral("Ownership surface"), QStringLiteral("Balances, assets, identity, and future signature requests in one explicit place.")},
-        {QStringLiteral("Notes Mesh"), QStringLiteral("Memory substrate"), QStringLiteral("Structured notes and memory surfaces that support continuity across sessions and agents.")}
+        {QStringLiteral("Notes Mesh"), QStringLiteral("Memory substrate"), QStringLiteral("Structured notes and memory surfaces that support continuity across sessions and agents.")},
+        {QStringLiteral("SolOS Pulso"), QStringLiteral("Planned social signal surface"), QStringLiteral("Future consented social layer for posts, topics, video signals, and Pulso Credits inside SolOS.")}
     })
 {
 }

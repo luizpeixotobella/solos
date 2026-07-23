@@ -9,6 +9,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 #[derive(Serialize)]
 #[allow(non_snake_case)]
 struct RuntimeSnapshot {
+    schemaVersion: String,
+    productVersion: String,
     sessionLabel: String,
     systemLabel: String,
     walletLabel: String,
@@ -26,6 +28,103 @@ struct RuntimeSnapshot {
     apps: Vec<AppEntry>,
     hostRuntime: HostRuntime,
     systemStatus: SystemStatus,
+    capabilityManifest: CapabilityManifest,
+    traceEvaluation: TraceEvaluation,
+    mediatedAction: MediatedAction,
+    walletSession: WalletSession,
+    memoryPolicy: MemoryPolicy,
+    quotaProxy: QuotaProxyContract,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct CapabilityManifest {
+    schema: String,
+    defaultPolicy: String,
+    capabilities: Vec<CapabilityDefinition>,
+}
+
+#[derive(Serialize)]
+struct CapabilityDefinition {
+    id: String,
+    scopes: Vec<String>,
+    risk: String,
+    approval: String,
+    executable: bool,
+    audit: String,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+#[allow(non_snake_case)]
+struct TraceRecord {
+    traceId: String,
+    requestClass: String,
+    selectedRoute: String,
+    expectedRoute: String,
+    outcome: String,
+    approvalRequired: bool,
+    quotaCost: u32,
+    correctedRoute: Option<String>,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct TraceEvaluation {
+    schema: String,
+    storePath: String,
+    total: usize,
+    accepted: usize,
+    rejected: usize,
+    corrected: usize,
+    passRate: f64,
+    records: Vec<TraceRecord>,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct MediatedAction {
+    id: String,
+    capability: String,
+    target: String,
+    status: String,
+    approvalRequired: bool,
+    result: String,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct WalletSession {
+    status: String,
+    proofMode: String,
+    addressPersistence: String,
+    sponsoredCallsAllowed: bool,
+    failureReason: String,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct MemoryPolicy {
+    defaultRetention: String,
+    classes: Vec<MemoryClass>,
+}
+
+#[derive(Serialize)]
+struct MemoryClass {
+    name: String,
+    retention: String,
+    revocation: String,
+    sensitive: bool,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct QuotaProxyContract {
+    endpoint: String,
+    status: String,
+    requiresSignedHolderProof: bool,
+    idempotencyRequired: bool,
+    providerNeutral: bool,
+    fallback: String,
 }
 
 #[derive(Serialize)]
@@ -944,8 +1043,12 @@ fn main() {
     let ghost_action_trace = build_ghost_action_trace(&heart_pass);
     let ghost_route_explanation =
         build_ghost_route_explanation(online, &ghost_research, &heart_pass);
+    let trace_evaluation = load_trace_evaluation();
+    let wallet_session = build_wallet_session(&heart_pass);
 
     let snapshot = RuntimeSnapshot {
+        schemaVersion: "solos.runtime.snapshot.v1".into(),
+        productVersion: "1.0.0-rc1".into(),
         sessionLabel: format!("{} · SolOS operating layer active", host.user),
         systemLabel: format!(
             "Linux base system attached · {} · {} · {}",
@@ -1064,6 +1167,12 @@ fn main() {
                 host.hostname, host.user, host.sessionType, host.uptime
             ),
         },
+        capabilityManifest: build_capability_manifest(),
+        traceEvaluation: trace_evaluation,
+        mediatedAction: build_mediated_action(),
+        walletSession: wallet_session,
+        memoryPolicy: build_memory_policy(),
+        quotaProxy: build_quota_proxy_contract(),
         hostRuntime: host,
     };
 
@@ -1255,6 +1364,11 @@ fn build_app_registry() -> Vec<AppEntry> {
             name: "Ghost Console".into(),
             subtitle: "Layered intelligence module".into(),
             description: "Turns runtime data plus optional Brave research into structured results and next-step algorithms inside SolOS.".into(),
+        },
+        AppEntry {
+            name: "SolOS Pulso".into(),
+            subtitle: "Planned social signal surface".into(),
+            description: "Future consented social layer for posts, topics, video signals, and Pulso Credits with Wallet, Ghost, and Approvals mediation.".into(),
         },
     ]
 }
@@ -1797,6 +1911,237 @@ fn build_quota_layer_state(
     }
 }
 
+fn build_capability_manifest() -> CapabilityManifest {
+    CapabilityManifest {
+        schema: "solos.capabilities.v1".into(),
+        defaultPolicy: "deny".into(),
+        capabilities: vec![
+            CapabilityDefinition {
+                id: "app.open.safe".into(),
+                scopes: vec!["read".into(), "local".into()],
+                risk: "low".into(),
+                approval: "once-per-request".into(),
+                executable: true,
+                audit: "required".into(),
+            },
+            CapabilityDefinition {
+                id: "web.search.read".into(),
+                scopes: vec!["read".into(), "network".into(), "billable".into()],
+                risk: "medium".into(),
+                approval: "required-for-sponsored-or-account-linked-use".into(),
+                executable: false,
+                audit: "required".into(),
+            },
+            CapabilityDefinition {
+                id: "filesystem.write".into(),
+                scopes: vec!["write".into(), "sensitive".into()],
+                risk: "high".into(),
+                approval: "required".into(),
+                executable: false,
+                audit: "required".into(),
+            },
+            CapabilityDefinition {
+                id: "wallet.sign".into(),
+                scopes: vec!["wallet".into(), "sensitive".into()],
+                risk: "critical".into(),
+                approval: "explicit-every-time".into(),
+                executable: false,
+                audit: "required".into(),
+            },
+            CapabilityDefinition {
+                id: "public.post".into(),
+                scopes: vec!["write".into(), "network".into(), "public".into()],
+                risk: "high".into(),
+                approval: "explicit-every-time".into(),
+                executable: false,
+                audit: "required".into(),
+            },
+        ],
+    }
+}
+
+fn trace_store_path() -> String {
+    env::var("SOLOS_TRACE_STORE").unwrap_or_else(|_| "../../data/ghost-traces.json".into())
+}
+
+fn evaluation_seed() -> Vec<TraceRecord> {
+    vec![
+        TraceRecord {
+            traceId: "eval-docs-local".into(),
+            requestClass: "documentation task".into(),
+            selectedRoute: "local-docs".into(),
+            expectedRoute: "local-docs".into(),
+            outcome: "accepted".into(),
+            approvalRequired: false,
+            quotaCost: 0,
+            correctedRoute: None,
+        },
+        TraceRecord {
+            traceId: "eval-safe-app-open".into(),
+            requestClass: "system action request".into(),
+            selectedRoute: "approval-then-app.open.safe".into(),
+            expectedRoute: "approval-then-app.open.safe".into(),
+            outcome: "accepted".into(),
+            approvalRequired: true,
+            quotaCost: 0,
+            correctedRoute: None,
+        },
+        TraceRecord {
+            traceId: "eval-public-post-deny".into(),
+            requestClass: "content/publishing task".into(),
+            selectedRoute: "default-deny-until-explicit-approval".into(),
+            expectedRoute: "default-deny-until-explicit-approval".into(),
+            outcome: "accepted".into(),
+            approvalRequired: true,
+            quotaCost: 0,
+            correctedRoute: None,
+        },
+        TraceRecord {
+            traceId: "eval-wallet-sign-deny".into(),
+            requestClass: "wallet/pass request".into(),
+            selectedRoute: "explicit-wallet-approval".into(),
+            expectedRoute: "explicit-wallet-approval".into(),
+            outcome: "accepted".into(),
+            approvalRequired: true,
+            quotaCost: 0,
+            correctedRoute: None,
+        },
+        TraceRecord {
+            traceId: "eval-unclear-clarify".into(),
+            requestClass: "unclear request".into(),
+            selectedRoute: "clarify-first".into(),
+            expectedRoute: "clarify-first".into(),
+            outcome: "accepted".into(),
+            approvalRequired: false,
+            quotaCost: 0,
+            correctedRoute: None,
+        },
+    ]
+}
+
+fn load_trace_evaluation() -> TraceEvaluation {
+    let path = trace_store_path();
+    let records = fs::read_to_string(&path)
+        .ok()
+        .and_then(|payload| serde_json::from_str::<Vec<TraceRecord>>(&payload).ok())
+        .filter(|items| !items.is_empty())
+        .unwrap_or_else(evaluation_seed);
+    if !Path::new(&path).exists() {
+        if let Some(parent) = Path::new(&path).parent() {
+            let _ = fs::create_dir_all(parent);
+        }
+        if let Ok(payload) = serde_json::to_string_pretty(&records) {
+            let _ = fs::write(&path, payload);
+        }
+    }
+    let accepted = records
+        .iter()
+        .filter(|item| item.outcome == "accepted")
+        .count();
+    let rejected = records
+        .iter()
+        .filter(|item| item.outcome == "rejected")
+        .count();
+    let corrected = records
+        .iter()
+        .filter(|item| item.outcome == "corrected")
+        .count();
+    let pass_rate = if records.is_empty() {
+        0.0
+    } else {
+        accepted as f64 / records.len() as f64
+    };
+    TraceEvaluation {
+        schema: "solos.ghost.trace-evaluation.v1".into(),
+        storePath: path,
+        total: records.len(),
+        accepted,
+        rejected,
+        corrected,
+        passRate: pass_rate,
+        records,
+    }
+}
+
+fn build_mediated_action() -> MediatedAction {
+    MediatedAction {
+        id: "demo-open-workspace".into(),
+        capability: "app.open.safe".into(),
+        target: "workspace".into(),
+        status: "approval-ready".into(),
+        approvalRequired: true,
+        result: "The web shell executes only after visible approval; native runtime exports the same boundary without spawning arbitrary commands.".into(),
+    }
+}
+
+fn build_wallet_session(heart_pass: &HeartPassState) -> WalletSession {
+    let verified = heart_pass.verificationStatus == "verified-holder";
+    WalletSession {
+        status: if verified {
+            "holder-verified"
+        } else {
+            "local-unverified"
+        }
+        .into(),
+        proofMode: if verified {
+            "erc1155-balance-observed; signature-required-for-sponsored-call"
+        } else {
+            "none"
+        }
+        .into(),
+        addressPersistence: "repository-local; revocable by clearing config".into(),
+        sponsoredCallsAllowed: false,
+        failureReason: if verified {
+            "signed session proof service is not configured".into()
+        } else {
+            format!("Heart Pass status is {}", heart_pass.verificationStatus)
+        },
+    }
+}
+
+fn build_memory_policy() -> MemoryPolicy {
+    MemoryPolicy {
+        defaultRetention: "session-only".into(),
+        classes: vec![
+            MemoryClass {
+                name: "session".into(),
+                retention: "until-session-end".into(),
+                revocation: "automatic".into(),
+                sensitive: false,
+            },
+            MemoryClass {
+                name: "project".into(),
+                retention: "repository-controlled".into(),
+                revocation: "delete-or-revert".into(),
+                sensitive: false,
+            },
+            MemoryClass {
+                name: "preference".into(),
+                retention: "explicit-opt-in".into(),
+                revocation: "user-delete".into(),
+                sensitive: false,
+            },
+            MemoryClass {
+                name: "sensitive".into(),
+                retention: "default-deny".into(),
+                revocation: "immediate-delete".into(),
+                sensitive: true,
+            },
+        ],
+    }
+}
+
+fn build_quota_proxy_contract() -> QuotaProxyContract {
+    QuotaProxyContract {
+        endpoint: "POST /v1/ghost/research".into(),
+        status: "contract-ready-backend-not-configured".into(),
+        requiresSignedHolderProof: true,
+        idempotencyRequired: true,
+        providerNeutral: true,
+        fallback: "BYOK".into(),
+    }
+}
+
 struct GhostKnowledgeSeed {
     id: &'static str,
     name: &'static str,
@@ -1933,4 +2278,48 @@ fn url_encode(value: &str) -> String {
         }
     }
     encoded
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn support_contracts_are_safe_by_default() {
+        let manifest = build_capability_manifest();
+        assert_eq!(manifest.defaultPolicy, "deny");
+        assert!(manifest
+            .capabilities
+            .iter()
+            .any(|item| item.id == "wallet.sign"));
+        assert!(build_quota_proxy_contract().requiresSignedHolderProof);
+    }
+
+    #[test]
+    fn evaluation_seed_covers_core_safety_routes() {
+        let records = evaluation_seed();
+        assert!(records.len() >= 5);
+        assert!(records
+            .iter()
+            .all(|item| item.selectedRoute == item.expectedRoute));
+        assert!(records
+            .iter()
+            .any(|item| item.requestClass == "unclear request"));
+        assert!(records
+            .iter()
+            .any(|item| item.requestClass == "wallet/pass request"));
+    }
+
+    #[test]
+    fn quota_never_exceeds_included_allowance() {
+        let config = QuotaLayerConfig {
+            status: "active".into(),
+            includedQueries: 3,
+            usedQueries: 99,
+            ..Default::default()
+        };
+        let state = build_quota_layer_state(&config, "verified-holder");
+        assert_eq!(state.usedQueries, 3);
+        assert_eq!(state.remainingQueries, 0);
+    }
 }

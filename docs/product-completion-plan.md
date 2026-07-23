@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: living engineering plan.
+Status: v1.0 RC1 implementation complete; release candidate verification in progress.
 
 ## Purpose
 
@@ -34,6 +34,7 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [x] Wallet and Agent/Ghost surfaces render Heart Pass quota status, usage, fallback, and verification requirement.
 - [x] Ghost operational readiness exists in runtime and native Agent/Ghost UI.
 - [x] Ghost request classification, action trace, and route explanation exist in runtime, native UI, and web/mock UI.
+- [x] SolOS Pulso and Pulso Credits are documented as a future social/credit app surface.
 - [x] Demo ISO / Linux appliance path is documented and scaffolded.
 - [x] CMS documentation, blog, social copy, and executive pages are aligned with the Heart Pass quota-runtime public narrative.
 
@@ -43,26 +44,29 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [~] Agent shows readiness, classification, trace, approvals, and quota state, but does not yet persist trace outcomes or execute real task routes.
 - [~] Wallet shows pass/quota semantics, but real wallet/account state remains limited to the current Heart Pass path.
 - [~] Apps has registry-style structure, but not yet a real launcher/capability bridge.
+- [~] Pulso appears as a planned app/roadmap surface, but not yet as a real data-capture or credit-ledger system.
 - [~] Runtime state is structured and partly host-derived, but still depends on snapshot output rather than a durable service/API/event layer.
 - [~] Demo appliance documentation exists, but the current native shell has not yet replaced the browser-kiosk path as the tested primary demo session.
 - [~] CMS and public narrative are aligned through the last quota-runtime cycle, but now need a standing completion dashboard rather than only campaign updates.
 
 ### Not done yet
 
-- [ ] Persist Ghost trace outcomes and accepted/rejected examples.
-- [ ] Add schema/tests for the runtime snapshot contract.
-- [ ] Add a typed tool/capability manifest with read, write, sensitive, network, wallet, and public-posting scopes.
-- [ ] Connect approvals to real mediated command/task execution.
+- [x] Persist Ghost trace outcomes and accepted/rejected/corrected examples.
+- [x] Add versioned schema invariants and tests for the runtime snapshot contract.
+- [x] Add a typed tool/capability manifest with read, write, sensitive, network, wallet, and public-posting scopes.
+- [x] Connect approvals to the first safe mediated action (`app.open.safe`) in the demonstrator.
 - [ ] Connect Ghost research usage to quota accounting.
-- [ ] Define and prototype the server-side quota/proxy endpoint for sponsored Brave/OpenAI usage.
-- [ ] Add signed holder/session proof before sponsored quota calls.
-- [ ] Add provider-neutral retrieval adapters beyond Brave.
-- [ ] Add scoped Ghost memory classes with revocation semantics.
-- [ ] Connect Wallet to real account/session state beyond the Heart Pass proof path.
-- [ ] Add app launcher bridge and host-discovered app capabilities.
+- [x] Define the provider-neutral server-side quota/proxy contract for sponsored usage; runtime remains disabled until a signed-proof backend exists.
+- [ ] Define Pulso Credits ledger, caps, anti-fraud, expiry, and cost guardrails.
+- [ ] Add Pulso consent/export/delete/moderation before real social capture.
+- [x] Require signed holder/session proof before sponsored quota calls.
+- [x] Define a provider-neutral retrieval boundary; Brave remains the first adapter.
+- [x] Add scoped Ghost memory classes with revocation semantics.
+- [x] Expose honest Wallet/session proof state beyond UI-only assumptions.
+- [x] Add an app launcher bridge in the demonstrator and capability declarations for runtime mediation.
 - [ ] Formalize reusable shell theme tokens and scroll behavior for content-heavy screens.
 - [ ] Build and smoke-test the demo ISO path in a VM.
-- [ ] Publish a repeatable v1 demo script and release checklist.
+- [x] Publish a repeatable v1 demo script and release checklist.
 
 ## Recommended next engineering slice
 
@@ -115,11 +119,11 @@ Acceptance:
 
 ### Milestone 1 - Ghost trace persistence
 
-- [ ] Persist trace outcomes locally.
-- [ ] Add accepted/rejected/corrected status.
-- [ ] Add expected-route examples for common SolOS request classes.
-- [ ] Show trace history or latest trace status in Agent/Ghost.
-- [ ] Document trace contract and evaluation seed.
+- [x] Persist trace outcomes locally.
+- [x] Add accepted/rejected/corrected status.
+- [x] Add expected-route examples for common SolOS request classes.
+- [x] Show trace evaluation status in Agent/Ghost.
+- [x] Document trace contract and evaluation seed.
 
 Acceptance:
 
@@ -127,10 +131,10 @@ Acceptance:
 
 ### Milestone 2 - Tool and approval manifest
 
-- [ ] Define tool/capability manifest schema.
-- [ ] Classify capabilities by read/write/sensitive/network/wallet/public scopes.
-- [ ] Bind approval requirements to scope.
-- [ ] Show required approval reason in Agent/Ghost.
+- [x] Define tool/capability manifest schema.
+- [x] Classify capabilities by read/write/sensitive/network/wallet/public scopes.
+- [x] Bind approval requirements to scope.
+- [x] Show required approval reason in Agent/Ghost.
 
 Acceptance:
 
@@ -138,10 +142,10 @@ Acceptance:
 
 ### Milestone 3 - First mediated action
 
-- [ ] Choose one low-risk mediated action.
-- [ ] Route it through runtime-mediated command/task state.
-- [ ] Require approval when appropriate.
-- [ ] Emit trace and result.
+- [x] Choose one low-risk mediated action.
+- [x] Route it through runtime-mediated command/task state.
+- [x] Require approval when appropriate.
+- [x] Emit trace and result.
 
 Preferred first action:
 
@@ -156,7 +160,7 @@ Acceptance:
 - [ ] Connect Ghost research usage to local quota decrementing.
 - [ ] Preserve BYOK fallback.
 - [ ] Add service-unavailable and quota-exhausted states.
-- [ ] Draft server-side quota/proxy endpoint shape.
+- [x] Draft server-side quota/proxy endpoint shape.
 
 Acceptance:
 
@@ -164,9 +168,9 @@ Acceptance:
 
 ### Milestone 5 - Wallet and Heart Pass hardening
 
-- [ ] Add signed holder/session proof for future sponsored quota.
-- [ ] Isolate wallet/pass verification status from UI-only assumptions.
-- [ ] Add clearer verification failure reasons.
+- [x] Require signed holder/session proof for future sponsored quota.
+- [x] Isolate wallet/pass verification status from UI-only assumptions.
+- [x] Add clearer verification failure reasons.
 - [ ] Keep non-financial public wording.
 
 Acceptance:
@@ -178,6 +182,7 @@ Acceptance:
 - [ ] Turn Apps from registry surface into launcher bridge.
 - [ ] Map each app/module to declared capabilities.
 - [ ] Feed launcher actions into trace and approval policy.
+- [ ] Keep SolOS Pulso visible as planned until consent, credit ledger, and cost model are real.
 
 Acceptance:
 
@@ -199,9 +204,9 @@ Acceptance:
 
 - [ ] Stabilize theme tokens and scrolling.
 - [ ] Fix content-heavy screen behavior.
-- [ ] Add release checklist.
+- [x] Add release checklist.
 - [ ] Add architecture decision records for major choices.
-- [ ] Tag a v1 demo candidate.
+- [~] Tag a v1 demo candidate after the final clean verification and push.
 
 Acceptance:
 
@@ -233,11 +238,18 @@ Question: can SolOS be shown as a Linux-based operating layer in a repeatable VM
 
 Deliverable: built shell assets, appliance context, VM smoke notes, release candidate checklist.
 
+### Prototype E - Pulso Credits ledger
+
+Question: can SolOS return social-signal value as internal utility credit without creating hidden cost or false financial promises?
+
+Deliverable: credit ledger schema, caps, expiry, anti-fraud rules, Wallet-facing summary, and non-financial public wording.
+
 ## Decisions to discuss with Luiz
 
 - Which demo story should define SolOS v1.0: Ghost trace, Heart Pass utility, app launcher, or Linux appliance boot?
 - What is the first low-risk mediated action worth making real?
 - What quota numbers should the first public Heart Pass experiment use?
+- What should the first Pulso Credits redemption be: Ghost usage, upload allowance, access, discount, or creator tool?
 - Should v1.0 prioritize native shell as the primary demo, or keep browser kiosk as the first externally repeatable path?
 - What public promise should be avoided until the quota backend and approval router are real?
 

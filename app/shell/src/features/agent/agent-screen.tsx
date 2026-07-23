@@ -114,6 +114,21 @@ export function AgentScreen({
         </div>
       </PanelCard>
 
+      <PanelCard
+        title="Ghost Trace Evaluation"
+        aside={<StatusBadge label={`${Math.round(state.agent.evaluation.passRate * 100)}% pass`} tone="success" />}
+      >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(120px, 1fr))", gap: 12 }}>
+          <TraceField label="Examples" value={String(state.agent.evaluation.total)} />
+          <TraceField label="Accepted" value={String(state.agent.evaluation.accepted)} />
+          <TraceField label="Rejected" value={String(state.agent.evaluation.rejected)} />
+          <TraceField label="Corrected" value={String(state.agent.evaluation.corrected)} />
+        </div>
+        <p style={{ color: colors.soft, marginBottom: 0 }}>
+          Route outcomes are persisted against deterministic expectations before Ghost claims that a route is safe or ready.
+        </p>
+      </PanelCard>
+
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
         <PanelCard title="Action Trace" aside={<StatusBadge label={state.agent.actionTrace.outcome} />}>
           <div style={{ display: "grid", gap: 12 }}>

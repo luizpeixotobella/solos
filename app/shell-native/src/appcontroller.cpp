@@ -133,7 +133,8 @@ QStringList AppController::appNames() const
     return {
         QStringLiteral("Workspace"),
         QStringLiteral("Wallet Hub"),
-        QStringLiteral("Notes Mesh")
+        QStringLiteral("Notes Mesh"),
+        QStringLiteral("SolOS Pulso")
     };
 }
 

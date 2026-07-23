@@ -75,6 +75,13 @@ export type AgentState = {
   requestClassifier: GhostRequestClassifier;
   actionTrace: GhostActionTrace;
   routeExplanation: GhostRouteExplanation;
+  evaluation: {
+    total: number;
+    accepted: number;
+    rejected: number;
+    corrected: number;
+    passRate: number;
+  };
 };
 
 export type AgentConversationMessage = {

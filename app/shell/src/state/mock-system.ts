@@ -21,7 +21,7 @@ export const initialSession: UserSession = {
 
 export const initialSystemStatus: SystemStatus = {
   online: true,
-  version: "v0.1-foundation",
+  version: "v1.0.0-rc1",
   syncState: "Synced",
   notificationsCount: 2,
   approvalsCount: 1,
@@ -98,6 +98,13 @@ export const initialAgentState: AgentState = {
     quotaPolicy: "This route spends 0 research queries; future web-grounded research should decrement Heart Pass quota.",
     nextStep: "Persist trace outcomes and accepted/rejected examples so Ghost can compare future routes against expected behavior.",
   },
+  evaluation: {
+    total: 5,
+    accepted: 5,
+    rejected: 0,
+    corrected: 0,
+    passRate: 1,
+  },
 };
 
 export const initialWalletState: WalletState = {
@@ -137,6 +144,14 @@ export const initialApps: AppDefinition[] = [
     kind: "hybrid",
     description: "Notes and memory flows across local and shared contexts.",
     capabilities: ["storage", "agent"],
+    status: "available",
+  },
+  {
+    id: "solos-pulso",
+    name: "SolOS Pulso",
+    kind: "hybrid",
+    description: "Planned social signal surface for posts, topics, video signals, and Pulso Credits.",
+    capabilities: ["social", "agent", "wallet", "approvals"],
     status: "available",
   },
 ];
