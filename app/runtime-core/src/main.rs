@@ -144,6 +144,7 @@ struct HeartPassState {
     verificationStatus: String,
     lastCheckedAt: String,
     configPath: String,
+    pulsoRewardsClaimed: usize,
     quotaLayer: QuotaLayerState,
     capabilities: Vec<String>,
 }
@@ -164,7 +165,19 @@ struct HeartPassConfig {
     lastCheckedAt: String,
     notes: String,
     #[serde(default)]
+    claimedPulsoRedemptions: Vec<String>,
+    #[serde(default)]
     quotaLayer: QuotaLayerConfig,
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+struct QuotaConsumptionResult {
+    schema: String,
+    consumed: u32,
+    usedQueries: u32,
+    remainingQueries: u32,
+    status: String,
 }
 
 #[derive(Serialize)]
@@ -999,6 +1012,26 @@ impl GhostBrain {
 }
 
 fn main() {
+    if env::args().nth(1).as_deref() == Some("consume-ghost-query") {
+        let amount = env::args()
+            .nth(2)
+            .and_then(|value| value.parse::<u32>().ok())
+            .unwrap_or(1);
+        match consume_ghost_queries(amount) {
+            Ok(result) => {
+                println!(
+                    "{}",
+                    serde_json::to_string_pretty(&result).unwrap_or_default()
+                );
+                return;
+            }
+            Err(error) => {
+                eprintln!("{error}");
+                std::process::exit(1);
+            }
+        }
+    }
+
     let host = detect_host_runtime();
     let online = detect_online();
     let ghost_brain = GhostBrain::new();
@@ -1020,7 +1053,7 @@ fn main() {
         "Heart Pass verified. Ghost already has a repository-local Brave key configured for this SolOS checkout.".into()
     } else {
         format!(
-            "Heart Pass verified. Ghost should send this SolOS user to Brave's key page, let them subscribe with their own account, then return and paste the key into solos/config/ghost.json so this repo stays isolated from shared quotas. Current status: {}.",
+            "Heart Pass verified. Ghost should send this SolOS user to Brave's key page, let them subscribe with their own account, then return and save the key in the ignored solos/config/ghost.local.json file. Current status: {}.",
             ghost_brain.intelligence.onboarding_status
         )
     };
@@ -1324,7 +1357,7 @@ fn build_approvals() -> Vec<ApprovalEntry> {
             description: "Ghost should open Brave's API key page for the SolOS user, let them pay or subscribe on their own account, then return and configure a repo-local key instead of sharing the developer key.".into(),
             requestedBy: "ghost-brain".into(),
             capability: "web.search.read".into(),
-            scope: "ghost onboarding -> Brave key acquisition -> solos/config/ghost.json".into(),
+            scope: "ghost onboarding -> Brave key acquisition -> ignored solos/config/ghost.local.json".into(),
             risk: "medium".into(),
             status: "pending".into(),
             createdAt: "ghost-module-bootstrap".into(),
@@ -1462,16 +1495,22 @@ fn detect_brave_config() -> GhostIntelligenceState {
 fn brave_search(query: &str, source: &str) -> Result<Vec<GhostCitation>, String> {
     let api_key =
         resolve_brave_key().ok_or_else(|| format!("Brave API key unavailable from {}", source))?;
-    let encoded_query = url_encode(query);
-    let command = format!(
-        "curl -fsSL --max-time 12 -H 'Accept: application/json' -H 'X-Subscription-Token: {}' 'https://api.search.brave.com/res/v1/web/search?q={}&count=5'",
-        escape_single_quotes(&api_key),
-        encoded_query
+    let endpoint = format!(
+        "https://api.search.brave.com/res/v1/web/search?q={}&count=5",
+        url_encode(query)
     );
-
-    let output = Command::new("sh")
-        .arg("-lc")
-        .arg(command)
+    let token_header = format!("X-Subscription-Token: {api_key}");
+    let output = Command::new("curl")
+        .args([
+            "-fsSL",
+            "--max-time",
+            "12",
+            "-H",
+            "Accept: application/json",
+            "-H",
+            token_header.as_str(),
+            endpoint.as_str(),
+        ])
         .output()
         .map_err(|e| e.to_string())?;
 
@@ -1577,9 +1616,9 @@ fn read_brave_key_from_path(path: &str) -> Option<String> {
 
 fn brave_key_file_candidates() -> Vec<&'static str> {
     vec![
-        "./config/ghost.json",
-        "../../config/ghost.json",
-        "./solos/config/ghost.json",
+        "./config/ghost.local.json",
+        "../../config/ghost.local.json",
+        "./solos/config/ghost.local.json",
         "./config/solos.json",
         "./config/runtime.json",
         "./.env",
@@ -1624,6 +1663,7 @@ fn default_heart_pass_config() -> HeartPassConfig {
         verificationStatus: "needs-wallet".into(),
         lastCheckedAt: "never".into(),
         notes: "Local SolOS Heart Pass state. Wallet capture, Polygon verification, Ghost gating, and the planned quota contract stay visible before any sponsored backend is introduced.".into(),
+        claimedPulsoRedemptions: vec![],
         quotaLayer: default_quota_layer_config(),
     }
 }
@@ -1701,6 +1741,47 @@ fn merge_quota_layer_config(config: QuotaLayerConfig) -> QuotaLayerConfig {
     }
 }
 
+fn consume_ghost_queries(amount: u32) -> Result<QuotaConsumptionResult, String> {
+    if amount == 0 || amount > 25 {
+        return Err("query amount must be between 1 and 25".into());
+    }
+
+    let path = heart_pass_config_path();
+    let mut config = load_heart_pass_config(&path);
+    if config.verificationStatus != "verified-holder" {
+        return Err("verified Heart Pass required before consuming sponsored quota".into());
+    }
+
+    config.quotaLayer = merge_quota_layer_config(config.quotaLayer);
+    if config.quotaLayer.status != "active" {
+        return Err("Ghost sponsored quota is not active".into());
+    }
+    if config.quotaLayer.remainingQueries < amount {
+        return Err("insufficient Ghost query quota; use BYOK fallback".into());
+    }
+
+    config.quotaLayer.usedQueries = config.quotaLayer.usedQueries.saturating_add(amount);
+    config.quotaLayer.remainingQueries = config
+        .quotaLayer
+        .includedQueries
+        .saturating_sub(config.quotaLayer.usedQueries);
+    config.quotaLayer.lastSync = unix_timestamp_string();
+    config.quotaLayer.usageSource = "local-ghost-runtime".into();
+    save_heart_pass_config(&path, &config)?;
+
+    Ok(QuotaConsumptionResult {
+        schema: "solos.ghost.quota-consumption.v1".into(),
+        consumed: amount,
+        usedQueries: config.quotaLayer.usedQueries,
+        remainingQueries: config.quotaLayer.remainingQueries,
+        status: if config.quotaLayer.remainingQueries == 0 {
+            "exhausted".into()
+        } else {
+            "active".into()
+        },
+    })
+}
+
 fn load_heart_pass_config(path: &str) -> HeartPassConfig {
     if let Ok(content) = fs::read_to_string(path) {
         if let Ok(config) = serde_json::from_str::<HeartPassConfig>(&content) {
@@ -1762,6 +1843,7 @@ fn load_heart_pass_config(path: &str) -> HeartPassConfig {
                 } else {
                     config.notes
                 },
+                claimedPulsoRedemptions: config.claimedPulsoRedemptions,
                 quotaLayer: merge_quota_layer_config(config.quotaLayer),
             };
         }
@@ -1775,12 +1857,17 @@ fn ensure_heart_pass_config(path: &str, config: &HeartPassConfig) {
         return;
     }
 
+    let _ = save_heart_pass_config(path, config);
+}
+
+fn save_heart_pass_config(path: &str, config: &HeartPassConfig) -> Result<(), String> {
     if let Some(parent) = Path::new(path).parent() {
-        let _ = fs::create_dir_all(parent);
+        fs::create_dir_all(parent).map_err(|error| error.to_string())?;
     }
-    if let Ok(payload) = serde_json::to_string_pretty(config) {
-        let _ = fs::write(path, payload);
-    }
+    let payload = serde_json::to_string_pretty(config).map_err(|error| error.to_string())?;
+    let temporary_path = format!("{path}.tmp");
+    fs::write(&temporary_path, payload).map_err(|error| error.to_string())?;
+    fs::rename(&temporary_path, path).map_err(|error| error.to_string())
 }
 
 fn build_heart_pass_state() -> HeartPassState {
@@ -1843,6 +1930,7 @@ fn build_heart_pass_state() -> HeartPassState {
         verificationStatus: config.verificationStatus,
         lastCheckedAt: config.lastCheckedAt,
         configPath: config_path,
+        pulsoRewardsClaimed: config.claimedPulsoRedemptions.len(),
         quotaLayer: quota_layer,
         capabilities: vec![
             "Early-supporter identity surface".into(),
@@ -1852,6 +1940,10 @@ fn build_heart_pass_state() -> HeartPassState {
                 config.quotaLayer.includedQueries,
                 config.quotaLayer.fallback,
                 config.quotaLayer.status
+            ),
+            format!(
+                "Pulso Founder rewards synchronized: {}",
+                config.claimedPulsoRedemptions.len()
             ),
             "Future pass-gated experimental Ghost capabilities".into(),
             "Transparent usage and quota story without investment/yield promises".into(),
@@ -2245,25 +2337,25 @@ fn unix_timestamp_string() -> String {
 }
 
 fn read_onboarding_url() -> Option<String> {
-    let path = "./solos/config/ghost.json";
-    let content = fs::read_to_string(path).ok()?;
-    let json: serde_json::Value = serde_json::from_str(&content).ok()?;
-    json.pointer("/ghost/intelligence/webSearch/onboardingUrl")
-        .and_then(|v| v.as_str())
-        .map(|v| v.to_string())
+    read_ghost_template_value("/ghost/intelligence/webSearch/onboardingUrl")
 }
 
 fn read_onboarding_status() -> Option<String> {
-    let path = "./solos/config/ghost.json";
-    let content = fs::read_to_string(path).ok()?;
-    let json: serde_json::Value = serde_json::from_str(&content).ok()?;
-    json.pointer("/ghost/intelligence/webSearch/status")
-        .and_then(|v| v.as_str())
-        .map(|v| v.to_string())
+    read_ghost_template_value("/ghost/intelligence/webSearch/status")
 }
 
-fn escape_single_quotes(value: &str) -> String {
-    value.replace('\'', "'\\''")
+fn read_ghost_template_value(pointer: &str) -> Option<String> {
+    [
+        "./config/ghost.json",
+        "../../config/ghost.json",
+        "./solos/config/ghost.json",
+    ]
+    .iter()
+    .find_map(|path| fs::read_to_string(path).ok())
+    .and_then(|content| serde_json::from_str::<serde_json::Value>(&content).ok())?
+    .pointer(pointer)
+    .and_then(|v| v.as_str())
+    .map(|v| v.to_string())
 }
 
 fn url_encode(value: &str) -> String {

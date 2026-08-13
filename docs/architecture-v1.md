@@ -141,6 +141,9 @@ Principle:
 - mediating selected Linux-backed actions
 - exposing stable state/contracts/events to the operating layer
 - reducing direct coupling between the shell and raw host-specific behavior
+- running the owner-scoped SolOS Daemon for persistent state, health, local events, background coordination and future mediated action queues
+
+Domain presentation remains in its natural SolOS space: Home, Ghost, Wallet, Apps or Pulso. Those surfaces consume Daemon contracts instead of embedding background/system service logic in QML or C++ UI code.
 
 ### SolOS operating layer owns
 - shell composition
@@ -285,3 +288,7 @@ A user boots a Linux-based SolOS image and feels they are inside a coherent oper
 - apps feel like one system world
 - approvals are explicit and understandable
 - the architecture is honest about what belongs to Linux, to the runtime, and to the operating layer
+
+## Founder utility seam
+
+The fundraiser does not change the three-layer architecture. CMS/Supabase verifies support and issues a bounded entitlement; SolOS Wallet synchronizes it; runtime-core meters local Ghost usage. Stripe remains outside the operating layer, and provider-sponsored calls remain outside v1 until the signed-proof proxy is implemented. See `founder-rewards-contract.md`.

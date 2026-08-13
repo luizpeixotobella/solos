@@ -2,6 +2,7 @@
 Description=SolOS shell demo server
 After=network-online.target
 Wants=network-online.target
+Wants=solos-daemon.service
 
 [Service]
 Type=simple

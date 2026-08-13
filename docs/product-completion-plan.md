@@ -46,6 +46,7 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [~] Apps has registry-style structure, but not yet a real launcher/capability bridge.
 - [~] Pulso appears as a planned app/roadmap surface, but not yet as a real data-capture or credit-ledger system.
 - [~] Runtime state is structured and partly host-derived, but still depends on snapshot output rather than a durable service/API/event layer.
+- [~] A persistent Rust Daemon now provides an owner-only Unix socket, health, RC1 snapshot compatibility and bounded local events; the native shell consumes it with automatic retry and snapshot fallback, while durable event/state stores remain next work.
 - [~] Demo appliance documentation exists, but the current native shell has not yet replaced the browser-kiosk path as the tested primary demo session.
 - [~] CMS and public narrative are aligned through the last quota-runtime cycle, but now need a standing completion dashboard rather than only campaign updates.
 
@@ -239,6 +240,19 @@ Question: can SolOS be shown as a Linux-based operating layer in a repeatable VM
 Deliverable: built shell assets, appliance context, VM smoke notes, release candidate checklist.
 
 ### Prototype E - Pulso Credits ledger
+
+CMS/Supabase slice implemented on 2026-08-01:
+
+- [x] Add a Founder supporter profile and permanent `founder-heart` badge contract.
+- [x] Add idempotent campaign reward grants backed by `pulso_credit_ledger`.
+- [x] Add authenticated balance/history surface at `/solos/pulso/recompensas`.
+- [x] Add the first atomic redemption: 10 Pulso Credits for a reservation of 25 Ghost queries.
+- [x] Apply and smoke-test the Founder Rewards migration in the production Supabase project.
+- [x] Add an authenticated CMS claim code to each Ghost-query redemption.
+- [x] Add a wallet-bound claim endpoint with idempotent reclaims for the same Polygon wallet.
+- [x] Let the native Wallet claim the code only after Heart Pass ownership verification and add the entitlement to the visible Ghost quota.
+- [x] Add a fail-closed Rust quota meter that persists local Ghost query consumption without charging on snapshot refresh.
+- [ ] Connect actual provider-backed Ghost query execution to the Rust meter and remote usage sync; paid-provider execution still follows the existing BYOK/proxy boundary.
 
 Question: can SolOS return social-signal value as internal utility credit without creating hidden cost or false financial promises?
 

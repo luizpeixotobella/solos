@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Qml)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Qml Network)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
@@ -48,7 +48,7 @@ qt_add_qml_module(solos-shell-native
 )
 
 target_link_libraries(solos-shell-native
-    PRIVATE Qt6::Quick Qt6::Qml
+    PRIVATE Qt6::Quick Qt6::Qml Qt6::Network
 )
 
 set_target_properties(solos-shell-native PROPERTIES

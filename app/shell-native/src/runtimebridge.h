@@ -100,4 +100,6 @@ class RuntimeBridge
 {
 public:
     static RuntimeSnapshotData loadSnapshot(const QString &path);
+    static RuntimeSnapshotData loadSnapshotFromDaemon(const QString &socketPath, int timeoutMs = 350);
+    static RuntimeSnapshotData parseSnapshot(const QByteArray &payload);
 };

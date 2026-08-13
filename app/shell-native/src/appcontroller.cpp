@@ -16,6 +16,19 @@
 #include "runtimebridge.h"
 
 namespace {
+QString daemonSocketPath()
+{
+    const QByteArray configured = qgetenv("SOLOS_DAEMON_SOCKET");
+    if (!configured.isEmpty()) {
+        return QString::fromLocal8Bit(configured);
+    }
+    const QByteArray runtimeDirectory = qgetenv("XDG_RUNTIME_DIR");
+    if (!runtimeDirectory.isEmpty()) {
+        return QDir(QString::fromLocal8Bit(runtimeDirectory)).filePath(QStringLiteral("solos/daemon.sock"));
+    }
+    return {};
+}
+
 QString runtimeSnapshotPath()
 {
     const QString appDir = QCoreApplication::applicationDirPath();
@@ -352,6 +365,11 @@ void AppController::refreshRuntime()
 namespace {
 QString ghostConfigPath()
 {
+    return QDir::cleanPath(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(QStringLiteral("../../../config/ghost.local.json")));
+}
+
+QString ghostTemplateConfigPath()
+{
     return QDir::cleanPath(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(QStringLiteral("../../../config/ghost.json")));
 }
 
@@ -364,7 +382,10 @@ bool loadGhostConfigJson(QJsonObject &root)
 {
     QFile file(ghostConfigPath());
     if (!file.open(QIODevice::ReadOnly)) {
-        return false;
+        file.setFileName(ghostTemplateConfigPath());
+        if (!file.open(QIODevice::ReadOnly)) {
+            return false;
+        }
     }
 
     const QJsonDocument document = QJsonDocument::fromJson(file.readAll());
@@ -385,6 +406,7 @@ bool writeGhostConfigJson(const QJsonObject &root)
     }
 
     file.write(QJsonDocument(root).toJson(QJsonDocument::Indented));
+    file.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner);
     file.close();
     return true;
 }
@@ -574,18 +596,20 @@ bool AppController::validateAndSaveGhostBraveApiKey(const QString &apiKey)
     }
 
     const QString trimmed = apiKey.trimmed();
-    if (trimmed.isEmpty()) {
-        m_ghostConfigStatus = QStringLiteral("Ghost Brave key is empty");
+    const QRegularExpression keyPattern(QStringLiteral("^[A-Za-z0-9_-]{20,200}$"));
+    if (!keyPattern.match(trimmed).hasMatch()) {
+        m_ghostConfigStatus = QStringLiteral("Ghost Brave key format is invalid");
         emit runtimeStateChanged();
         return false;
     }
 
-    const QString command = QStringLiteral(
-        "curl -fsSL --max-time 12 -H 'Accept: application/json' -H 'X-Subscription-Token: %1' 'https://api.search.brave.com/res/v1/web/search?q=solos&count=1'"
-    ).arg(trimmed);
-
     QProcess process;
-    process.start(QStringLiteral("sh"), {QStringLiteral("-lc"), command});
+    process.start(QStringLiteral("curl"), {
+        QStringLiteral("-fsSL"), QStringLiteral("--max-time"), QStringLiteral("12"),
+        QStringLiteral("-H"), QStringLiteral("Accept: application/json"),
+        QStringLiteral("-H"), QStringLiteral("X-Subscription-Token: %1").arg(trimmed),
+        QStringLiteral("https://api.search.brave.com/res/v1/web/search?q=solos&count=1")
+    });
     if (!process.waitForFinished(15000)) {
         m_ghostConfigStatus = QStringLiteral("Brave key validation timed out");
         emit runtimeStateChanged();
@@ -593,10 +617,7 @@ bool AppController::validateAndSaveGhostBraveApiKey(const QString &apiKey)
     }
 
     if (process.exitStatus() != QProcess::NormalExit || process.exitCode() != 0) {
-        const QString error = QString::fromUtf8(process.readAllStandardError()).trimmed();
-        m_ghostConfigStatus = error.isEmpty()
-            ? QStringLiteral("Brave key validation failed")
-            : QStringLiteral("Brave key invalid: ") + error;
+        m_ghostConfigStatus = QStringLiteral("Brave key validation failed");
         emit runtimeStateChanged();
         return false;
     }
@@ -778,6 +799,96 @@ bool AppController::verifyHeartPassOwnership()
     return balance > 0;
 }
 
+bool AppController::claimPulsoGhostReward(const QString &claimCode)
+{
+    const QString trimmedCode = claimCode.trimmed();
+    const QRegularExpression claimPattern(QStringLiteral("^[0-9a-fA-F-]{36}$"));
+    QJsonObject root = loadHeartPassConfigJson();
+    const QString walletAddress = root.value(QStringLiteral("walletAddress")).toString().trimmed().toLower();
+
+    if (root.value(QStringLiteral("verificationStatus")).toString() != QStringLiteral("verified-holder")) {
+        m_heartPassStatus = QStringLiteral("verify Heart Pass ownership before claiming Pulso utility");
+        emit runtimeStateChanged();
+        return false;
+    }
+    if (!claimPattern.match(trimmedCode).hasMatch()) {
+        m_heartPassStatus = QStringLiteral("invalid Pulso reward claim code");
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    const QString endpoint = qEnvironmentVariable(
+        "SOLOS_PULSO_REWARDS_URL",
+        QStringLiteral("http://localhost:3000/api/solos/pulso/claim")
+    );
+    QJsonObject payload;
+    payload.insert(QStringLiteral("claimCode"), trimmedCode);
+    payload.insert(QStringLiteral("walletAddress"), walletAddress);
+
+    QProcess process;
+    process.start(QStringLiteral("curl"), {
+        QStringLiteral("-fsSL"), QStringLiteral("--max-time"), QStringLiteral("20"),
+        QStringLiteral("-H"), QStringLiteral("Content-Type: application/json"),
+        QStringLiteral("--data"), QString::fromUtf8(QJsonDocument(payload).toJson(QJsonDocument::Compact)),
+        endpoint
+    });
+
+    if (!process.waitForFinished(25000) || process.exitStatus() != QProcess::NormalExit || process.exitCode() != 0) {
+        process.kill();
+        m_heartPassStatus = QStringLiteral("Pulso reward service unavailable");
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    const QJsonDocument responseDocument = QJsonDocument::fromJson(process.readAllStandardOutput());
+    if (!responseDocument.isObject()) {
+        m_heartPassStatus = QStringLiteral("Pulso reward response was unreadable");
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    const QJsonObject response = responseDocument.object();
+    const QString redemptionId = response.value(QStringLiteral("redemptionId")).toString();
+    const int queries = response.value(QStringLiteral("queries")).toInt();
+    if (redemptionId.isEmpty() || queries <= 0) {
+        m_heartPassStatus = QStringLiteral("Pulso reward did not contain Ghost utility");
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    QJsonArray claimedRedemptions = root.value(QStringLiteral("claimedPulsoRedemptions")).toArray();
+    for (const QJsonValue &value : claimedRedemptions) {
+        if (value.toString() == redemptionId) {
+            m_heartPassStatus = QStringLiteral("Pulso reward already synchronized");
+            emit runtimeStateChanged();
+            return true;
+        }
+    }
+
+    QJsonObject quota = root.value(QStringLiteral("quotaLayer")).toObject();
+    quota.insert(QStringLiteral("status"), QStringLiteral("active"));
+    quota.insert(QStringLiteral("includedQueries"), quota.value(QStringLiteral("includedQueries")).toInt() + queries);
+    quota.insert(QStringLiteral("remainingQueries"), quota.value(QStringLiteral("remainingQueries")).toInt() + queries);
+    quota.insert(QStringLiteral("usageSource"), QStringLiteral("pulso-founder-reward"));
+    quota.insert(QStringLiteral("lastSync"), QDateTime::currentDateTimeUtc().toString(Qt::ISODate));
+    quota.insert(QStringLiteral("notes"), QStringLiteral("Pulso Founder reward synchronized from the CMS ledger."));
+    root.insert(QStringLiteral("quotaLayer"), quota);
+    claimedRedemptions.append(redemptionId);
+    root.insert(QStringLiteral("claimedPulsoRedemptions"), claimedRedemptions);
+
+    if (!writeHeartPassConfigJson(root)) {
+        m_heartPassStatus = QStringLiteral("could not persist Pulso reward");
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    m_heartPassStatus = QStringLiteral("Pulso Founder reward synchronized");
+    generateRuntimeSnapshot();
+    loadRuntimeSnapshot();
+    emit runtimeStateChanged();
+    return true;
+}
+
 void AppController::openUrl(const QString &url)
 {
     QDesktopServices::openUrl(QUrl(url));
@@ -785,7 +896,16 @@ void AppController::openUrl(const QString &url)
 
 void AppController::loadRuntimeSnapshot()
 {
-    const RuntimeSnapshotData snapshot = RuntimeBridge::loadSnapshot(runtimeSnapshotPath());
+    const QString socketPath = daemonSocketPath();
+    RuntimeSnapshotData snapshot;
+    bool loadedFromDaemon = false;
+    if (!socketPath.isEmpty()) {
+        snapshot = RuntimeBridge::loadSnapshotFromDaemon(socketPath);
+        loadedFromDaemon = snapshot.isValid;
+    }
+    if (!snapshot.isValid) {
+        snapshot = RuntimeBridge::loadSnapshot(runtimeSnapshotPath());
+    }
     const QString now = QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd hh:mm:ss"));
 
     if (!snapshot.isValid) {
@@ -818,9 +938,9 @@ void AppController::loadRuntimeSnapshot()
         ? QStringLiteral("Live runtime intermediary snapshot loaded")
         : runtimeStatusParts.join(QStringLiteral(" · "));
 
-    if (!snapshot.runtimeSource.isEmpty()) {
-        m_runtimeSource = snapshot.runtimeSource;
-    }
+    m_runtimeSource = loadedFromDaemon
+        ? QStringLiteral("SolOS Daemon · ") + socketPath
+        : QStringLiteral("Snapshot fallback · ") + runtimeSnapshotPath();
 
     m_hostRuntimeSummary = snapshot.hostRuntimeSummary;
     m_online = snapshot.online;

@@ -92,4 +92,3 @@ Initial language support should prioritize broad global coverage while preservin
 This does not mean every language feature is fully implemented today. It defines the product constraint: Ghost should detect the user's language, reply in that language when appropriate, keep source-language citations attached to translated summaries, and use data-mined cultural context without flattening idiom, register, or local meaning.
 
 The long-term goal is not a translation widget. It is a Ghost that can operate with human language as a first-class runtime signal: intent, tone, cultural context, retrieval language, approval language, and output language all become part of the mediation layer.
-

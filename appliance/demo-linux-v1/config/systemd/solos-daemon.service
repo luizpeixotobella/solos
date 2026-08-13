@@ -1,0 +1,16 @@
+[Unit]
+Description=SolOS runtime intermediary daemon
+After=default.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/solos-daemon.env
+Environment=SOLOS_DAEMON_SOCKET=%t/solos/daemon.sock
+ExecStart=/opt/solos-runtime/bin/solos-daemon
+Restart=on-failure
+RestartSec=2
+RuntimeDirectory=solos
+RuntimeDirectoryMode=0700
+
+[Install]
+WantedBy=default.target

@@ -2,7 +2,7 @@
   "schemaVersion": "solos.runtime.snapshot.v1",
   "productVersion": "1.0.0-rc1",
   "sessionLabel": "lcpby · SolOS operating layer active",
-  "systemLabel": "Linux base system attached · systemd · x11 · online",
+  "systemLabel": "Linux base system attached · systemd · wayland · online",
   "walletLabel": "Wallet bridge pending · ownership surface visible",
   "agentStatus": "Ghost active · local pipeline online",
   "runtimeMode": "runtime-intermediary",
@@ -12,7 +12,7 @@
   "home": {
     "summaryTitle": "Ghost now has a first layered intelligence module",
     "summarySubtitle": "AI-era synthesis: data + results = algorithms, grounded in host runtime, outcomes, and optional Brave web search.",
-    "summaryBody": "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0-28-generic, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 11d 22h 15m. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
+    "summaryBody": "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 8d 17h 42m. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
     "nextActionTitle": "Next useful move",
     "nextActionSubtitle": "Promote Ghost from research pipeline to task executor",
     "nextActionBody": "The next module should add task intents and tool actions so Ghost can turn researched guidance into explicit SolOS commands, approval requests, and user-visible outcomes."
@@ -53,7 +53,7 @@
       {
         "name": "data",
         "status": "active",
-        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session x11, uptime 11d 22h 15m, network online."
+        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 8d 17h 42m, network online."
       },
       {
         "name": "results",
@@ -320,7 +320,6 @@
     "verificationStatus": "needs-wallet",
     "lastCheckedAt": "never",
     "configPath": "../../config/heart_pass.json",
-    "pulsoRewardsClaimed": 0,
     "quotaLayer": {
       "title": "Heart Pass Quota Layer",
       "status": "verification-required",
@@ -340,7 +339,6 @@
       "Early-supporter identity surface",
       "Guided Ghost/Brave key onboarding eligibility",
       "Quota Layer: 25 local pilot queries, byok fallback, status planned",
-      "Pulso Founder rewards synchronized: 0",
       "Future pass-gated experimental Ghost capabilities",
       "Transparent usage and quota story without investment/yield promises"
     ]
@@ -365,7 +363,7 @@
   "activityFeed": [
     {
       "title": "Linux base system detected",
-      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, x11 as the active session type, and uptime 11d 22h 15m.",
+      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 8d 17h 42m.",
       "status": "active"
     },
     {
@@ -396,7 +394,7 @@
       "description": "Ghost should open Brave's API key page for the SolOS user, let them pay or subscribe on their own account, then return and configure a repo-local key instead of sharing the developer key.",
       "requestedBy": "ghost-brain",
       "capability": "web.search.read",
-      "scope": "ghost onboarding -> Brave key acquisition -> ignored solos/config/ghost.local.json",
+      "scope": "ghost onboarding -> Brave key acquisition -> solos/config/ghost.json",
       "risk": "medium",
       "status": "pending",
       "createdAt": "ghost-module-bootstrap"
@@ -442,20 +440,20 @@
   ],
   "hostRuntime": {
     "os": "Ubuntu 24.04.4 LTS",
-    "kernel": "7.0.0-28-generic",
+    "kernel": "7.0.0",
     "initSystem": "systemd",
-    "sessionType": "x11",
+    "sessionType": "wayland",
     "desktopSession": "ubuntu:GNOME",
     "shell": "/bin/bash",
     "hostname": "lcpby-HP-ENVY-TS-17-Notebook-PC",
     "user": "lcpby",
-    "uptime": "11d 22h 15m"
+    "uptime": "8d 17h 42m"
   },
   "systemStatus": {
     "online": true,
     "approvalsCount": 2,
     "notificationsCount": 5,
-    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · x11 · uptime 11d 22h 15m"
+    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 8d 17h 42m"
   },
   "capabilityManifest": {
     "schema": "solos.capabilities.v1",

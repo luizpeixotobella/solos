@@ -1,5 +1,23 @@
 # SolOS Devlog
 
+## 2026-08-13 — Persistent Daemon foundation
+
+- Added `solos-daemon` as the first persistent process for the Rust runtime intermediary.
+- Added an owner-only Unix socket protocol with health, snapshot compatibility and bounded local events.
+- Kept arbitrary commands, wallet actions, filesystem writes and network calls outside the initial protocol.
+- Added a systemd user unit, environment example, release installer, tests and a live socket smoke check.
+- Connected the Qt native shell to `snapshot.get` over the local socket, with periodic retry and file fallback when the Daemon is absent.
+- Documented the ownership rule: systemic/background mediation belongs in the Daemon; domain UX remains in Home, Ghost, Wallet, Apps and Pulso.
+
+## 2026-08-02 — Founder Rewards and fundraiser alignment
+
+- Added `docs/founder-rewards-contract.md` to define the CMS/Supabase/Wallet/Rust boundary, idempotency, failure states and public non-promises.
+- Documented the fundraiser across SolOS README, architecture, roadmap, Pulso Credits and product completion plan.
+- Recorded that grant, redemption, atomic Wallet binding, native synchronization and local Rust quota metering are implemented/tested.
+- Preserved the safety boundary: snapshot refresh never consumes quota; sponsored provider execution remains unavailable without signed proof; BYOK remains the fallback.
+- Aligned the product repository with the CMS public-relations and private-operations campaign documents.
+- Kept push/deploy and Stripe setup as separate pending release operations.
+
 ## 2026-07-14
 
 - Documented **SolOS Pulso** as a planned social app surface for consented human signals, with a CMS public read-only preview at `/solos/pulso`.

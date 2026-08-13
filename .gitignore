@@ -6,6 +6,7 @@ app/shell-native/build/
 
 # Local Ghost runtime caches
 config/ghost_knowledge.json
+config/ghost.local.json
 
 # Generic build artifacts
 *.o

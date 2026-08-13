@@ -99,3 +99,11 @@ Do not claim:
 Correct framing:
 
 > Pulso Credits are an internal utility mechanism for returning value inside SolOS before any legally reviewed creator-pool or revenue-share model exists.
+
+## Founder fundraiser
+
+The fundraiser is the first bounded issuance path for Pulso Credits. After a contribution is verified in the CMS, a Founder may receive `founder-heart` and 50 utility credits. Ten credits can reserve 25 Ghost queries through an authenticated redemption and Wallet-bound claim.
+
+The issuance is idempotent by contribution reference; the claim is atomic by Wallet; Wallet synchronization is idempotent by redemption ID; Rust consumption is explicit. None of these credits represent cash, ownership, yield, debt or guaranteed future value.
+
+Cross-system details: `founder-rewards-contract.md` and the CMS documents under `lbartes-cms/docs/solos-founder-fundraiser*.md`.

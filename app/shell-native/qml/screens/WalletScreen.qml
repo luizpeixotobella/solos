@@ -7,6 +7,7 @@ import SolOS.Shell 1.0
 Item {
     required property var appController
     property string heartPassWalletInput: ""
+    property string pulsoClaimInput: ""
 
     ColumnLayout {
         anchors.fill: parent
@@ -17,6 +18,49 @@ Item {
             title: "Wallet"
             subtitle: "Explicit ownership"
             body: "Balances, assets, connection state, and future signature requests should remain visible and deliberate."
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            radius: 20
+            color: "#121a2f"
+            border.color: "#263453"
+            border.width: 1
+            implicitHeight: pulsoRewardColumn.implicitHeight + 36
+
+            ColumnLayout {
+                id: pulsoRewardColumn
+                anchors.fill: parent
+                anchors.margins: 18
+                spacing: 10
+
+                Label {
+                    text: "Pulso Founder Reward"
+                    color: "#eef3ff"
+                    font.pixelSize: 20
+                    font.bold: true
+                }
+
+                Label {
+                    text: "Paste the claim code shown in the authenticated Pulso rewards page. The claim is bound to the verified Polygon wallet and adds its Ghost-query allowance to this Wallet."
+                    color: "#9fb0d0"
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
+                }
+
+                TextField {
+                    Layout.fillWidth: true
+                    placeholderText: "Pulso reward claim code"
+                    text: pulsoClaimInput
+                    onTextChanged: pulsoClaimInput = text
+                }
+
+                Button {
+                    text: "Claim Ghost allowance"
+                    enabled: appController.heartPassVerificationStatus === "verified-holder"
+                    onClicked: appController.claimPulsoGhostReward(pulsoClaimInput)
+                }
+            }
         }
 
         SectionCard {

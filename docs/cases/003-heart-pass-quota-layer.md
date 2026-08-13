@@ -161,3 +161,7 @@ Avoid:
 The next step succeeds when a user can open SolOS, verify the Heart Pass, see a planned or active monthly quota, understand who pays for Ghost research, and continue through BYOK when sponsored capacity is unavailable.
 
 That is the practical bridge from symbolic pass to usable operating-layer benefit.
+
+## 10. Founder fundraiser relationship
+
+Founder Rewards are the first bounded entitlement source connected to this quota layer. CMS/Supabase remains authoritative for the contribution, credits and claim; Wallet requires verified holder state before synchronization; Rust performs explicit local consumption. This does not activate provider sponsorship or create financial value. Full contract: `../founder-rewards-contract.md`.

@@ -87,11 +87,29 @@ O output atual é um snapshot JSON que representa o contrato inicial entre:
 - runtime intermediário
 - shell/operating layer
 
+## Daemon persistente
+
+O crate também fornece `solos-daemon`, o primeiro serviço persistente do runtime intermediário. Ele usa socket Unix local com permissão exclusiva do usuário, oferece saúde, o snapshot compatível com o RC1 e um buffer limitado de eventos locais. O protocolo inicial não permite execução arbitrária.
+
+```bash
+cargo run --bin solos-daemon
+```
+
+Veja `docs/daemon-v1.md` para o contrato e a regra de propriedade entre Daemon e espaços nativos.
+
+Para debitar uma chamada patrocinada já autorizada do saldo local, o executor deve chamar o medidor antes de acessar o provedor:
+
+```bash
+cargo run -- consume-ghost-query 1
+```
+
+O comando exige Heart Pass verificado, quota ativa e saldo suficiente. Ele persiste `usedQueries` e `remainingQueries` de forma atômica no arquivo local e falha fechado, indicando BYOK quando o saldo não é suficiente. Gerar ou atualizar o snapshot não consome quota.
+
 ## Próximos passos
 
 1. acrescentar schema e testes para os contratos emitidos
 2. persistir resultados aceitos/rejeitados a partir de `ghost.actionTrace`
-3. conectar uso real de Ghost research ao `heartPass.quotaLayer`
+3. conectar o executor provider-backed ao comando de consumo de `heartPass.quotaLayer`
 4. definir endpoint/prova para a futura quota service sem expor chaves de provedor no cliente
 5. evoluir para serviço local ou biblioteca FFI quando o boundary estabilizar
 6. expor eventos e APIs de mediação em vez de depender só de snapshot estático
@@ -103,6 +121,8 @@ O snapshot agora expõe `heartPass.quotaLayer` como primeiro contrato local de c
 - modo hibrido patrocinado + BYOK
 - periodo de piloto local
 - queries incluidas, usadas e restantes
+- quantidade de recompensas Pulso sincronizadas em `heartPass.pulsoRewardsClaimed`
+- medidor Rust explícito para consumo; refresh da interface nunca debita quota
 - fonte de uso e fallback
 - politica de reset
 - status bloqueado por verificacao quando o Heart Pass ainda nao foi confirmado

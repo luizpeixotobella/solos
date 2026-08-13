@@ -70,6 +70,7 @@ Current implementation direction:
 - `docs/solos-v1.0.md` — definition of the SolOS 1.0 release posture
 - `docs/roadmap.md` — implementation roadmap
 - `docs/devlog.md` — chronological development notes
+- `docs/founder-rewards-contract.md` — CMS/Supabase/Wallet/Rust contract for fundraiser utility rewards
 
 ## Current doctrine for technical migration
 
@@ -114,3 +115,9 @@ SolOS should be documented as a live system across two synchronized surfaces:
 2. **Institutional CMS** — executive framing, launch collateral, public narrative, and referenced campaign material
 
 When the thesis sharpens or implementation meaningfully advances, both surfaces should be reviewed so the internal doctrine and external framing do not drift apart.
+
+## Founder fundraiser integration
+
+The LBArtes CMS fundraiser finances the next SolOS/Ghost/Pulso cycle and returns bounded utility through Founder Rewards. The SolOS-side contract is documented in `docs/founder-rewards-contract.md`; Pulso Credits remain internal utility, not money or investment.
+
+Current boundary: Wallet can synchronize an atomically bound claim and Rust can meter local quota. Public deploy and Stripe remain CMS release operations; sponsored provider execution still requires a signed-proof proxy.

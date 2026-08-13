@@ -125,6 +125,7 @@ public:
     Q_INVOKABLE bool saveHeartPassWalletAddress(const QString &walletAddress);
     Q_INVOKABLE bool clearHeartPassWalletAddress();
     Q_INVOKABLE bool verifyHeartPassOwnership();
+    Q_INVOKABLE bool claimPulsoGhostReward(const QString &claimCode);
     Q_INVOKABLE void openUrl(const QString &url);
 
 signals:

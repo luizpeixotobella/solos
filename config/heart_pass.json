@@ -10,6 +10,7 @@
   "ownerAddress": "",
   "verificationStatus": "needs-wallet",
   "lastCheckedAt": "never",
+  "claimedPulsoRedemptions": [],
   "notes": "Local SolOS Heart Pass state. Wallet capture, Polygon verification, Ghost gating, and the planned quota contract stay visible before any sponsored backend is introduced.",
   "quotaLayer": {
     "status": "planned",

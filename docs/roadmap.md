@@ -143,3 +143,14 @@ Pulso is now part of the roadmap as a planned social app surface, not a live dat
 - [ ] Add consent, auth, moderation, export/delete, and anti-fraud before real capture.
 - [ ] Add a credit ledger before showing Pulso Credits in Wallet.
 - [ ] Connect Ghost topics and aggregate summaries only after consent rules exist.
+
+## Founder fundraiser update — 2026-08-02
+
+- [x] Define Founder Heart and Pulso Credits reward contract.
+- [x] Implement production grant, redemption and atomic Wallet claim.
+- [x] Synchronize claimed allowance into native Wallet.
+- [x] Add fail-closed Rust quota consumption.
+- [x] Complete critical CMS/SolOS security hardening.
+- [ ] Push/deploy the documented release.
+- [ ] Configure Stripe outside the runtime and verify signed webhooks.
+- [ ] Connect sponsored provider execution only after signed holder/session proof exists.

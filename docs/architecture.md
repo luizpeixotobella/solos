@@ -285,3 +285,16 @@ Later this can evolve into:
 - local service IPC
 - FFI boundary
 - typed schema-validated transport
+
+## Founder Rewards cross-system boundary
+
+Founder Rewards add a controlled economic/utility seam without turning SolOS into a payment processor:
+
+- LBArtes CMS presents the fundraiser and authenticates supporters;
+- Supabase is authoritative for campaign grants, Pulso Credits and redemption binding;
+- native Wallet verifies local Heart Pass state and synchronizes claims;
+- Rust runtime meters local Ghost allowance explicitly;
+- provider billing stays BYOK until a signed sponsored proxy exists;
+- Stripe card processing remains external to both CMS and SolOS runtimes.
+
+See `founder-rewards-contract.md` for idempotency, failure states and non-promises.

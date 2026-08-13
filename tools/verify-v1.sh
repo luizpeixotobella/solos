@@ -7,6 +7,7 @@ cd "$repo_dir/app/runtime-core"
 cargo fmt --check
 cargo test
 cargo run --quiet > "$repo_dir/app/shell-native/src/runtime_snapshot.json"
+cargo test --bin solos-daemon
 
 jq -e '
   .schemaVersion == "solos.runtime.snapshot.v1" and
@@ -27,10 +28,12 @@ fi
 
 bash -n "$repo_dir/appliance/demo-linux-v1/bin/launch-kiosk.sh"
 bash -n "$repo_dir/appliance/demo-linux-v1/bin/provision-demo-host.sh"
+bash -n "$repo_dir/appliance/demo-linux-v1/bin/install-daemon-build.sh"
 bash -n "$repo_dir/appliance/demo-linux-v1/live-build/build-iso.sh"
 
 test -s "$repo_dir/docs/demo-v1.0.md"
 test -s "$repo_dir/docs/release-v1.0-rc1.md"
 test -s "$repo_dir/docs/quota-proxy-v1.md"
+test -s "$repo_dir/docs/daemon-v1.md"
 
 echo "SolOS v1.0 RC1 verification passed."

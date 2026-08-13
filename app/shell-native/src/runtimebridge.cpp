@@ -4,6 +4,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QLocalSocket>
 
 namespace {
 QuickActionEntry parseQuickAction(const QJsonObject &object)
@@ -182,14 +183,43 @@ QStringList parseStringArray(const QJsonArray &array)
 
 RuntimeSnapshotData RuntimeBridge::loadSnapshot(const QString &path)
 {
-    RuntimeSnapshotData snapshot;
-
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
-        return snapshot;
+        return {};
+    }
+    return parseSnapshot(file.readAll());
+}
+
+RuntimeSnapshotData RuntimeBridge::loadSnapshotFromDaemon(const QString &socketPath, int timeoutMs)
+{
+    QLocalSocket socket;
+    socket.connectToServer(socketPath, QIODevice::ReadWrite);
+    if (!socket.waitForConnected(timeoutMs)) {
+        return {};
     }
 
-    const auto document = QJsonDocument::fromJson(file.readAll());
+    const QByteArray request("{\"id\":\"native-shell-snapshot\",\"method\":\"snapshot.get\"}\n");
+    if (socket.write(request) != request.size() || !socket.waitForBytesWritten(timeoutMs)
+        || !socket.waitForReadyRead(timeoutMs)) {
+        return {};
+    }
+
+    QByteArray responsePayload = socket.readLine();
+    while (!responsePayload.endsWith('\n') && socket.waitForReadyRead(timeoutMs)) {
+        responsePayload += socket.readLine();
+    }
+    const QJsonDocument response = QJsonDocument::fromJson(responsePayload);
+    if (!response.isObject() || !response.object().value(QStringLiteral("ok")).toBool()) {
+        return {};
+    }
+    return parseSnapshot(QJsonDocument(response.object().value(QStringLiteral("result")).toObject()).toJson(QJsonDocument::Compact));
+}
+
+RuntimeSnapshotData RuntimeBridge::parseSnapshot(const QByteArray &payload)
+{
+    RuntimeSnapshotData snapshot;
+
+    const auto document = QJsonDocument::fromJson(payload);
     if (!document.isObject()) {
         return snapshot;
     }
