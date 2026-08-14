@@ -145,6 +145,18 @@ Principle:
 
 Domain presentation remains in its natural SolOS space: Home, Ghost, Wallet, Apps or Pulso. Those surfaces consume Daemon contracts instead of embedding background/system service logic in QML or C++ UI code.
 
+### Modularity invariant
+
+SolOS is cohesive at the experience layer and modular at the implementation layer.
+
+- The Daemon is one persistent process, not a fleet of premature microservices.
+- Its internals are separated by domain ownership and typed/versioned contracts.
+- An aggregated Home snapshot may summarize the environment, but it must not become the only internal interface between every domain.
+- Shell controllers should coordinate presentation and requests; they must not absorb persistent Wallet, Ghost, quota or host-service behavior.
+- Domain events may be joined for observability without erasing their source or policy boundary.
+
+This modular-monolith rule is recorded in `docs/adr/0001-cohesive-shell-modular-core.md`.
+
 ### SolOS operating layer owns
 - shell composition
 - orchestration UX
@@ -267,6 +279,9 @@ This supports two parallel tracks:
 
 ### v1.x
 - replace more static snapshot fields with real host/service/app data
+- continue splitting runtime-core into host, Ghost, Wallet, Apps, approvals, quota, events and contracts modules
+- split the broad Qt AppController into domain-facing controllers without fragmenting the shell experience
+- keep the aggregate snapshot for compatibility while adding smaller versioned domain state/events
 - connect approvals to mediated commands and services
 - add launcher bridge and app discovery from the host
 - add real wallet/account brokers

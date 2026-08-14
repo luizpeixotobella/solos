@@ -3,8 +3,15 @@ use std::env;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
-use std::time::Duration;
 use std::time::{SystemTime, UNIX_EPOCH};
+
+mod host_runtime;
+mod surface_catalog;
+
+use host_runtime::{detect_host_runtime, detect_online, HostRuntime};
+use surface_catalog::{
+    build_app_registry, build_approvals, build_quick_actions, AppEntry, ApprovalEntry, QuickAction,
+};
 
 #[derive(Serialize)]
 #[allow(non_snake_case)]
@@ -385,52 +392,10 @@ struct GhostIntent {
 }
 
 #[derive(Serialize)]
-struct QuickAction {
-    title: String,
-    subtitle: String,
-    description: String,
-}
-
-#[derive(Serialize)]
 struct ActivityEntry {
     title: String,
     detail: String,
     status: String,
-}
-
-#[derive(Serialize)]
-#[allow(non_snake_case)]
-struct ApprovalEntry {
-    id: String,
-    title: String,
-    description: String,
-    requestedBy: String,
-    capability: String,
-    scope: String,
-    risk: String,
-    status: String,
-    createdAt: String,
-}
-
-#[derive(Serialize)]
-struct AppEntry {
-    name: String,
-    subtitle: String,
-    description: String,
-}
-
-#[derive(Serialize)]
-#[allow(non_snake_case)]
-struct HostRuntime {
-    os: String,
-    kernel: String,
-    initSystem: String,
-    sessionType: String,
-    desktopSession: String,
-    shell: String,
-    hostname: String,
-    user: String,
-    uptime: String,
 }
 
 #[derive(Serialize)]
@@ -1212,81 +1177,6 @@ fn main() {
     println!("{}", serde_json::to_string_pretty(&snapshot).unwrap());
 }
 
-fn detect_host_runtime() -> HostRuntime {
-    HostRuntime {
-        os: read_os_pretty_name().unwrap_or_else(|| "Linux host".into()),
-        kernel: run("uname", &["-r"]).unwrap_or_else(|| "unknown-kernel".into()),
-        initSystem: detect_init_system(),
-        sessionType: env::var("XDG_SESSION_TYPE").unwrap_or_else(|_| "unknown-session".into()),
-        desktopSession: env::var("XDG_CURRENT_DESKTOP")
-            .or_else(|_| env::var("DESKTOP_SESSION"))
-            .unwrap_or_else(|_| "unknown-desktop".into()),
-        shell: env::var("SHELL").unwrap_or_else(|_| "unknown-shell".into()),
-        hostname: run("hostname", &[]).unwrap_or_else(|| "unknown-host".into()),
-        user: env::var("USER").unwrap_or_else(|_| "unknown-user".into()),
-        uptime: detect_uptime(),
-    }
-}
-
-fn detect_online() -> bool {
-    [
-        "/sys/class/net/wlan0/operstate",
-        "/sys/class/net/eth0/operstate",
-    ]
-    .iter()
-    .any(|path| {
-        fs::read_to_string(path)
-            .map(|v| v.trim() == "up")
-            .unwrap_or(false)
-    }) || run("ip", &["route", "show", "default"]).is_some()
-}
-
-fn detect_uptime() -> String {
-    let raw = fs::read_to_string("/proc/uptime")
-        .ok()
-        .and_then(|content| content.split_whitespace().next()?.parse::<f64>().ok());
-
-    match raw {
-        Some(seconds) => format_duration(Duration::from_secs_f64(seconds)),
-        None => "unknown-uptime".into(),
-    }
-}
-
-fn format_duration(duration: Duration) -> String {
-    let total_seconds = duration.as_secs();
-    let days = total_seconds / 86_400;
-    let hours = (total_seconds % 86_400) / 3_600;
-    let minutes = (total_seconds % 3_600) / 60;
-
-    if days > 0 {
-        format!("{}d {}h {}m", days, hours, minutes)
-    } else if hours > 0 {
-        format!("{}h {}m", hours, minutes)
-    } else {
-        format!("{}m", minutes)
-    }
-}
-
-fn build_quick_actions() -> Vec<QuickAction> {
-    vec![
-        QuickAction {
-            title: "Inspect Ghost data layer".into(),
-            subtitle: "Input signals".into(),
-            description: "Read host runtime facts, config, network state, and future user context as structured inputs for Ghost.".into(),
-        },
-        QuickAction {
-            title: "Inspect Ghost results layer".into(),
-            subtitle: "Synthesis".into(),
-            description: "Combine local runtime evidence with Brave research results and condense them into useful summaries for the shell.".into(),
-        },
-        QuickAction {
-            title: "Promote Ghost algorithms into actions".into(),
-            subtitle: "Next module".into(),
-            description: "Turn ranked Ghost conclusions into explicit SolOS tasks, approvals, and app-level actions instead of keeping them purely descriptive.".into(),
-        },
-    ]
-}
-
 fn build_activity_feed(
     host: &HostRuntime,
     online: bool,
@@ -1347,98 +1237,6 @@ fn build_activity_feed(
             status: "active".into(),
         },
     ]
-}
-
-fn build_approvals() -> Vec<ApprovalEntry> {
-    vec![
-        ApprovalEntry {
-            id: "approval-ghost-web-access".into(),
-            title: "Bind Ghost web research to the user's own Brave key".into(),
-            description: "Ghost should open Brave's API key page for the SolOS user, let them pay or subscribe on their own account, then return and configure a repo-local key instead of sharing the developer key.".into(),
-            requestedBy: "ghost-brain".into(),
-            capability: "web.search.read".into(),
-            scope: "ghost onboarding -> Brave key acquisition -> ignored solos/config/ghost.local.json".into(),
-            risk: "medium".into(),
-            status: "pending".into(),
-            createdAt: "ghost-module-bootstrap".into(),
-        },
-        ApprovalEntry {
-            id: "approval-ghost-task-execution".into(),
-            title: "Connect Ghost conclusions to executable tasks".into(),
-            description: "Prepare the next module so Ghost can transform ranked conclusions into app launches, commands, and approval requests inside SolOS.".into(),
-            requestedBy: "ghost-brain".into(),
-            capability: "task.intent.dispatch".into(),
-            scope: "Ghost pipeline -> SolOS task/action router".into(),
-            risk: "high".into(),
-            status: "pending".into(),
-            createdAt: "ghost-module-bootstrap".into(),
-        },
-    ]
-}
-
-fn build_app_registry() -> Vec<AppEntry> {
-    vec![
-        AppEntry {
-            name: "Workspace".into(),
-            subtitle: "Operating layer context".into(),
-            description: "Coordinates user tasks, notes, and live environment state above the runtime intermediary.".into(),
-        },
-        AppEntry {
-            name: "Approval Lane".into(),
-            subtitle: "Policy boundary".into(),
-            description: "Surfaces runtime-mediated host actions that require explicit consent before execution.".into(),
-        },
-        AppEntry {
-            name: "Wallet Hub".into(),
-            subtitle: "Ownership surface".into(),
-            description: "Keeps identity, balances, and signing visible through explicit runtime-mediated flows.".into(),
-        },
-        AppEntry {
-            name: "Ghost Console".into(),
-            subtitle: "Layered intelligence module".into(),
-            description: "Turns runtime data plus optional Brave research into structured results and next-step algorithms inside SolOS.".into(),
-        },
-        AppEntry {
-            name: "SolOS Pulso".into(),
-            subtitle: "Planned social signal surface".into(),
-            description: "Future consented social layer for posts, topics, video signals, and Pulso Credits with Wallet, Ghost, and Approvals mediation.".into(),
-        },
-    ]
-}
-
-fn read_os_pretty_name() -> Option<String> {
-    let content = std::fs::read_to_string("/etc/os-release").ok()?;
-    for line in content.lines() {
-        if let Some(value) = line.strip_prefix("PRETTY_NAME=") {
-            return Some(value.trim_matches('"').to_string());
-        }
-    }
-    None
-}
-
-fn detect_init_system() -> String {
-    if let Ok(target) = std::fs::read_link("/proc/1/exe") {
-        if let Some(name) = Path::new(&target).file_name().and_then(|n| n.to_str()) {
-            return name.to_string();
-        }
-    }
-
-    run("ps", &["-p", "1", "-o", "comm="]).unwrap_or_else(|| "unknown-init".into())
-}
-
-fn run(command: &str, args: &[&str]) -> Option<String> {
-    let output = Command::new(command).args(args).output().ok()?;
-    if !output.status.success() {
-        return None;
-    }
-
-    let text = String::from_utf8(output.stdout).ok()?;
-    let trimmed = text.trim();
-    if trimmed.is_empty() {
-        None
-    } else {
-        Some(trimmed.to_string())
-    }
 }
 
 fn detect_brave_config() -> GhostIntelligenceState {

@@ -1,5 +1,17 @@
 # SolOS Devlog
 
+## 2026-08-14 — Cohesive outside, modular inside
+
+- Recorded ADR 0001: SolOS remains one coherent experience and one owner-scoped Daemon, while internals follow modular-monolith domain boundaries.
+- Extracted Linux host discovery and operating-surface catalog assembly from the 2,400-line runtime entry point into focused Rust modules with their own tests.
+- Preserved the `solos.runtime.snapshot.v1` contract so the modularity correction does not force a rewrite or break the native shell.
+- Fixed real Home and Agent QML delegate errors that survived compilation but failed at runtime.
+- Corrected the repository-default web-shell asset path, which previously returned 404 unless `SOLOS_ROOT` was set explicitly.
+- Added executable web and native smoke gates. The native gate launches the Daemon and Qt shell together and fails on QML `ReferenceError`, `TypeError`, missing modules or early process exit.
+- Made verification generate its live snapshot in a temporary file, so running the release gate no longer dirties the versioned fallback fixture with host uptime changes.
+- Removed automatic snapshot generation from shell startup and the two-second UI refresh timer. Normal refresh now reads the Daemon/fallback contract instead of making the presentation layer spawn Rust builds and rewrite shared state.
+- Ran the full RC1 gate successfully: eight Rust tests across runtime and Daemon, JSON invariants, web build/server smoke, native build/Daemon/shell smoke and appliance script validation.
+
 ## 2026-08-13 — Persistent Daemon foundation
 
 - Added `solos-daemon` as the first persistent process for the Rust runtime intermediary.

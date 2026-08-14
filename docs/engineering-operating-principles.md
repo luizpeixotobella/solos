@@ -8,6 +8,8 @@ SolOS is moving from concept/prototype into a larger system. Implementation shou
 
 The working stance is: **engineer with discipline, design with modular boundaries, test the seams, observe the runtime, and preserve the human/ownership philosophy that makes SolOS meaningful.**
 
+The product may feel unified without becoming internally coupled. The standing maxim is **cohesive outside, modular inside**: one legible SolOS experience over a modular-monolith runtime and explicit domain contracts.
+
 ## Current research anchors
 
 - The engineering design process starts with defining the problem, objectives, and constraints, then generating alternative solutions, evaluating/selecting among them, designing, prototyping, testing, evaluating performance, and reporting/iterating.
@@ -39,6 +41,8 @@ For meaningful changes, use this loop:
 2. **Modular boundaries first**
    - Treat Rust runtime-core, C++/Qt bridge/controller, QML surfaces, config files, docs, and future backend/wallet services as separate layers.
    - Avoid leaking provider details or wallet/API secrets into UI-only layers.
+   - Split internals by natural ownership (`host`, `ghost`, `wallet`, `apps`, `approvals`, `quota`, `events`, `contracts`) before considering process-level extraction.
+   - Do not confuse an integrated shell with a single god object or a single undifferentiated snapshot generator.
 
 3. **Typed contracts over scattered literals**
    - New capabilities should enter through explicit structs/schema/config where possible.
@@ -47,6 +51,7 @@ For meaningful changes, use this loop:
 4. **Test and verification gates**
    - For Rust: run `cargo fmt`, `cargo check`, and targeted `cargo run`/JSON inspection.
    - For shell-native: run `cmake --build .`; when practical, perform a short smoke launch and inspect logs.
+   - A green native build is insufficient when QML emits runtime binding errors; the release gate must launch the shell and reject those errors.
    - For CMS/Next: run build; lint failures should be separated into new vs pre-existing issues.
 
 5. **Observability and supervision**

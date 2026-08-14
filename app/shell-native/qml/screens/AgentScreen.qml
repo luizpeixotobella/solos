@@ -252,8 +252,7 @@ Item {
                     Repeater {
                         model: approvalQueueModel
 
-                        delegate: ApprovalItem {
-                            required property string id
+                        delegate: Item {
                             required property string title
                             required property string description
                             required property string requestedBy
@@ -265,14 +264,21 @@ Item {
 
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignTop
-                            title: model.title
-                            description: model.description
-                            requestedBy: model.requestedBy
-                            capability: model.capability
-                            scope: model.scope
-                            risk: model.risk
-                            status: model.status
-                            createdAt: model.createdAt
+                            implicitHeight: approvalCard.implicitHeight
+
+                            ApprovalItem {
+                                id: approvalCard
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                title: parent.title
+                                description: parent.description
+                                requestedBy: parent.requestedBy
+                                capability: parent.capability
+                                scope: parent.scope
+                                risk: parent.risk
+                                status: parent.status
+                                createdAt: parent.createdAt
+                            }
                         }
                     }
                 }
@@ -284,15 +290,22 @@ Item {
                     Repeater {
                         model: activityFeedModel
 
-                        delegate: ActivityItem {
+                        delegate: Item {
                             required property string title
                             required property string detail
                             required property string status
 
                             Layout.fillWidth: true
-                            title: model.title
-                            detail: model.detail
-                            status: model.status
+                            implicitHeight: activityCard.implicitHeight
+
+                            ActivityItem {
+                                id: activityCard
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                title: parent.title
+                                detail: parent.detail
+                                status: parent.status
+                            }
                         }
                     }
                 }

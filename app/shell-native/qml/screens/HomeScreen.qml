@@ -82,9 +82,9 @@ Item {
 
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignTop
-                            actionTitle: model.title
-                            actionSubtitle: model.subtitle
-                            actionDescription: model.description
+                            actionTitle: title
+                            actionSubtitle: subtitle
+                            actionDescription: description
                         }
                     }
                 }

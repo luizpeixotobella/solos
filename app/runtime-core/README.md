@@ -17,6 +17,17 @@ O papel deste crate é:
 - preparar mediação de serviços, processos, sessões e approvals
 - desacoplar a operating layer dos detalhes crus do host
 
+## Forma interna
+
+O runtime segue um monólito modular: um crate e um Daemon persistente, com responsabilidades internas separadas antes de qualquer extração de processos.
+
+- `host_runtime.rs` — descoberta e normalização de fatos do Linux;
+- `surface_catalog.rs` — catálogo de apps, approvals e ações rápidas expostas à operating layer;
+- `main.rs` — composição compatível do snapshot RC1 enquanto Ghost, Wallet/quota e contracts são extraídos progressivamente;
+- `bin/solos-daemon.rs` — processo persistente e protocolo local owner-only.
+
+Regra: **coeso por fora, modular por dentro**. O snapshot agregado continua como read model de compatibilidade, não como justificativa para manter todos os domínios num único arquivo.
+
 ## Doutrina do Ghost
 
 O Ghost não deve ser entendido como um chatbot colado na shell. Ele está evoluindo como uma camada de inteligência do SolOS baseada na inversão da programação clássica.

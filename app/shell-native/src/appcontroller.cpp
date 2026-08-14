@@ -93,7 +93,6 @@ AppController::AppController(QObject *parent)
     , m_ghostRuntime(this)
     , m_homeState(this)
 {
-    generateRuntimeSnapshot();
     loadRuntimeSnapshot();
 
     m_runtimeWatchTimer.setInterval(2000);
@@ -358,7 +357,6 @@ QString AppController::heartPassConfigPath() const
 
 void AppController::refreshRuntime()
 {
-    generateRuntimeSnapshot();
     loadRuntimeSnapshot();
 }
 

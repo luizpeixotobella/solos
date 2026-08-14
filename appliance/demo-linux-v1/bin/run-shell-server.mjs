@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const root = path.resolve(process.env.SOLOS_ROOT || path.join(__dirname, '..', '..', 'app', 'shell', 'dist'));
+const root = path.resolve(process.env.SOLOS_ROOT || path.join(__dirname, '..', '..', '..', 'app', 'shell', 'dist'));
 const host = process.env.SOLOS_BIND_HOST || '127.0.0.1';
 const port = Number(process.env.SOLOS_PORT || 8080);
 const logLevel = process.env.SOLOS_LOG_LEVEL || 'info';

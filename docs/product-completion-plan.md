@@ -1,8 +1,8 @@
 # SolOS Product Completion Plan
 
-Date: 2026-07-12
+Date: 2026-08-14
 
-Status: v1.0 RC1 implementation complete; release candidate verification in progress.
+Status: v1.0 RC1 verified; modularity and runtime-smoke hardening in progress.
 
 ## Purpose
 
@@ -37,6 +37,10 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [x] SolOS Pulso and Pulso Credits are documented as a future social/credit app surface.
 - [x] Demo ISO / Linux appliance path is documented and scaffolded.
 - [x] CMS documentation, blog, social copy, and executive pages are aligned with the Heart Pass quota-runtime public narrative.
+- [x] Persistent SolOS Daemon serves health, snapshots and bounded local events over an owner-only Unix socket.
+- [x] First runtime-core domains extracted into host discovery and operating-surface catalog modules without breaking the RC1 snapshot contract.
+- [x] Web and native executable smoke gates cover repository asset serving, early shell exit and QML runtime errors.
+- [x] Home and Agent QML delegate bindings corrected and verified in a real offscreen launch.
 
 ### Partially done
 
@@ -49,6 +53,8 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [~] A persistent Rust Daemon now provides an owner-only Unix socket, health, RC1 snapshot compatibility and bounded local events; the native shell consumes it with automatic retry and snapshot fallback, while durable event/state stores remain next work.
 - [~] Demo appliance documentation exists, but the current native shell has not yet replaced the browser-kiosk path as the tested primary demo session.
 - [~] CMS and public narrative are aligned through the last quota-runtime cycle, but now need a standing completion dashboard rather than only campaign updates.
+- [~] Runtime-core now has its first internal modules, while Ghost, Wallet/quota and contract assembly still need domain extraction.
+- [~] The Qt shell is split into screens/models, while `AppController` remains broader than the desired domain-controller boundary.
 
 ### Not done yet
 
@@ -68,40 +74,43 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [ ] Formalize reusable shell theme tokens and scroll behavior for content-heavy screens.
 - [ ] Build and smoke-test the demo ISO path in a VM.
 - [x] Publish a repeatable v1 demo script and release checklist.
+- [ ] Split the broad Qt controller into runtime, Ghost, Wallet and Apps-facing controllers/services.
+- [ ] Move durable domain state/events behind Daemon-owned stores instead of treating the aggregate snapshot as the only internal bus.
 
 ## Recommended next engineering slice
 
-The next slice should be **Ghost Trace Persistence and Evaluation Seed**.
+The next slice should be **Domain Controllers and Daemon-Owned Stores**.
 
 Reason:
 
-- The previous implementation already exposes classification, action trace, and route explanation.
-- The most natural next step is to preserve those outcomes so Ghost can compare future requests against expected classes and routes.
-- This improves observability before autonomy and supports the later task/action router.
+- Ghost trace persistence and the first mediated action already exist.
+- The new Daemon provides the correct persistent process boundary, but still fronts an aggregate snapshot and in-memory event buffer.
+- The broad Qt controller still carries configuration and domain operations that should move toward natural ownership.
+- Smaller domain seams improve testability without changing the integrated SolOS experience.
 
 ### Scope
 
-- Add a small local trace store for Ghost route outcomes.
-- Store request class, safety level, required tools, approval requirement, quota cost, selected route, route explanation, and outcome.
-- Add accepted/rejected/corrected outcome states.
-- Add a deterministic set of route expectation examples for core SolOS tasks.
-- Expose a compact trace-history card or summary in Agent/Ghost.
-- Document the contract and update CMS alignment.
+- Extract the remaining runtime assembly into domain modules, starting with Wallet/quota and Ghost.
+- Split shell configuration/persistence work away from the presentation controller.
+- Add Daemon-owned durable event/state stores with bounded schemas and explicit revocation/retention.
+- Preserve the aggregate RC1 snapshot as a compatibility/read-model surface.
+- Add focused unit tests and executable seam smokes for each extraction.
 
 ### Non-goals
 
-- No autonomous filesystem, wallet, public-posting, or paid-provider action.
-- No hosted quota backend yet.
-- No neural training claim.
-- No broad rewrite of runtime-core or the shell.
+- No microservice split.
+- No rewrite of the shell or snapshot contract.
+- No autonomous filesystem, Wallet, public-posting or paid-provider action.
+- No hosted quota backend until signed proof and cost supervision exist.
 
 ### Verification gate
 
 - `cargo fmt`
-- `cargo check`
+- `cargo test`
 - runtime snapshot generation with JSON inspection
 - native shell build
-- web shell build if web/mock surface changes
+- native executable smoke with QML error inspection
+- web build and repository-default server smoke
 - docs updated in SolOS and CMS
 
 ## Product roadmap to v1.0
