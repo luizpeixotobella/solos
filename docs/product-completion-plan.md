@@ -1,8 +1,8 @@
 # SolOS Product Completion Plan
 
-Date: 2026-08-14
+Date: 2026-08-19
 
-Status: v1.0 RC1 verified; modularity and runtime-smoke hardening in progress.
+Status: v1.0 RC1 verified; first selected-to-resolved Ghost beta journey complete.
 
 ## Purpose
 
@@ -41,16 +41,19 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [x] First runtime-core domains extracted into host discovery and operating-surface catalog modules without breaking the RC1 snapshot contract.
 - [x] Web and native executable smoke gates cover repository asset serving, early shell exit and QML runtime errors.
 - [x] Home and Agent QML delegate bindings corrected and verified in a real offscreen launch.
+- [x] Ghost Resolution Loop selects one objective, builds a bounded plan, stops for approval, executes `app.open.safe`, verifies the Workspace state and retains evidence.
+- [x] Ghost resolution state is versioned, atomically persisted by the Daemon and injected into the RC1 snapshot read model.
+- [x] Native and web Agent surfaces expose the selected goal, progress, ordered steps, approval decision, result and unavailable future candidates.
 
 ### Partially done
 
 - [~] Home is model-backed enough to show environment summary and next useful action, but not yet driven by a broad live event stream.
-- [~] Agent shows readiness, classification, trace, approvals, and quota state, but does not yet persist trace outcomes or execute real task routes.
+- [~] Agent now persists trace outcomes and completes one real bounded resolution route; general task execution, research and public-send routes remain unavailable.
 - [~] Wallet shows pass/quota semantics, but real wallet/account state remains limited to the current Heart Pass path.
 - [~] Apps has registry-style structure, but not yet a real launcher/capability bridge.
 - [~] Pulso appears as a planned app/roadmap surface, but not yet as a real data-capture or credit-ledger system.
 - [~] Runtime state is structured and partly host-derived, but still depends on snapshot output rather than a durable service/API/event layer.
-- [~] A persistent Rust Daemon now provides an owner-only Unix socket, health, RC1 snapshot compatibility and bounded local events; the native shell consumes it with automatic retry and snapshot fallback, while durable event/state stores remain next work.
+- [~] A persistent Rust Daemon now provides an owner-only Unix socket, health, RC1 snapshot compatibility, bounded local events and the first durable domain store for Ghost resolutions; broader durable event/domain stores remain next work.
 - [~] Demo appliance documentation exists, but the current native shell has not yet replaced the browser-kiosk path as the tested primary demo session.
 - [~] CMS and public narrative are aligned through the last quota-runtime cycle, but now need a standing completion dashboard rather than only campaign updates.
 - [~] Runtime-core now has its first internal modules, while Ghost, Wallet/quota and contract assembly still need domain extraction.
@@ -62,6 +65,7 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [x] Add versioned schema invariants and tests for the runtime snapshot contract.
 - [x] Add a typed tool/capability manifest with read, write, sensitive, network, wallet, and public-posting scopes.
 - [x] Connect approvals to the first safe mediated action (`app.open.safe`) in the demonstrator.
+- [x] Link objective selection, plan, approval, mediated action, verification and retained evidence in one complete Ghost resolution.
 - [ ] Connect Ghost research usage to quota accounting.
 - [x] Define the provider-neutral server-side quota/proxy contract for sponsored usage; runtime remains disabled until a signed-proof backend exists.
 - [ ] Define Pulso Credits ledger, caps, anti-fraud, expiry, and cost guardrails.
@@ -75,16 +79,16 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [ ] Build and smoke-test the demo ISO path in a VM.
 - [x] Publish a repeatable v1 demo script and release checklist.
 - [ ] Split the broad Qt controller into runtime, Ghost, Wallet and Apps-facing controllers/services.
-- [ ] Move durable domain state/events behind Daemon-owned stores instead of treating the aggregate snapshot as the only internal bus.
+- [~] Move durable domain state/events behind Daemon-owned stores instead of treating the aggregate snapshot as the only internal bus; Ghost resolutions are the first completed store.
 
 ## Recommended next engineering slice
 
-The next slice should be **Domain Controllers and Daemon-Owned Stores**.
+The next slice should be **Quota Accounting and Launcher Hardening**, while continuing the domain-controller extraction.
 
 Reason:
 
-- Ghost trace persistence and the first mediated action already exist.
-- The new Daemon provides the correct persistent process boundary, but still fronts an aggregate snapshot and in-memory event buffer.
+- Ghost trace persistence, the first mediated action and one complete selected-to-resolved journey now exist.
+- The Daemon owns the Ghost resolution store, while research quota and broader events still need the same durable treatment.
 - The broad Qt controller still carries configuration and domain operations that should move toward natural ownership.
 - Smaller domain seams improve testability without changing the integrated SolOS experience.
 
@@ -92,7 +96,9 @@ Reason:
 
 - Extract the remaining runtime assembly into domain modules, starting with Wallet/quota and Ghost.
 - Split shell configuration/persistence work away from the presentation controller.
-- Add Daemon-owned durable event/state stores with bounded schemas and explicit revocation/retention.
+- Connect real provider-backed Ghost research to fail-closed quota decrementing and BYOK fallback.
+- Harden Apps from the demonstrator state change into a declared launcher result boundary.
+- Continue adding Daemon-owned durable event/state stores with bounded schemas and explicit revocation/retention.
 - Preserve the aggregate RC1 snapshot as a compatibility/read-model surface.
 - Add focused unit tests and executable seam smokes for each extraction.
 
@@ -164,6 +170,19 @@ Preferred first action:
 Acceptance:
 
 - The user can see request, route, approval need, action result, and trace outcome without hidden execution.
+
+### Milestone 3.5 - Ghost Resolution Loop
+
+- [x] Make a resolution selectable and give it an explicit target outcome.
+- [x] Persist ordered steps and legal transitions in a versioned Daemon-owned store.
+- [x] Stop at approval before the first mediated capability.
+- [x] Resolve only after `app.state.read` verifies the target state.
+- [x] Retain approval, capability result and verification evidence after Daemon restart.
+- [x] Expose the same journey in native and web Agent surfaces.
+
+Acceptance:
+
+- A reviewer can follow one objective from selection to a verified result without hidden execution or an unsupported capability claim.
 
 ### Milestone 4 - Quota accounting
 

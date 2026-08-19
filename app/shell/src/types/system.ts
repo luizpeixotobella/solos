@@ -52,6 +52,36 @@ export type GhostRouteExplanation = {
   nextStep: string;
 };
 
+export type GhostResolutionStep = {
+  id: string;
+  title: string;
+  status: "pending" | "active" | "completed" | "blocked";
+  capability: string;
+  result: string;
+};
+
+export type GhostResolution = {
+  id: string;
+  title: string;
+  objective: string;
+  targetOutcome: string;
+  status: "candidate" | "selected" | "awaiting-approval" | "resolved" | "blocked";
+  readiness: "ready" | "needs-quota-or-byok" | "needs-public-send-adapter";
+  progress: number;
+  currentStep: string;
+  capability: string;
+  resultSummary: string;
+  steps: GhostResolutionStep[];
+  evidence: string[];
+};
+
+export type GhostResolutionLoop = {
+  schema: "solos.ghost.resolutions.v1";
+  selectedId: string | null;
+  summary: string;
+  resolutions: GhostResolution[];
+};
+
 export type UserSession = {
   id: string;
   displayName: string;
@@ -75,6 +105,7 @@ export type AgentState = {
   requestClassifier: GhostRequestClassifier;
   actionTrace: GhostActionTrace;
   routeExplanation: GhostRouteExplanation;
+  resolutionLoop: GhostResolutionLoop;
   evaluation: {
     total: number;
     accepted: number;

@@ -9,6 +9,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QLocalSocket>
 #include <QProcess>
 #include <QRegularExpression>
 #include <QUrl>
@@ -41,6 +42,50 @@ QString runtimeCorePath()
     const QString appDir = QCoreApplication::applicationDirPath();
     const QString candidate = QDir(appDir).absoluteFilePath(QStringLiteral("../../runtime-core"));
     return QDir::cleanPath(candidate);
+}
+
+bool invokeDaemon(const QString &method, const QJsonObject &params, QString &error)
+{
+    const QString socketPath = daemonSocketPath();
+    if (socketPath.isEmpty()) {
+        error = QStringLiteral("SolOS Daemon socket is not configured");
+        return false;
+    }
+
+    QLocalSocket socket;
+    socket.connectToServer(socketPath, QIODevice::ReadWrite);
+    if (!socket.waitForConnected(1000)) {
+        error = QStringLiteral("Could not connect to SolOS Daemon at ") + socketPath;
+        return false;
+    }
+
+    QJsonObject request;
+    request.insert(QStringLiteral("id"), QStringLiteral("native-shell-resolution"));
+    request.insert(QStringLiteral("method"), method);
+    request.insert(QStringLiteral("params"), params);
+    QByteArray payload = QJsonDocument(request).toJson(QJsonDocument::Compact);
+    payload.append('\n');
+    if (socket.write(payload) != payload.size() || !socket.waitForBytesWritten(1000)
+        || !socket.waitForReadyRead(1500)) {
+        error = QStringLiteral("SolOS Daemon did not answer the Ghost resolution request");
+        return false;
+    }
+
+    QByteArray responsePayload = socket.readLine();
+    while (!responsePayload.endsWith('\n') && socket.waitForReadyRead(350)) {
+        responsePayload += socket.readLine();
+    }
+    const QJsonDocument response = QJsonDocument::fromJson(responsePayload);
+    if (!response.isObject()) {
+        error = QStringLiteral("SolOS Daemon returned an invalid response");
+        return false;
+    }
+    const QJsonObject root = response.object();
+    if (!root.value(QStringLiteral("ok")).toBool()) {
+        error = root.value(QStringLiteral("error")).toString(QStringLiteral("Ghost resolution transition failed"));
+        return false;
+    }
+    return true;
 }
 }
 
@@ -358,6 +403,58 @@ QString AppController::heartPassConfigPath() const
 void AppController::refreshRuntime()
 {
     loadRuntimeSnapshot();
+}
+
+bool AppController::selectGhostResolution(const QString &resolutionId)
+{
+    QString error;
+    if (!invokeDaemon(QStringLiteral("ghost.resolution.select"),
+                      QJsonObject{{QStringLiteral("id"), resolutionId}}, error)) {
+        m_runtimeStatus = error;
+        emit runtimeStateChanged();
+        return false;
+    }
+    loadRuntimeSnapshot();
+    return true;
+}
+
+bool AppController::startGhostResolution(const QString &resolutionId)
+{
+    QString error;
+    if (!invokeDaemon(QStringLiteral("ghost.resolution.start"),
+                      QJsonObject{{QStringLiteral("id"), resolutionId}}, error)) {
+        m_runtimeStatus = error;
+        emit runtimeStateChanged();
+        return false;
+    }
+    loadRuntimeSnapshot();
+    return true;
+}
+
+bool AppController::decideGhostResolution(const QString &resolutionId, bool approved)
+{
+    QString error;
+    if (!invokeDaemon(QStringLiteral("ghost.resolution.decide"),
+                      QJsonObject{{QStringLiteral("id"), resolutionId},
+                                  {QStringLiteral("approved"), approved}}, error)) {
+        m_runtimeStatus = error;
+        emit runtimeStateChanged();
+        return false;
+    }
+    loadRuntimeSnapshot();
+    return true;
+}
+
+bool AppController::resetGhostResolutions()
+{
+    QString error;
+    if (!invokeDaemon(QStringLiteral("ghost.resolutions.reset"), QJsonObject{}, error)) {
+        m_runtimeStatus = error;
+        emit runtimeStateChanged();
+        return false;
+    }
+    loadRuntimeSnapshot();
+    return true;
 }
 
 namespace {
@@ -1011,7 +1108,13 @@ void AppController::loadRuntimeSnapshot()
                              snapshot.ghostRequestClassifierSummary,
                              snapshot.ghostRequestClassificationLines,
                              snapshot.ghostActionTraceSummary,
-                             snapshot.ghostRouteExplanationSummary);
+                             snapshot.ghostRouteExplanationSummary,
+                             snapshot.ghostResolutionStatus,
+                             snapshot.ghostResolutionSummary,
+                             snapshot.ghostResolutionSelectedId,
+                             snapshot.ghostResolutionCurrentStep,
+                             snapshot.ghostResolutionProgress,
+                             snapshot.ghostResolutionLines);
     m_quickActionsModel.setEntries(snapshot.quickActions);
     m_activityFeedModel.setEntries(snapshot.activityFeed);
     m_approvalQueueModel.setEntries(snapshot.approvals);

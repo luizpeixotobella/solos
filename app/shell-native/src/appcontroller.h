@@ -126,6 +126,10 @@ public:
     Q_INVOKABLE bool clearHeartPassWalletAddress();
     Q_INVOKABLE bool verifyHeartPassOwnership();
     Q_INVOKABLE bool claimPulsoGhostReward(const QString &claimCode);
+    Q_INVOKABLE bool selectGhostResolution(const QString &resolutionId);
+    Q_INVOKABLE bool startGhostResolution(const QString &resolutionId);
+    Q_INVOKABLE bool decideGhostResolution(const QString &resolutionId, bool approved);
+    Q_INVOKABLE bool resetGhostResolutions();
     Q_INVOKABLE void openUrl(const QString &url);
 
 signals:

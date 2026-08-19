@@ -12,6 +12,7 @@ test -s "$snapshot"
 
 smoke_dir="$(mktemp -d /tmp/solos-native-smoke.XXXXXX)"
 socket_path="$smoke_dir/daemon.sock"
+state_path="$smoke_dir/ghost-resolutions.json"
 daemon_log="$smoke_dir/daemon.log"
 shell_log="$smoke_dir/shell.log"
 daemon_pid=""
@@ -26,13 +27,14 @@ cleanup() {
     kill "$daemon_pid" 2>/dev/null || true
     wait "$daemon_pid" 2>/dev/null || true
   fi
-  rm -f "$socket_path" "$daemon_log" "$shell_log"
+  rm -f "$socket_path" "$state_path" "$daemon_log" "$shell_log"
   rmdir "$smoke_dir" 2>/dev/null || true
 }
 trap cleanup EXIT
 
 SOLOS_DAEMON_SOCKET="$socket_path" \
 SOLOS_RUNTIME_SNAPSHOT="$snapshot" \
+SOLOS_GHOST_RESOLUTION_STORE="$state_path" \
   "$daemon_bin" >"$daemon_log" 2>&1 &
 daemon_pid=$!
 

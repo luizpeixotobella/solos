@@ -38,6 +38,12 @@ class GhostRuntime : public QObject
     Q_PROPERTY(QStringList requestClassificationLines READ requestClassificationLines NOTIFY stateChanged)
     Q_PROPERTY(QString actionTraceSummary READ actionTraceSummary NOTIFY stateChanged)
     Q_PROPERTY(QString routeExplanationSummary READ routeExplanationSummary NOTIFY stateChanged)
+    Q_PROPERTY(QString resolutionStatus READ resolutionStatus NOTIFY stateChanged)
+    Q_PROPERTY(QString resolutionSummary READ resolutionSummary NOTIFY stateChanged)
+    Q_PROPERTY(QString resolutionSelectedId READ resolutionSelectedId NOTIFY stateChanged)
+    Q_PROPERTY(QString resolutionCurrentStep READ resolutionCurrentStep NOTIFY stateChanged)
+    Q_PROPERTY(int resolutionProgress READ resolutionProgress NOTIFY stateChanged)
+    Q_PROPERTY(QStringList resolutionLines READ resolutionLines NOTIFY stateChanged)
 
 public:
     explicit GhostRuntime(QObject *parent = nullptr);
@@ -73,6 +79,12 @@ public:
     QStringList requestClassificationLines() const;
     QString actionTraceSummary() const;
     QString routeExplanationSummary() const;
+    QString resolutionStatus() const;
+    QString resolutionSummary() const;
+    QString resolutionSelectedId() const;
+    QString resolutionCurrentStep() const;
+    int resolutionProgress() const;
+    QStringList resolutionLines() const;
 
     void setLabels(const QString &presence,
                    const QString &mode,
@@ -104,7 +116,13 @@ public:
                    const QString &requestClassifierSummary,
                    const QStringList &requestClassificationLines,
                    const QString &actionTraceSummary,
-                   const QString &routeExplanationSummary);
+                   const QString &routeExplanationSummary,
+                   const QString &resolutionStatus,
+                   const QString &resolutionSummary,
+                   const QString &resolutionSelectedId,
+                   const QString &resolutionCurrentStep,
+                   int resolutionProgress,
+                   const QStringList &resolutionLines);
 
 signals:
     void stateChanged();
@@ -141,4 +159,10 @@ private:
     QStringList m_requestClassificationLines;
     QString m_actionTraceSummary;
     QString m_routeExplanationSummary;
+    QString m_resolutionStatus;
+    QString m_resolutionSummary;
+    QString m_resolutionSelectedId;
+    QString m_resolutionCurrentStep;
+    int m_resolutionProgress = 0;
+    QStringList m_resolutionLines;
 };

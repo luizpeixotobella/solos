@@ -26,6 +26,9 @@ GhostRuntime::GhostRuntime(QObject *parent)
     , m_requestClassifierSummary(QStringLiteral("Request classification has not been loaded yet."))
     , m_actionTraceSummary(QStringLiteral("No Ghost action trace loaded yet."))
     , m_routeExplanationSummary(QStringLiteral("No Ghost route explanation loaded yet."))
+    , m_resolutionStatus(QStringLiteral("ready-for-selection"))
+    , m_resolutionSummary(QStringLiteral("Ghost Resolution Loop has not been loaded yet."))
+    , m_resolutionCurrentStep(QStringLiteral("Select an objective"))
 {
 }
 
@@ -184,6 +187,36 @@ QString GhostRuntime::routeExplanationSummary() const
     return m_routeExplanationSummary;
 }
 
+QString GhostRuntime::resolutionStatus() const
+{
+    return m_resolutionStatus;
+}
+
+QString GhostRuntime::resolutionSummary() const
+{
+    return m_resolutionSummary;
+}
+
+QString GhostRuntime::resolutionSelectedId() const
+{
+    return m_resolutionSelectedId;
+}
+
+QString GhostRuntime::resolutionCurrentStep() const
+{
+    return m_resolutionCurrentStep;
+}
+
+int GhostRuntime::resolutionProgress() const
+{
+    return m_resolutionProgress;
+}
+
+QStringList GhostRuntime::resolutionLines() const
+{
+    return m_resolutionLines;
+}
+
 void GhostRuntime::setLabels(const QString &presence,
                              const QString &mode,
                              const QString &thesis,
@@ -214,7 +247,13 @@ void GhostRuntime::setLabels(const QString &presence,
                              const QString &requestClassifierSummary,
                              const QStringList &requestClassificationLines,
                              const QString &actionTraceSummary,
-                             const QString &routeExplanationSummary)
+                             const QString &routeExplanationSummary,
+                             const QString &resolutionStatus,
+                             const QString &resolutionSummary,
+                             const QString &resolutionSelectedId,
+                             const QString &resolutionCurrentStep,
+                             int resolutionProgress,
+                             const QStringList &resolutionLines)
 {
     m_presenceLabel = presence;
     m_modeLabel = mode;
@@ -247,5 +286,11 @@ void GhostRuntime::setLabels(const QString &presence,
     m_requestClassificationLines = requestClassificationLines;
     m_actionTraceSummary = actionTraceSummary;
     m_routeExplanationSummary = routeExplanationSummary;
+    m_resolutionStatus = resolutionStatus;
+    m_resolutionSummary = resolutionSummary;
+    m_resolutionSelectedId = resolutionSelectedId;
+    m_resolutionCurrentStep = resolutionCurrentStep;
+    m_resolutionProgress = resolutionProgress;
+    m_resolutionLines = resolutionLines;
     emit stateChanged();
 }

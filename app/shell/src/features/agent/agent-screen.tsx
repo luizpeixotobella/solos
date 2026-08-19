@@ -5,7 +5,7 @@ import { QuickActionButton } from "../../components/quick-action-button";
 import { StatusBadge } from "../../components/status-badge";
 import { TaskItemCard } from "../../components/task-item-card";
 import { colors } from "../../styles/tokens";
-import type { ApprovalItem, GhostRequestClass, ScreenKey, SolOSState, TaskItem } from "../../types/system";
+import type { ApprovalItem, GhostRequestClass, GhostResolution, ScreenKey, SolOSState, TaskItem } from "../../types/system";
 
 const suggestedActions: { label: string; target: ScreenKey; mode?: "wallet" }[] = [
   { label: "Show wallet summary", target: "wallet", mode: "wallet" },
@@ -48,6 +48,53 @@ function RequestClassTile({ item }: { item: GhostRequestClass }) {
   );
 }
 
+function ResolutionCard({
+  resolution,
+  selected,
+  onSelect,
+}: {
+  resolution: GhostResolution;
+  selected: boolean;
+  onSelect: (resolutionId: string) => void;
+}) {
+  return (
+    <div
+      style={{
+        border: `1px solid ${selected ? colors.accent : colors.panelBorder}`,
+        borderRadius: 14,
+        padding: 16,
+        background: selected ? "rgba(82,103,255,0.1)" : "rgba(255,255,255,0.02)",
+        display: "grid",
+        gap: 10,
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "flex-start" }}>
+        <strong>{resolution.title}</strong>
+        <StatusBadge label={resolution.readiness} tone={resolution.readiness === "ready" ? "success" : "default"} />
+      </div>
+      <p style={{ color: colors.soft, margin: 0, lineHeight: 1.45 }}>{resolution.objective}</p>
+      <TraceField label="Target outcome" value={resolution.targetOutcome} />
+      <TraceField label="Capability" value={resolution.capability} />
+      <button
+        type="button"
+        disabled={resolution.readiness !== "ready"}
+        onClick={() => onSelect(resolution.id)}
+        style={{
+          border: 0,
+          borderRadius: 10,
+          padding: "10px 12px",
+          cursor: resolution.readiness === "ready" ? "pointer" : "not-allowed",
+          background: resolution.readiness === "ready" ? colors.accent : "rgba(255,255,255,0.08)",
+          color: "white",
+          fontWeight: 700,
+        }}
+      >
+        {selected ? "Selected objective" : resolution.readiness === "ready" ? "Select objective" : "Capability not ready"}
+      </button>
+    </div>
+  );
+}
+
 export function AgentScreen({
   state,
   activeTask,
@@ -56,6 +103,8 @@ export function AgentScreen({
   onApprove,
   onDeny,
   onFocusWallet,
+  onSelectResolution,
+  onStartResolution,
 }: {
   state: SolOSState;
   activeTask: TaskItem | null;
@@ -64,7 +113,13 @@ export function AgentScreen({
   onApprove: (approvalId: string) => void;
   onDeny: (approvalId: string) => void;
   onFocusWallet: () => void;
+  onSelectResolution: (resolutionId: string) => void;
+  onStartResolution: (resolutionId: string) => void;
 }) {
+  const selectedResolution = state.agent.resolutionLoop.resolutions.find(
+    (resolution) => resolution.id === state.agent.resolutionLoop.selectedId,
+  ) ?? null;
+
   return (
     <div style={{ display: "grid", gap: 16 }}>
       <PanelCard title="Ghost" aside={<StatusBadge label={state.agent.status} tone="accent" />}>
@@ -72,6 +127,66 @@ export function AgentScreen({
         <p style={{ color: colors.soft, maxWidth: 760 }}>
           The agent layer coordinates bounded actions, surfaces approvals, and turns system intent into visible operational flows.
         </p>
+      </PanelCard>
+
+      <PanelCard
+        title="Ghost Resolution Loop"
+        aside={<StatusBadge label={selectedResolution?.status ?? "ready-for-selection"} tone={selectedResolution?.status === "resolved" ? "success" : "accent"} />}
+      >
+        <div style={{ display: "grid", gap: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ maxWidth: 760 }}>
+              <h2 style={{ margin: "0 0 8px", fontSize: 26 }}>
+                {selectedResolution?.title ?? "Select one outcome"}
+              </h2>
+              <p style={{ color: colors.soft, margin: 0 }}>{state.agent.resolutionLoop.summary}</p>
+            </div>
+            {selectedResolution?.status === "selected" ? (
+              <button
+                type="button"
+                onClick={() => onStartResolution(selectedResolution.id)}
+                style={{ border: 0, borderRadius: 12, padding: "12px 18px", background: colors.accent, color: "white", fontWeight: 800, cursor: "pointer" }}
+              >
+                Build bounded plan
+              </button>
+            ) : null}
+          </div>
+
+          {selectedResolution ? (
+            <div style={{ display: "grid", gap: 10 }}>
+              <div style={{ height: 8, borderRadius: 99, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                <div style={{ width: `${selectedResolution.progress}%`, height: "100%", background: selectedResolution.status === "resolved" ? colors.success : colors.accent }} />
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", color: colors.muted, fontSize: 13 }}>
+                <span>{selectedResolution.currentStep}</span>
+                <span>{selectedResolution.progress}%</span>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 8 }}>
+                {selectedResolution.steps.map((step) => (
+                  <div key={step.id} style={{ border: `1px solid ${colors.panelBorder}`, borderRadius: 10, padding: 10 }}>
+                    <StatusBadge label={step.status} tone={step.status === "completed" ? "success" : step.status === "active" ? "accent" : "default"} />
+                    <strong style={{ display: "block", marginTop: 8, fontSize: 13 }}>{step.title}</strong>
+                    {step.result ? <span style={{ display: "block", color: colors.muted, fontSize: 12, marginTop: 5 }}>{step.result}</span> : null}
+                  </div>
+                ))}
+              </div>
+              <p style={{ margin: 0, color: colors.soft }}>
+                {selectedResolution.resultSummary} · Evidence: {selectedResolution.evidence.length}
+              </p>
+            </div>
+          ) : null}
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
+            {state.agent.resolutionLoop.resolutions.map((resolution) => (
+              <ResolutionCard
+                key={resolution.id}
+                resolution={resolution}
+                selected={resolution.id === state.agent.resolutionLoop.selectedId}
+                onSelect={onSelectResolution}
+              />
+            ))}
+          </div>
+        </div>
       </PanelCard>
 
       <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 16 }}>

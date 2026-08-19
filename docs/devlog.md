@@ -1,5 +1,16 @@
 # SolOS Devlog
 
+## 2026-08-19 — Ghost Resolution Loop
+
+- Promoted a Ghost resolution into a first-class versioned domain object with objective, target outcome, readiness, ordered steps, progress, evidence and result.
+- Added legal selected → awaiting-approval → resolved/blocked transitions and fail-closed rejection for unsupported or out-of-order routes.
+- Made the SolOS Daemon own the atomic Ghost resolution store and expose narrow RPCs for get, select, start, decide and reset.
+- Preserved the RC1 snapshot as a compatibility read model while injecting current Daemon-owned state on every `snapshot.get`.
+- Connected the native Qt/QML shell to real Daemon transitions and mirrored the selected-to-resolved journey in the web shell.
+- Kept grounded research and public launch visible as candidates but unavailable until their quota/BYOK and account-bound publishing capabilities exist.
+- Added unit coverage for approval, denial, unavailable selection and store round-trip, plus an executable smoke that resolves the objective, restarts the Daemon and verifies retained evidence.
+- Ran the full RC1 gate successfully: thirteen Rust tests, JSON invariants, web build/server smoke, native build/QML smoke and Ghost resolution persistence across restart.
+
 ## 2026-08-14 — Cohesive outside, modular inside
 
 - Recorded ADR 0001: SolOS remains one coherent experience and one owner-scoped Daemon, while internals follow modular-monolith domain boundaries.

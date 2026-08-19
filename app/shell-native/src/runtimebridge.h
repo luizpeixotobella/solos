@@ -57,6 +57,12 @@ struct RuntimeSnapshotData {
     QStringList ghostRequestClassificationLines;
     QString ghostActionTraceSummary;
     QString ghostRouteExplanationSummary;
+    QString ghostResolutionStatus;
+    QString ghostResolutionSummary;
+    QString ghostResolutionSelectedId;
+    QString ghostResolutionCurrentStep;
+    int ghostResolutionProgress = 0;
+    QStringList ghostResolutionLines;
     QString heartPassTitle;
     QString heartPassStatus;
     QString heartPassNetwork;

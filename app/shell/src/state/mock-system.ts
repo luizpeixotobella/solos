@@ -24,14 +24,14 @@ export const initialSystemStatus: SystemStatus = {
   version: "v1.0.0-rc1",
   syncState: "Synced",
   notificationsCount: 2,
-  approvalsCount: 1,
+  approvalsCount: 0,
 };
 
 export const initialAgentState: AgentState = {
-  status: "awaiting-approval",
+  status: "proposing",
   currentTask: "Resume Workspace",
   recentActions: ["Workspace resume prepared", "Wallet summary updated", "Forum launch pack prepared"],
-  pendingApprovals: 1,
+  pendingApprovals: 0,
   requestClassifier: {
     title: "Ghost request classifier",
     summary:
@@ -97,6 +97,63 @@ export const initialAgentState: AgentState = {
       "Repo edits and local builds can proceed in the development workspace. External messages, posts, wallet signatures, paid-provider calls, and destructive commands stay approval-gated.",
     quotaPolicy: "This route spends 0 research queries; future web-grounded research should decrement Heart Pass quota.",
     nextStep: "Persist trace outcomes and accepted/rejected examples so Ghost can compare future routes against expected behavior.",
+  },
+  resolutionLoop: {
+    schema: "solos.ghost.resolutions.v1",
+    selectedId: "resolution-safe-workspace",
+    summary:
+      "One bounded objective is selected. Ghost can turn it into a visible plan, ask for approval, execute one mediated capability, and retain evidence of the result.",
+    resolutions: [
+      {
+        id: "resolution-safe-workspace",
+        title: "Restore my workspace, safely",
+        objective: "Resume the Workspace module without bypassing the SolOS approval boundary.",
+        targetOutcome:
+          "Workspace is active, the user approval is recorded, and the app.open.safe result is attached as evidence.",
+        status: "selected",
+        readiness: "ready",
+        progress: 20,
+        currentStep: "Build a bounded plan",
+        capability: "app.open.safe",
+        resultSummary: "Objective selected; execution has not started.",
+        steps: [
+          { id: "understand", title: "Understand the objective", status: "completed", capability: "task.intent.classify", result: "Bounded local app action." },
+          { id: "plan", title: "Build a bounded plan", status: "active", capability: "task.plan.local", result: "" },
+          { id: "approval", title: "Ask for explicit approval", status: "pending", capability: "approval.request", result: "" },
+          { id: "execute", title: "Execute app.open.safe", status: "pending", capability: "app.open.safe", result: "" },
+          { id: "verify", title: "Verify the target outcome", status: "pending", capability: "app.state.read", result: "" },
+        ],
+        evidence: ["Objective selected"],
+      },
+      {
+        id: "resolution-grounded-answer",
+        title: "Research a grounded answer",
+        objective: "Research a fresh question and return source-linked evidence.",
+        targetOutcome: "Answer, citations, quota receipt, and trace are retained together.",
+        status: "candidate",
+        readiness: "needs-quota-or-byok",
+        progress: 0,
+        currentStep: "Waiting for a configured research route",
+        capability: "web.search.read",
+        resultSummary: "Not executable until a quota or BYOK route is available.",
+        steps: [{ id: "research-route", title: "Configure research route", status: "blocked", capability: "web.search.read", result: "Heart Pass quota or BYOK is required." }],
+        evidence: [],
+      },
+      {
+        id: "resolution-public-launch",
+        title: "Prepare and publish a launch",
+        objective: "Turn a completed product change into a reviewed multi-channel launch.",
+        targetOutcome: "Verified public URLs are attached to the same resolution trace.",
+        status: "candidate",
+        readiness: "needs-public-send-adapter",
+        progress: 0,
+        currentStep: "Waiting for an account-bound publish adapter",
+        capability: "public.post.create",
+        resultSummary: "Not executable inside SolOS until a public-send adapter exists.",
+        steps: [{ id: "publish-adapter", title: "Connect publish adapter", status: "blocked", capability: "public.post.create", result: "Public posting is outside the current capability manifest." }],
+        evidence: [],
+      },
+    ],
   },
   evaluation: {
     total: 5,
@@ -166,8 +223,8 @@ export const initialTasks: TaskItem[] = [
   {
     id: "task-workspace",
     title: "Workspace resume prepared",
-    detail: "Workspace can be resumed after approval review.",
-    status: "awaiting-approval",
+    detail: "Ghost selected this objective; build the bounded plan to open approval.",
+    status: "queued",
   },
   {
     id: "task-forum-pack",
@@ -177,15 +234,7 @@ export const initialTasks: TaskItem[] = [
   },
 ];
 
-export const initialApprovals: ApprovalItem[] = [
-  {
-    id: "approval-workspace",
-    title: "Resume workspace session",
-    description: "Open the workspace module and restore recent session context.",
-    impact: "Non-sensitive system surface action. No wallet signing required.",
-    status: "pending",
-  },
-];
+export const initialApprovals: ApprovalItem[] = [];
 
 export const initialAgentConversation: AgentConversationMessage[] = [
   {

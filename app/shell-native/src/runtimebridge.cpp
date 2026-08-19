@@ -168,6 +168,35 @@ QString summarizeGhostRouteExplanation(const QJsonObject &object)
              object.value(QStringLiteral("nextStep")).toString());
 }
 
+QStringList parseGhostResolutionLines(const QJsonArray &array)
+{
+    QStringList lines;
+    for (const QJsonValue &value : array) {
+        const QJsonObject object = value.toObject();
+        const QString id = object.value(QStringLiteral("id")).toString();
+        const QString title = object.value(QStringLiteral("title")).toString();
+        const QString status = object.value(QStringLiteral("status")).toString();
+        const QString readiness = object.value(QStringLiteral("readiness")).toString();
+        const int progress = object.value(QStringLiteral("progress")).toInt();
+        const QString target = object.value(QStringLiteral("targetOutcome")).toString();
+        const QString result = object.value(QStringLiteral("resultSummary")).toString();
+        const int evidenceCount = object.value(QStringLiteral("evidence")).toArray().size();
+
+        QStringList steps;
+        for (const QJsonValue &stepValue : object.value(QStringLiteral("steps")).toArray()) {
+            const QJsonObject step = stepValue.toObject();
+            steps.append(QStringLiteral("%1 [%2]")
+                .arg(step.value(QStringLiteral("title")).toString(),
+                     step.value(QStringLiteral("status")).toString()));
+        }
+
+        lines.append(QStringLiteral("%1 [%2 · %3 · %4%]\nID: %5\nTarget: %6\nResult: %7\nEvidence: %8\n%9")
+            .arg(title, status, readiness, QString::number(progress), id, target, result,
+                 QString::number(evidenceCount), steps.join(QStringLiteral(" -> "))));
+    }
+    return lines;
+}
+
 QStringList parseStringArray(const QJsonArray &array)
 {
     QStringList lines;
@@ -238,6 +267,7 @@ RuntimeSnapshotData RuntimeBridge::parseSnapshot(const QByteArray &payload)
     const QJsonObject requestClassifier = ghost.value(QStringLiteral("requestClassifier")).toObject();
     const QJsonObject actionTrace = ghost.value(QStringLiteral("actionTrace")).toObject();
     const QJsonObject routeExplanation = ghost.value(QStringLiteral("routeExplanation")).toObject();
+    const QJsonObject resolutionLoop = ghost.value(QStringLiteral("resolutionLoop")).toObject();
 
     snapshot.sessionLabel = root.value(QStringLiteral("sessionLabel")).toString();
     snapshot.systemLabel = root.value(QStringLiteral("systemLabel")).toString();
@@ -297,6 +327,22 @@ RuntimeSnapshotData RuntimeBridge::parseSnapshot(const QByteArray &payload)
     snapshot.ghostRequestClassificationLines = parseGhostRequestClassificationLines(requestClassifier.value(QStringLiteral("classes")).toArray());
     snapshot.ghostActionTraceSummary = summarizeGhostActionTrace(actionTrace);
     snapshot.ghostRouteExplanationSummary = summarizeGhostRouteExplanation(routeExplanation);
+    snapshot.ghostResolutionSummary = resolutionLoop.value(QStringLiteral("summary")).toString();
+    snapshot.ghostResolutionSelectedId = resolutionLoop.value(QStringLiteral("selectedId")).toString();
+    snapshot.ghostResolutionLines = parseGhostResolutionLines(resolutionLoop.value(QStringLiteral("resolutions")).toArray());
+    const QJsonArray resolutions = resolutionLoop.value(QStringLiteral("resolutions")).toArray();
+    for (const QJsonValue &value : resolutions) {
+        const QJsonObject resolution = value.toObject();
+        if (resolution.value(QStringLiteral("id")).toString() == snapshot.ghostResolutionSelectedId) {
+            snapshot.ghostResolutionStatus = resolution.value(QStringLiteral("status")).toString();
+            snapshot.ghostResolutionCurrentStep = resolution.value(QStringLiteral("currentStep")).toString();
+            snapshot.ghostResolutionProgress = resolution.value(QStringLiteral("progress")).toInt();
+            break;
+        }
+    }
+    if (snapshot.ghostResolutionStatus.isEmpty()) {
+        snapshot.ghostResolutionStatus = QStringLiteral("ready-for-selection");
+    }
 
     snapshot.heartPassTitle = heartPass.value(QStringLiteral("title")).toString();
     snapshot.heartPassStatus = heartPass.value(QStringLiteral("status")).toString();

@@ -1,5 +1,9 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use solos_runtime_core::ghost_resolution::{
+    decide_resolution, default_store_path, load_or_create, reset_store, save_atomic,
+    select_resolution, start_resolution, GhostResolutionStore,
+};
 use std::collections::VecDeque;
 use std::env;
 use std::fs;
@@ -35,6 +39,8 @@ struct Response {
 struct DaemonState {
     started_at: u64,
     snapshot_path: PathBuf,
+    resolution_path: PathBuf,
+    resolution_lock: Arc<Mutex<()>>,
     events: Arc<Mutex<VecDeque<Value>>>,
 }
 
@@ -50,6 +56,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let snapshot_path = env::var_os("SOLOS_RUNTIME_SNAPSHOT")
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from("runtime_snapshot.json"));
+    let resolution_path = default_store_path();
 
     prepare_socket(&socket_path)?;
     let listener = UnixListener::bind(&socket_path)?;
@@ -58,6 +65,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let state = DaemonState {
         started_at: now(),
         snapshot_path,
+        resolution_path,
+        resolution_lock: Arc::new(Mutex::new(())),
         events: Arc::new(Mutex::new(VecDeque::new())),
     };
     publish_event(&state, "daemon.started", json!({"socket": socket_path}))?;
@@ -126,7 +135,39 @@ fn dispatch(request: Request, state: &DaemonState) -> Response {
             "snapshotAvailable": state.snapshot_path.is_file(),
             "snapshotPath": state.snapshot_path,
         })),
-        "snapshot.get" => read_snapshot(&state.snapshot_path),
+        "snapshot.get" => read_snapshot(state),
+        "ghost.resolutions.get" => with_resolution_store(state, |store| Ok(json!(store))),
+        "ghost.resolution.select" => {
+            mutate_resolution(state, "ghost.resolution.selected", |store| {
+                let id = required_resolution_id(&request.params)?;
+                select_resolution(store, id)?;
+                Ok(json!({"resolutionId": id, "status": "selected"}))
+            })
+        }
+        "ghost.resolution.start" => {
+            mutate_resolution(state, "ghost.resolution.awaiting-approval", |store| {
+                let id = required_resolution_id(&request.params)?;
+                start_resolution(store, id)?;
+                Ok(json!({"resolutionId": id, "status": "awaiting-approval"}))
+            })
+        }
+        "ghost.resolution.decide" => {
+            mutate_resolution(state, "ghost.resolution.decided", |store| {
+                let id = required_resolution_id(&request.params)?;
+                let approved = request
+                    .params
+                    .get("approved")
+                    .and_then(Value::as_bool)
+                    .ok_or_else(|| "approved must be a boolean".to_string())?;
+                decide_resolution(store, id, approved)?;
+                let status = if approved { "resolved" } else { "blocked" };
+                Ok(json!({"resolutionId": id, "approved": approved, "status": status}))
+            })
+        }
+        "ghost.resolutions.reset" => mutate_resolution(state, "ghost.resolutions.reset", |store| {
+            reset_store(store);
+            Ok(json!({"status": "reset", "selectedId": store.selected_id}))
+        }),
         "events.list" => state
             .events
             .lock()
@@ -154,10 +195,69 @@ fn dispatch(request: Request, state: &DaemonState) -> Response {
     }
 }
 
-fn read_snapshot(path: &Path) -> Result<Value, String> {
-    let content = fs::read_to_string(path)
-        .map_err(|error| format!("snapshot unavailable at {}: {error}", path.display()))?;
-    serde_json::from_str(&content).map_err(|error| format!("invalid runtime snapshot: {error}"))
+fn read_snapshot(state: &DaemonState) -> Result<Value, String> {
+    let content = fs::read_to_string(&state.snapshot_path).map_err(|error| {
+        format!(
+            "snapshot unavailable at {}: {error}",
+            state.snapshot_path.display()
+        )
+    })?;
+    let mut snapshot: Value = serde_json::from_str(&content)
+        .map_err(|error| format!("invalid runtime snapshot: {error}"))?;
+    let resolutions = with_resolution_store(state, |store| Ok(store.clone()))?;
+    let ghost = snapshot
+        .get_mut("ghost")
+        .and_then(Value::as_object_mut)
+        .ok_or_else(|| "runtime snapshot has no Ghost object".to_string())?;
+    ghost.insert(
+        "resolutionLoop".into(),
+        serde_json::to_value(resolutions)
+            .map_err(|error| format!("could not serialize Ghost resolutions: {error}"))?,
+    );
+    Ok(snapshot)
+}
+
+fn required_resolution_id(params: &Value) -> Result<&str, String> {
+    params
+        .get("id")
+        .and_then(Value::as_str)
+        .filter(|id| !id.trim().is_empty())
+        .ok_or_else(|| "resolution id is required".to_string())
+}
+
+fn with_resolution_store<T>(
+    state: &DaemonState,
+    action: impl FnOnce(&GhostResolutionStore) -> Result<T, String>,
+) -> Result<T, String> {
+    let _guard = state
+        .resolution_lock
+        .lock()
+        .map_err(|_| "resolution store lock unavailable".to_string())?;
+    let store = load_or_create(&state.resolution_path)?;
+    action(&store)
+}
+
+fn mutate_resolution(
+    state: &DaemonState,
+    event_kind: &str,
+    action: impl FnOnce(&mut GhostResolutionStore) -> Result<Value, String>,
+) -> Result<Value, String> {
+    let (result, store) = {
+        let _guard = state
+            .resolution_lock
+            .lock()
+            .map_err(|_| "resolution store lock unavailable".to_string())?;
+        let mut store = load_or_create(&state.resolution_path)?;
+        let result = action(&mut store)?;
+        save_atomic(&state.resolution_path, &store)?;
+        (result, store)
+    };
+    publish_event(
+        state,
+        event_kind,
+        json!({"result": result, "resolutionLoop": store}),
+    )?;
+    Ok(json!({"transition": result, "resolutionLoop": store}))
 }
 
 fn publish_event(state: &DaemonState, kind: &str, data: Value) -> Result<Value, String> {
@@ -207,9 +307,16 @@ mod tests {
     use super::*;
 
     fn state() -> DaemonState {
+        let resolution_path = env::temp_dir().join(format!(
+            "solos-daemon-test-{}-{}/ghost-resolutions.json",
+            std::process::id(),
+            now()
+        ));
         DaemonState {
             started_at: now(),
             snapshot_path: PathBuf::from("/path/that/does/not/exist"),
+            resolution_path,
+            resolution_lock: Arc::new(Mutex::new(())),
             events: Arc::new(Mutex::new(VecDeque::new())),
         }
     }
@@ -255,5 +362,40 @@ mod tests {
         );
         assert!(response.ok);
         assert_eq!(state.events.lock().unwrap().len(), 1);
+    }
+
+    #[test]
+    fn resolution_rpc_closes_the_selected_objective() {
+        let state = state();
+        let start = dispatch(
+            Request {
+                id: Some("start".into()),
+                method: "ghost.resolution.start".into(),
+                params: json!({"id": "resolution-safe-workspace"}),
+            },
+            &state,
+        );
+        assert!(start.ok, "{:?}", start.error);
+        assert_eq!(start.result["transition"]["status"], "awaiting-approval");
+
+        let decide = dispatch(
+            Request {
+                id: Some("decide".into()),
+                method: "ghost.resolution.decide".into(),
+                params: json!({"id": "resolution-safe-workspace", "approved": true}),
+            },
+            &state,
+        );
+        assert!(decide.ok, "{:?}", decide.error);
+        assert_eq!(decide.result["transition"]["status"], "resolved");
+        assert_eq!(
+            decide.result["resolutionLoop"]["resolutions"][0]["progress"],
+            100
+        );
+
+        let reloaded = load_or_create(&state.resolution_path).unwrap();
+        assert_eq!(reloaded.resolutions[0].status, "resolved");
+        let parent = state.resolution_path.parent().unwrap();
+        fs::remove_dir_all(parent).unwrap();
     }
 }

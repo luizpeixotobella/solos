@@ -11,6 +11,7 @@ SolOS is an operating environment built around agency, explicit ownership, and a
 - Developing Ghost from the AI-era inversion: **data + results = algorithms**
 - Making the Heart Pass Quota Layer visible as a local runtime contract before adding sponsored backend calls
 - Promoting Ghost from broad intelligence doctrine into visible request classification, action trace, and route explanation
+- Closing the first Ghost Resolution Loop from selected objective through plan, approval, mediated action, verification, retained evidence, and Daemon restart
 - Planning SolOS Pulso as a future social app surface with consented human signals and Pulso Credits as internal utility credits
 - Tracking SolOS to v1.0 through a living completion plan with done, partial, next, prototype, and release milestones
 
@@ -61,6 +62,7 @@ Current implementation direction:
 - `docs/architecture.md` — system architecture and component map
 - `docs/ghost-intelligence-doctrine.md` — Ghost doctrine for the AI-era inversion from `algorithms + data = results` to `data + results = algorithms`
 - `docs/ghost-operational-readiness-2026.md` — readiness model for Ghost as an operating agent: grounding, memory, tools, approvals, traces, and language mediation
+- `docs/ghost-resolution-loop.md` — versioned selected-to-resolved journey, Daemon RPC, persistence and honest beta boundary
 - `docs/cases/003-heart-pass-quota-layer.md` — local quota contract and next backend path for Heart Pass holder utility
 - `docs/cases/004-ai-ghost-classification-trace.md` — first W3Schools-inspired Ghost classifier, action trace, and route explanation slice
 - `docs/solos-pulso-credits.md` — planned SolOS Pulso social surface and Pulso Credits utility-credit model
@@ -102,6 +104,8 @@ Ghost now exposes operational readiness, not only presence. The native shell can
 This is the current product rule: Ghost can speak before it acts, research before it executes, and suggest before it writes, signs, pays, posts, or changes host state.
 
 Ghost now also exposes its first deterministic request classifier and action trace. Before a route is treated as executable, the shell can show the request class, safety level, required tools, approval needs, quota cost, selected route, and plain-language route explanation.
+
+Ghost now closes one bounded resolution end to end. The selected Workspace objective becomes an ordered plan, stops for explicit approval, runs only the declared `app.open.safe` capability, verifies the resulting state, and retains evidence in a versioned Daemon-owned store. Research and public publishing remain visible candidates but fail closed until their real capability routes exist.
 
 ## Working principle
 

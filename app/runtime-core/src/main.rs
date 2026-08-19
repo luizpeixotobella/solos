@@ -9,6 +9,9 @@ mod host_runtime;
 mod surface_catalog;
 
 use host_runtime::{detect_host_runtime, detect_online, HostRuntime};
+use solos_runtime_core::ghost_resolution::{
+    default_store_path, load_or_default, GhostResolutionStore,
+};
 use surface_catalog::{
     build_app_registry, build_approvals, build_quick_actions, AppEntry, ApprovalEntry, QuickAction,
 };
@@ -256,6 +259,7 @@ struct GhostState {
     requestClassifier: GhostRequestClassifier,
     actionTrace: GhostActionTrace,
     routeExplanation: GhostRouteExplanation,
+    resolutionLoop: GhostResolutionStore,
 }
 
 #[derive(Serialize)]
@@ -718,9 +722,7 @@ impl GhostBrain {
         Vec<GhostIntent>,
         GhostInitiationOutcome,
     ) {
-        let query = format!(
-            "how to design a layered local AI agent with web search and approval flow for operating system shell"
-        );
+        let query = "how to design a layered local AI agent with web search and approval flow for operating system shell".to_string();
 
         let mut stages = Vec::new();
         stages.push(GhostPipelineStage {
@@ -1024,13 +1026,8 @@ fn main() {
     };
     let app_registry = build_app_registry();
     let approvals = build_approvals();
-    let activity_feed = build_activity_feed(
-        &host,
-        online,
-        app_registry.len(),
-        &ghost_research,
-        &heart_pass,
-    );
+    let activity_feed =
+        build_activity_feed(&host, app_registry.len(), &ghost_research, &heart_pass);
     let quick_actions = build_quick_actions();
     let approvals_count = approvals.len();
     let notifications_count = activity_feed.len();
@@ -1043,6 +1040,10 @@ fn main() {
         build_ghost_route_explanation(online, &ghost_research, &heart_pass);
     let trace_evaluation = load_trace_evaluation();
     let wallet_session = build_wallet_session(&heart_pass);
+    let ghost_resolution_loop = load_or_default(&default_store_path()).unwrap_or_else(|error| {
+        eprintln!("[ghost-resolution] {error}; using a non-persistent seed");
+        solos_runtime_core::ghost_resolution::seed_store()
+    });
 
     let snapshot = RuntimeSnapshot {
         schemaVersion: "solos.runtime.snapshot.v1".into(),
@@ -1063,15 +1064,18 @@ fn main() {
         runtimeRole: "Intermediary layer between Linux base system and SolOS operating layer".into(),
         mediationStatus: "Host facts detected and normalized into SolOS-facing runtime state".into(),
         home: HomeState {
-            summaryTitle: "Ghost now has a first layered intelligence module".into(),
-            summarySubtitle: "AI-era synthesis: data + results = algorithms, grounded in host runtime, outcomes, and optional Brave web search.".into(),
+            summaryTitle: "Ghost now closes one objective from selection to evidence".into(),
+            summarySubtitle: "A selected resolution becomes a bounded plan, a visible approval, one mediated capability, and a verified result.".into(),
             summaryBody: format!(
-                "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from {}, kernel {}, hostname {}, user {}, uptime {}. Web grounding currently reports: {}.",
-                host.os, host.kernel, host.hostname, host.user, host.uptime, ghost_research.summary
+                "This build keeps Ghost's data + results = algorithms pipeline, then links it to one real resolution contract: objective selection, bounded planning, approval, app.open.safe execution, app.state.read verification, and retained evidence. Host state comes from {}, kernel {}, hostname {}, user {}, uptime {}. The selected resolution is {} at {}%. Web grounding currently reports: {}.",
+                host.os, host.kernel, host.hostname, host.user, host.uptime,
+                ghost_resolution_loop.resolutions.iter().find(|resolution| Some(resolution.id.as_str()) == ghost_resolution_loop.selected_id.as_deref()).map(|resolution| resolution.status.as_str()).unwrap_or("not-selected"),
+                ghost_resolution_loop.resolutions.iter().find(|resolution| Some(resolution.id.as_str()) == ghost_resolution_loop.selected_id.as_deref()).map(|resolution| resolution.progress).unwrap_or(0),
+                ghost_research.summary
             ),
-            nextActionTitle: "Next useful move".into(),
-            nextActionSubtitle: "Promote Ghost from research pipeline to task executor".into(),
-            nextActionBody: "The next module should add task intents and tool actions so Ghost can turn researched guidance into explicit SolOS commands, approval requests, and user-visible outcomes.".into(),
+            nextActionTitle: "Resolve the selected objective".into(),
+            nextActionSubtitle: "Plan -> approve -> execute -> verify".into(),
+            nextActionBody: "Open Ghost Resolution Loop, review the selected Workspace objective, prepare its bounded plan, and decide the app.open.safe approval. The Daemon retains every transition and the final evidence.".into(),
         },
         ghost: GhostState {
             presenceLabel: "Ghost present in shell".into(),
@@ -1150,6 +1154,7 @@ fn main() {
             requestClassifier: ghost_request_classifier,
             actionTrace: ghost_action_trace,
             routeExplanation: ghost_route_explanation,
+            resolutionLoop: ghost_resolution_loop,
         },
         heartPass: heart_pass,
         quickActions: quick_actions,
@@ -1179,7 +1184,6 @@ fn main() {
 
 fn build_activity_feed(
     host: &HostRuntime,
-    online: bool,
     app_count: usize,
     research: &GhostResearchOutcome,
     heart_pass: &HeartPassState,
@@ -1206,8 +1210,6 @@ fn build_activity_feed(
             ),
             status: if research.status == "ready" {
                 "ready".into()
-            } else if online {
-                "warning".into()
             } else {
                 "warning".into()
             },

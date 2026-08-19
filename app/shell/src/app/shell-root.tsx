@@ -13,7 +13,7 @@ import type { ScreenKey } from "../types/system";
 
 export function ShellRoot() {
   const [screen, setScreen] = useState<ScreenKey>(defaultScreen);
-  const { state, activeTask, pendingApprovals, approve, deny, focusWallet, launchApp, requestWorkspaceAccess, resetDemo, setDemoStep } = useSolOSStore();
+  const { state, activeTask, pendingApprovals, approve, deny, focusWallet, launchApp, requestWorkspaceAccess, resetDemo, selectResolution, startResolution, setDemoStep } = useSolOSStore();
 
   const navigate = (next: ScreenKey) => {
     if (next === "home") setDemoStep("demo-1");
@@ -59,6 +59,8 @@ export function ShellRoot() {
           focusWallet();
           setScreen("wallet");
         }}
+        onSelectResolution={selectResolution}
+        onStartResolution={startResolution}
       />
     ) : screen === "wallet" ? (
       <WalletScreen state={state} pendingApprovals={pendingApprovals} />

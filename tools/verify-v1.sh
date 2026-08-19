@@ -10,6 +10,7 @@ cargo fmt --check
 cargo test
 cargo run --quiet > "$generated_snapshot"
 cargo test --bin solos-daemon
+cargo build --bin solos-daemon
 
 jq -e '
   .schemaVersion == "solos.runtime.snapshot.v1" and
@@ -17,12 +18,16 @@ jq -e '
   .capabilityManifest.defaultPolicy == "deny" and
   .traceEvaluation.total >= 5 and
   .traceEvaluation.passRate == 1 and
+  .ghost.resolutionLoop.schema == "solos.ghost.resolutions.v1" and
+  .ghost.resolutionLoop.selectedId == "resolution-safe-workspace" and
   .quotaProxy.requiresSignedHolderProof == true and
   .walletSession.sponsoredCallsAllowed == false
 ' "$generated_snapshot" >/dev/null
 
 cd "$repo_dir/app/shell"
 npm run build
+
+SOLOS_SMOKE_SNAPSHOT="$generated_snapshot" "$repo_dir/tools/smoke-ghost-resolution.sh"
 
 if command -v curl >/dev/null 2>&1; then
   "$repo_dir/tools/smoke-web-shell.sh"
@@ -39,10 +44,12 @@ bash -n "$repo_dir/appliance/demo-linux-v1/bin/install-daemon-build.sh"
 bash -n "$repo_dir/appliance/demo-linux-v1/live-build/build-iso.sh"
 bash -n "$repo_dir/tools/smoke-web-shell.sh"
 bash -n "$repo_dir/tools/smoke-native-shell.sh"
+bash -n "$repo_dir/tools/smoke-ghost-resolution.sh"
 
 test -s "$repo_dir/docs/demo-v1.0.md"
 test -s "$repo_dir/docs/release-v1.0-rc1.md"
 test -s "$repo_dir/docs/quota-proxy-v1.md"
 test -s "$repo_dir/docs/daemon-v1.md"
+test -s "$repo_dir/docs/ghost-resolution-loop.md"
 
 echo "SolOS v1.0 RC1 verification passed."

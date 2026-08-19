@@ -52,6 +52,97 @@ Item {
                     }
                 }
 
+                Rectangle {
+                    Layout.fillWidth: true
+                    radius: 20
+                    color: "#121a2f"
+                    border.color: ghostRuntime.resolutionStatus === "resolved" ? "#36d399" : "#5267ff"
+                    border.width: 1
+                    implicitHeight: resolutionColumn.implicitHeight + 36
+
+                    ColumnLayout {
+                        id: resolutionColumn
+                        anchors.fill: parent
+                        anchors.margins: 18
+                        spacing: 12
+
+                        RowLayout {
+                            Layout.fillWidth: true
+
+                            Label {
+                                text: "Ghost Resolution Loop"
+                                color: "#eef3ff"
+                                font.pixelSize: 24
+                                font.bold: true
+                                Layout.fillWidth: true
+                            }
+
+                            Label {
+                                text: ghostRuntime.resolutionStatus + " · " + ghostRuntime.resolutionProgress + "%"
+                                color: ghostRuntime.resolutionStatus === "resolved" ? "#8df0c2" : "#73d0ff"
+                                font.bold: true
+                            }
+                        }
+
+                        ProgressBar {
+                            Layout.fillWidth: true
+                            from: 0
+                            to: 100
+                            value: ghostRuntime.resolutionProgress
+                        }
+
+                        Label {
+                            Layout.fillWidth: true
+                            text: ghostRuntime.resolutionSummary
+                                  + "\n\nCurrent: " + ghostRuntime.resolutionCurrentStep
+                                  + "\nSelected: " + ghostRuntime.resolutionSelectedId
+                            color: "#9fb0d0"
+                            wrapMode: Text.WordWrap
+                        }
+
+                        Label {
+                            Layout.fillWidth: true
+                            text: ghostRuntime.resolutionLines.length > 0
+                                  ? ghostRuntime.resolutionLines.join("\n\n")
+                                  : "No Ghost resolutions loaded."
+                            color: "#c8d5f2"
+                            wrapMode: Text.WordWrap
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+
+                            Button {
+                                text: "Select safe Workspace goal"
+                                onClicked: appController.selectGhostResolution("resolution-safe-workspace")
+                            }
+
+                            Button {
+                                text: "Build plan"
+                                enabled: ghostRuntime.resolutionStatus === "selected"
+                                onClicked: appController.startGhostResolution(ghostRuntime.resolutionSelectedId)
+                            }
+
+                            Button {
+                                text: "Approve and resolve"
+                                enabled: ghostRuntime.resolutionStatus === "awaiting-approval"
+                                onClicked: appController.decideGhostResolution(ghostRuntime.resolutionSelectedId, true)
+                            }
+
+                            Button {
+                                text: "Deny"
+                                enabled: ghostRuntime.resolutionStatus === "awaiting-approval"
+                                onClicked: appController.decideGhostResolution(ghostRuntime.resolutionSelectedId, false)
+                            }
+
+                            Button {
+                                text: "Reset"
+                                onClicked: appController.resetGhostResolutions()
+                            }
+                        }
+                    }
+                }
+
                 GridLayout {
                     Layout.fillWidth: true
                     columns: width > 980 ? 2 : 1
