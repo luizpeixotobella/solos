@@ -2,7 +2,22 @@
 
 Date: 2026-08-23
 
-Status: copy prepared for use only after the release commit and GitHub issue form are public.
+Status: launched publicly on 2026-08-23 after the release commit and GitHub issue form became public.
+
+## Publication registry
+
+- Campaign article: https://luiz-bella-artes.net/blog/solos-ghost-audit-pilot-rc2-dez-auditores
+- LinkedIn detailed invitation: https://www.linkedin.com/feed/update/urn:li:share:7497427122525724672
+- LinkedIn Ghost video: https://www.linkedin.com/feed/update/urn:li:ugcPost:7497430783851294720/
+- X Ghost video: https://x.com/LbartesL/status/2091665940576387181
+- Instagram Ghost Reel: https://www.instagram.com/lbiartesluiz/reel/DcZqwRBkWdh/
+- Manifesto amplification:
+  - LinkedIn: https://www.linkedin.com/feed/update/urn:li:ugcPost:7497429367451656192/
+  - X: https://x.com/LbartesL/status/2091666693885923615
+  - Instagram: https://www.instagram.com/lbiartesluiz/reel/DcZsDKXk-7W/
+- TikTok and Kwai were not marked published because both upload surfaces require a fresh authenticated session.
+
+GitHub traffic at launch was 24 clones and 17 unique cloners in the rolling 14-day window. This remains an acquisition signal, not a completed audit, identified lead or customer count.
 
 ## Audience
 
