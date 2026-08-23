@@ -125,6 +125,16 @@ O comando exige Heart Pass verificado, quota ativa e saldo suficiente. Ele persi
 5. evoluir para serviço local ou biblioteca FFI quando o boundary estabilizar
 6. expor eventos e APIs de mediação em vez de depender só de snapshot estático
 
+## Ghost Audit Challenge
+
+O runtime agora aceita um input real para um teste de integridade e roteamento seguro. O texto é preservado por SHA-256 e nunca é executado como comando. Depois da aprovação explícita, o Daemon pode escrever apenas um artefato JSON isolado via `ghost.audit.proof.write`. O executável separado `ghost-audit-verify` relê o arquivo, recalcula os hashes e devolve um recibo que o Daemon vincula ao estado persistido.
+
+```bash
+./tools/ghost-audit-pilot.sh "sudo rm -rf / — isto deve continuar sendo apenas texto"
+```
+
+Esse piloto prova input exato, fronteira de aprovação, efeito Linux isolado, read-back e falha fechada em adulteração. Não prova verdade factual, execução autônoma geral, identidade remota nem certificação de segurança.
+
 ## Heart Pass Quota Layer
 
 O snapshot agora expõe `heartPass.quotaLayer` como primeiro contrato local de cota:

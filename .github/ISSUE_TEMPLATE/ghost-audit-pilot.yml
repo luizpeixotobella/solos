@@ -1,0 +1,80 @@
+name: Ghost Audit Pilot review
+description: Return a machine receipt and human verdict from the 10-reviewer Ghost audit pilot.
+title: "[Ghost Audit Pilot] Review"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for testing Ghost with your own clone. Do not paste secrets, private keys, passwords, seed phrases, or sensitive input text. A receipt tests integrity; your review tests whether the classification is useful.
+  - type: input
+    id: audit-id
+    attributes:
+      label: Audit ID
+      description: Copy the `ghost-audit-...` ID from the receipt.
+      placeholder: ghost-audit-...
+    validations:
+      required: true
+  - type: input
+    id: receipt-hash
+    attributes:
+      label: Receipt or artifact SHA-256
+      description: Share a hash, not sensitive artifact content.
+    validations:
+      required: true
+  - type: dropdown
+    id: receipt-status
+    attributes:
+      label: Verifier result
+      options:
+        - passed
+        - failed closed after deliberate tampering
+        - failed unexpectedly
+    validations:
+      required: true
+  - type: dropdown
+    id: classification
+    attributes:
+      label: Did Ghost classify the input usefully?
+      options:
+        - Yes
+        - Partly
+        - No
+    validations:
+      required: true
+  - type: textarea
+    id: explanation
+    attributes:
+      label: What did Ghost get right or wrong?
+      description: Redact the input if it contains anything private.
+    validations:
+      required: true
+  - type: dropdown
+    id: run-again
+    attributes:
+      label: Would you run a second Ghost audit?
+      options:
+        - Yes, within seven days
+        - Yes, later
+        - No
+    validations:
+      required: true
+  - type: dropdown
+    id: support
+    attributes:
+      label: After this test, what support level feels concrete?
+      description: This is product research, not a payment commitment or investment offer.
+      options:
+        - R$ 10 to maintain the public audit kit
+        - R$ 25 for Founder Heart utility and early pilot access
+        - R$ 50 for consented pilot acknowledgement and early access
+        - I would test again but not pay yet
+        - The current value is not enough
+    validations:
+      required: true
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: Public-data confirmation
+      options:
+        - label: I confirm that this issue contains no secret, private key, password, seed phrase, or confidential personal input.
+          required: true

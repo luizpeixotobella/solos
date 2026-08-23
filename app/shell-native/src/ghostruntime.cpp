@@ -29,6 +29,9 @@ GhostRuntime::GhostRuntime(QObject *parent)
     , m_resolutionStatus(QStringLiteral("ready-for-selection"))
     , m_resolutionSummary(QStringLiteral("Ghost Resolution Loop has not been loaded yet."))
     , m_resolutionCurrentStep(QStringLiteral("Select an objective"))
+    , m_auditStatus(QStringLiteral("waiting-for-input"))
+    , m_auditSummary(QStringLiteral("Submit a real input to start a portable Ghost audit."))
+    , m_auditCurrentStep(QStringLiteral("Submit an input"))
 {
 }
 
@@ -217,6 +220,20 @@ QStringList GhostRuntime::resolutionLines() const
     return m_resolutionLines;
 }
 
+QString GhostRuntime::auditStatus() const { return m_auditStatus; }
+QString GhostRuntime::auditSummary() const { return m_auditSummary; }
+QString GhostRuntime::auditActiveId() const { return m_auditActiveId; }
+QString GhostRuntime::auditInput() const { return m_auditInput; }
+QString GhostRuntime::auditInputSha256() const { return m_auditInputSha256; }
+QString GhostRuntime::auditRequestClass() const { return m_auditRequestClass; }
+QString GhostRuntime::auditRisk() const { return m_auditRisk; }
+QString GhostRuntime::auditRoute() const { return m_auditRoute; }
+QString GhostRuntime::auditCurrentStep() const { return m_auditCurrentStep; }
+int GhostRuntime::auditProgress() const { return m_auditProgress; }
+QString GhostRuntime::auditArtifactPath() const { return m_auditArtifactPath; }
+QString GhostRuntime::auditReceiptPath() const { return m_auditReceiptPath; }
+QStringList GhostRuntime::auditLines() const { return m_auditLines; }
+
 void GhostRuntime::setLabels(const QString &presence,
                              const QString &mode,
                              const QString &thesis,
@@ -253,7 +270,20 @@ void GhostRuntime::setLabels(const QString &presence,
                              const QString &resolutionSelectedId,
                              const QString &resolutionCurrentStep,
                              int resolutionProgress,
-                             const QStringList &resolutionLines)
+                             const QStringList &resolutionLines,
+                             const QString &auditStatus,
+                             const QString &auditSummary,
+                             const QString &auditActiveId,
+                             const QString &auditInput,
+                             const QString &auditInputSha256,
+                             const QString &auditRequestClass,
+                             const QString &auditRisk,
+                             const QString &auditRoute,
+                             const QString &auditCurrentStep,
+                             int auditProgress,
+                             const QString &auditArtifactPath,
+                             const QString &auditReceiptPath,
+                             const QStringList &auditLines)
 {
     m_presenceLabel = presence;
     m_modeLabel = mode;
@@ -292,5 +322,18 @@ void GhostRuntime::setLabels(const QString &presence,
     m_resolutionCurrentStep = resolutionCurrentStep;
     m_resolutionProgress = resolutionProgress;
     m_resolutionLines = resolutionLines;
+    m_auditStatus = auditStatus;
+    m_auditSummary = auditSummary;
+    m_auditActiveId = auditActiveId;
+    m_auditInput = auditInput;
+    m_auditInputSha256 = auditInputSha256;
+    m_auditRequestClass = auditRequestClass;
+    m_auditRisk = auditRisk;
+    m_auditRoute = auditRoute;
+    m_auditCurrentStep = auditCurrentStep;
+    m_auditProgress = auditProgress;
+    m_auditArtifactPath = auditArtifactPath;
+    m_auditReceiptPath = auditReceiptPath;
+    m_auditLines = auditLines;
     emit stateChanged();
 }

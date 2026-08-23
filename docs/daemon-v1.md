@@ -22,6 +22,10 @@ The SolOS Daemon is the persistent process boundary of the runtime intermediary.
 - `ghost.resolution.start`: build its bounded plan and open the approval boundary.
 - `ghost.resolution.decide`: record approval or denial, then resolve or stop without a side effect.
 - `ghost.resolutions.reset`: restore the RC1 beta seed.
+- `ghost.audits.get`: read the Daemon-owned real-input audit history.
+- `ghost.audit.prepare`: preserve and classify exact user input without executing it.
+- `ghost.audit.decide`: deny safely or approve only the isolated `ghost.audit.proof.write` capability.
+- `ghost.audit.verify`: invoke the separate `ghost-audit-verify` process, bind its receipt to the retained hashes and fail closed on mismatch.
 
 Example request:
 
@@ -30,6 +34,8 @@ Example request:
 ```
 
 The socket directory is mode `0700` and the socket is mode `0600`. The protocol does not expose arbitrary shell execution, wallet actions or network calls. Resolution persistence is restricted to the Daemon-owned versioned state store and committed atomically.
+
+Ghost audit bundles are also owner-only (`0700` directory, `0600` JSON files). Set `SOLOS_GHOST_AUDIT_STORE`, `SOLOS_GHOST_AUDIT_DIR`, and `SOLOS_GHOST_AUDIT_VERIFIER` to isolate a pilot run. The submitted input is deliberately retained verbatim in the local artifact, so secrets must never be used as audit inputs.
 
 `snapshot.get` injects the latest `ghost.resolutionLoop` read model instead of serving stale generated state. Set `SOLOS_GHOST_RESOLUTION_STORE` to override the state path; otherwise the Daemon uses the XDG/user local state directory.
 

@@ -12,6 +12,7 @@ SolOS is an operating environment built around agency, explicit ownership, and a
 - Making the Heart Pass Quota Layer visible as a local runtime contract before adding sponsored backend calls
 - Promoting Ghost from broad intelligence doctrine into visible request classification, action trace, and route explanation
 - Closing the first Ghost Resolution Loop from selected objective through plan, approval, mediated action, verification, retained evidence, and Daemon restart
+- Recruiting a ten-reviewer Ghost Audit Pilot around real user input, inert prompt handling, an isolated Linux proof artifact, a separate verifier process, and portable receipts
 - Planning SolOS Pulso as a future social app surface with consented human signals and Pulso Credits as internal utility credits
 - Tracking SolOS to v1.0 through a living completion plan with done, partial, next, prototype, and release milestones
 
@@ -63,6 +64,9 @@ Current implementation direction:
 - `docs/ghost-intelligence-doctrine.md` — Ghost doctrine for the AI-era inversion from `algorithms + data = results` to `data + results = algorithms`
 - `docs/ghost-operational-readiness-2026.md` — readiness model for Ghost as an operating agent: grounding, memory, tools, approvals, traces, and language mediation
 - `docs/ghost-resolution-loop.md` — versioned selected-to-resolved journey, Daemon RPC, persistence and honest beta boundary
+- `docs/ghost-audit-pilot.md` — executable real-input audit, portable receipt and ten-reviewer validation gate
+- `docs/ghost-audit-pilot-campaign.md` — targeted reviewer invitation, value exchange, fundraising signal and stop/go rules
+- `docs/release-v1.0-rc2.md` — release gate and honest boundary for the real-input audit pilot
 - `docs/cases/003-heart-pass-quota-layer.md` — local quota contract and next backend path for Heart Pass holder utility
 - `docs/cases/004-ai-ghost-classification-trace.md` — first W3Schools-inspired Ghost classifier, action trace, and route explanation slice
 - `docs/solos-pulso-credits.md` — planned SolOS Pulso social surface and Pulso Credits utility-credit model
@@ -106,6 +110,8 @@ This is the current product rule: Ghost can speak before it acts, research befor
 Ghost now also exposes its first deterministic request classifier and action trace. Before a route is treated as executable, the shell can show the request class, safety level, required tools, approval needs, quota cost, selected route, and plain-language route explanation.
 
 Ghost now closes one bounded resolution end to end. The selected Workspace objective becomes an ordered plan, stops for explicit approval, runs only the declared `app.open.safe` capability, verifies the resulting state, and retains evidence in a versioned Daemon-owned store. Research and public publishing remain visible candidates but fail closed until their real capability routes exist.
+
+Ghost now also accepts real reviewer input through the **Ghost Audit Challenge**. The Daemon hashes and classifies the exact text without executing embedded instructions, waits for a narrow approval, writes one isolated Linux proof artifact, then requires the separate `ghost-audit-verify` executable to read the artifact back and issue a portable receipt. Run `tools/ghost-audit-pilot.sh`; see `docs/ghost-audit-pilot.md` for the ten-person validation and fundraising experiment.
 
 ## Working principle
 

@@ -1,5 +1,14 @@
 # SolOS Devlog
 
+## 2026-08-23 — Ghost Audit Pilot becomes a real-input product test
+
+- Added a Daemon-owned Ghost audit store for real reviewer input, exact SHA-256 capture, transparent deterministic scope/risk classification and visible approval.
+- Kept every embedded input instruction inert; the only executable effect is `ghost.audit.proof.write` into an owner-only isolated bundle.
+- Added the separate `ghost-audit-verify` executable, portable receipts, Daemon hash binding, tamper fail-closed tests and restart persistence smoke.
+- Added the native Agent/Ghost audit surface and the one-command `tools/ghost-audit-pilot.sh` clone workflow.
+- Added a ten-reviewer return contract and GitHub issue form. Baseline on 2026-08-23: 24 clones and 17 unique cloners in the GitHub Traffic API rolling window; this remains an acquisition signal, not a count of identified people.
+- Preserved the honest boundary: this audits integrity and safe routing around submitted text; it is not general autonomous execution, factual web verification, remote attestation or a production security certification.
+
 ## 2026-08-19 — Ghost Resolution Loop
 
 - Promoted a Ghost resolution into a first-class versioned domain object with objective, target outcome, readiness, ordered steps, progress, evidence and result.

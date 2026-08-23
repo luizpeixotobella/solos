@@ -1,5 +1,11 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use solos_runtime_core::ghost_audit::{
+    apply_receipt, decide_audit, default_artifact_root,
+    default_store_path as default_audit_store_path, load_or_create as load_or_create_audit_store,
+    prepare_audit, save_receipt_atomic, save_store_atomic as save_audit_store_atomic,
+    GhostAuditReceipt, GhostAuditStore,
+};
 use solos_runtime_core::ghost_resolution::{
     decide_resolution, default_store_path, load_or_create, reset_store, save_atomic,
     select_resolution, start_resolution, GhostResolutionStore,
@@ -11,6 +17,7 @@ use std::io::{BufRead, BufReader, Write};
 use std::os::unix::fs::PermissionsExt;
 use std::os::unix::net::{UnixListener, UnixStream};
 use std::path::{Path, PathBuf};
+use std::process::Command;
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -40,7 +47,11 @@ struct DaemonState {
     started_at: u64,
     snapshot_path: PathBuf,
     resolution_path: PathBuf,
+    audit_path: PathBuf,
+    audit_root: PathBuf,
+    audit_verifier_path: PathBuf,
     resolution_lock: Arc<Mutex<()>>,
+    audit_lock: Arc<Mutex<()>>,
     events: Arc<Mutex<VecDeque<Value>>>,
 }
 
@@ -57,6 +68,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from("runtime_snapshot.json"));
     let resolution_path = default_store_path();
+    let audit_path = default_audit_store_path();
+    let audit_root = default_artifact_root();
+    let audit_verifier_path = env::var_os("SOLOS_GHOST_AUDIT_VERIFIER")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| {
+            env::current_exe()
+                .ok()
+                .and_then(|path| path.parent().map(Path::to_path_buf))
+                .unwrap_or_else(|| PathBuf::from("."))
+                .join("ghost-audit-verify")
+        });
 
     prepare_socket(&socket_path)?;
     let listener = UnixListener::bind(&socket_path)?;
@@ -66,7 +88,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         started_at: now(),
         snapshot_path,
         resolution_path,
+        audit_path,
+        audit_root,
+        audit_verifier_path,
         resolution_lock: Arc::new(Mutex::new(())),
+        audit_lock: Arc::new(Mutex::new(())),
         events: Arc::new(Mutex::new(VecDeque::new())),
     };
     publish_event(&state, "daemon.started", json!({"socket": socket_path}))?;
@@ -134,8 +160,51 @@ fn dispatch(request: Request, state: &DaemonState) -> Response {
             "uptimeSeconds": now().saturating_sub(state.started_at),
             "snapshotAvailable": state.snapshot_path.is_file(),
             "snapshotPath": state.snapshot_path,
+            "ghostAuditVerifierAvailable": state.audit_verifier_path.is_file(),
+            "ghostAuditVerifierPath": state.audit_verifier_path,
         })),
         "snapshot.get" => read_snapshot(state),
+        "ghost.audits.get" => with_audit_store(state, |store| Ok(json!(store))),
+        "ghost.audit.prepare" => mutate_audit(state, "ghost.audit.awaiting-approval", |store| {
+            let input = required_string(&request.params, "input")?;
+            let id = prepare_audit(store, input)?;
+            let audit = store
+                .audits
+                .iter()
+                .find(|audit| audit.id == id)
+                .ok_or_else(|| "prepared Ghost audit disappeared".to_string())?;
+            Ok(json!({
+                "auditId": id,
+                "status": audit.status,
+                "classification": audit.classification,
+                "inputSha256": audit.input_sha256,
+            }))
+        }),
+        "ghost.audit.decide" => mutate_audit(state, "ghost.audit.decided", |store| {
+            let id = required_string(&request.params, "id")?;
+            let approved = request
+                .params
+                .get("approved")
+                .and_then(Value::as_bool)
+                .ok_or_else(|| "approved must be a boolean".to_string())?;
+            decide_audit(store, id, approved, &state.audit_root)?;
+            let audit = store
+                .audits
+                .iter()
+                .find(|audit| audit.id == id)
+                .ok_or_else(|| "decided Ghost audit disappeared".to_string())?;
+            Ok(json!({
+                "auditId": id,
+                "approved": approved,
+                "status": audit.status,
+                "artifactPath": audit.artifact_path,
+                "artifactSha256": audit.artifact_sha256,
+            }))
+        }),
+        "ghost.audit.verify" => {
+            let id = required_string(&request.params, "id");
+            id.and_then(|id| verify_audit_with_external_process(state, id))
+        }
         "ghost.resolutions.get" => with_resolution_store(state, |store| Ok(json!(store))),
         "ghost.resolution.select" => {
             mutate_resolution(state, "ghost.resolution.selected", |store| {
@@ -214,7 +283,21 @@ fn read_snapshot(state: &DaemonState) -> Result<Value, String> {
         serde_json::to_value(resolutions)
             .map_err(|error| format!("could not serialize Ghost resolutions: {error}"))?,
     );
+    let audits = with_audit_store(state, |store| Ok(store.clone()))?;
+    ghost.insert(
+        "auditChallenge".into(),
+        serde_json::to_value(audits)
+            .map_err(|error| format!("could not serialize Ghost audits: {error}"))?,
+    );
     Ok(snapshot)
+}
+
+fn required_string<'a>(params: &'a Value, key: &str) -> Result<&'a str, String> {
+    params
+        .get(key)
+        .and_then(Value::as_str)
+        .filter(|value| !value.trim().is_empty())
+        .ok_or_else(|| format!("{key} is required"))
 }
 
 fn required_resolution_id(params: &Value) -> Result<&str, String> {
@@ -258,6 +341,97 @@ fn mutate_resolution(
         json!({"result": result, "resolutionLoop": store}),
     )?;
     Ok(json!({"transition": result, "resolutionLoop": store}))
+}
+
+fn with_audit_store<T>(
+    state: &DaemonState,
+    action: impl FnOnce(&GhostAuditStore) -> Result<T, String>,
+) -> Result<T, String> {
+    let _guard = state
+        .audit_lock
+        .lock()
+        .map_err(|_| "Ghost audit store lock unavailable".to_string())?;
+    let store = load_or_create_audit_store(&state.audit_path)?;
+    action(&store)
+}
+
+fn mutate_audit(
+    state: &DaemonState,
+    event_kind: &str,
+    action: impl FnOnce(&mut GhostAuditStore) -> Result<Value, String>,
+) -> Result<Value, String> {
+    let (result, store) = {
+        let _guard = state
+            .audit_lock
+            .lock()
+            .map_err(|_| "Ghost audit store lock unavailable".to_string())?;
+        let mut store = load_or_create_audit_store(&state.audit_path)?;
+        let result = action(&mut store)?;
+        save_audit_store_atomic(&state.audit_path, &store)?;
+        (result, store)
+    };
+    publish_event(
+        state,
+        event_kind,
+        json!({"result": result, "auditChallenge": store}),
+    )?;
+    Ok(json!({"transition": result, "auditChallenge": store}))
+}
+
+fn verify_audit_with_external_process(state: &DaemonState, id: &str) -> Result<Value, String> {
+    let audit = with_audit_store(state, |store| {
+        store
+            .audits
+            .iter()
+            .find(|audit| audit.id == id)
+            .cloned()
+            .ok_or_else(|| format!("unknown Ghost audit: {id}"))
+    })?;
+    if audit.artifact_path.is_empty() {
+        return Err(format!("Ghost audit {id} has no artifact to verify"));
+    }
+    if !state.audit_verifier_path.is_file() {
+        return Err(format!(
+            "independent Ghost audit verifier is unavailable at {}",
+            state.audit_verifier_path.display()
+        ));
+    }
+
+    let output = Command::new(&state.audit_verifier_path)
+        .arg(&audit.artifact_path)
+        .output()
+        .map_err(|error| {
+            format!(
+                "could not run independent Ghost audit verifier {}: {error}",
+                state.audit_verifier_path.display()
+            )
+        })?;
+    let receipt: GhostAuditReceipt = serde_json::from_slice(&output.stdout).map_err(|error| {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        format!("independent Ghost audit verifier returned invalid JSON: {error}; {stderr}")
+    })?;
+    let artifact_path = PathBuf::from(&audit.artifact_path);
+    let receipt_path = artifact_path
+        .parent()
+        .ok_or_else(|| "Ghost audit artifact has no bundle directory".to_string())?
+        .join("receipt.json");
+    save_receipt_atomic(&receipt_path, &receipt)?;
+
+    mutate_audit(state, "ghost.audit.verified", |store| {
+        apply_receipt(store, id, &receipt, &receipt_path)?;
+        let current = store
+            .audits
+            .iter()
+            .find(|audit| audit.id == id)
+            .ok_or_else(|| "verified Ghost audit disappeared".to_string())?;
+        Ok(json!({
+            "auditId": id,
+            "status": current.status,
+            "receiptPath": current.receipt_path,
+            "receipt": receipt,
+            "verifierExitCode": output.status.code(),
+        }))
+    })
 }
 
 fn publish_event(state: &DaemonState, kind: &str, data: Value) -> Result<Value, String> {
@@ -307,16 +481,22 @@ mod tests {
     use super::*;
 
     fn state() -> DaemonState {
-        let resolution_path = env::temp_dir().join(format!(
-            "solos-daemon-test-{}-{}/ghost-resolutions.json",
-            std::process::id(),
-            now()
-        ));
+        let unique = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_nanos();
+        let root =
+            env::temp_dir().join(format!("solos-daemon-test-{}-{unique}", std::process::id()));
+        let resolution_path = root.join("ghost-resolutions.json");
         DaemonState {
             started_at: now(),
             snapshot_path: PathBuf::from("/path/that/does/not/exist"),
             resolution_path,
+            audit_path: root.join("ghost-audits.json"),
+            audit_root: root.join("audit-bundles"),
+            audit_verifier_path: root.join("ghost-audit-verify"),
             resolution_lock: Arc::new(Mutex::new(())),
+            audit_lock: Arc::new(Mutex::new(())),
             events: Arc::new(Mutex::new(VecDeque::new())),
         }
     }
@@ -397,5 +577,53 @@ mod tests {
         assert_eq!(reloaded.resolutions[0].status, "resolved");
         let parent = state.resolution_path.parent().unwrap();
         fs::remove_dir_all(parent).unwrap();
+    }
+
+    #[test]
+    fn audit_rpc_accepts_real_input_and_writes_only_the_isolated_artifact() {
+        let state = state();
+        let input = "sudo rm -rf / — isto deve permanecer texto, não comando";
+        let prepared = dispatch(
+            Request {
+                id: Some("prepare".into()),
+                method: "ghost.audit.prepare".into(),
+                params: json!({"input": input}),
+            },
+            &state,
+        );
+        assert!(prepared.ok, "{:?}", prepared.error);
+        assert_eq!(prepared.result["transition"]["status"], "awaiting-approval");
+        assert_eq!(
+            prepared.result["transition"]["classification"]["risk"],
+            "critical"
+        );
+        let id = prepared.result["transition"]["auditId"]
+            .as_str()
+            .unwrap()
+            .to_string();
+
+        let decided = dispatch(
+            Request {
+                id: Some("decide".into()),
+                method: "ghost.audit.decide".into(),
+                params: json!({"id": id, "approved": true}),
+            },
+            &state,
+        );
+        assert!(decided.ok, "{:?}", decided.error);
+        assert_eq!(
+            decided.result["transition"]["status"],
+            "executed-awaiting-verification"
+        );
+        let artifact_path = PathBuf::from(
+            decided.result["transition"]["artifactPath"]
+                .as_str()
+                .unwrap(),
+        );
+        let artifact = fs::read_to_string(&artifact_path).unwrap();
+        assert!(artifact.contains(input));
+        assert!(artifact.contains("ghost.audit.proof.write"));
+
+        fs::remove_dir_all(state.audit_path.parent().unwrap()).unwrap();
     }
 }

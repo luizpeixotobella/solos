@@ -3,16 +3,20 @@ set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 daemon_bin="$repo_dir/app/runtime-core/target/debug/solos-daemon"
+verifier_bin="$repo_dir/app/runtime-core/target/debug/ghost-audit-verify"
 shell_bin="$repo_dir/app/shell-native/build/solos-shell-native"
 snapshot="${SOLOS_SMOKE_SNAPSHOT:-$repo_dir/app/shell-native/src/runtime_snapshot.json}"
 
 test -x "$daemon_bin"
+test -x "$verifier_bin"
 test -x "$shell_bin"
 test -s "$snapshot"
 
 smoke_dir="$(mktemp -d /tmp/solos-native-smoke.XXXXXX)"
 socket_path="$smoke_dir/daemon.sock"
 state_path="$smoke_dir/ghost-resolutions.json"
+audit_store="$smoke_dir/ghost-audits.json"
+audit_root="$smoke_dir/ghost-audit-bundles"
 daemon_log="$smoke_dir/daemon.log"
 shell_log="$smoke_dir/shell.log"
 daemon_pid=""
@@ -27,7 +31,8 @@ cleanup() {
     kill "$daemon_pid" 2>/dev/null || true
     wait "$daemon_pid" 2>/dev/null || true
   fi
-  rm -f "$socket_path" "$state_path" "$daemon_log" "$shell_log"
+  rm -f "$socket_path" "$state_path" "$audit_store" "$daemon_log" "$shell_log"
+  rm -rf "$audit_root"
   rmdir "$smoke_dir" 2>/dev/null || true
 }
 trap cleanup EXIT
@@ -35,6 +40,9 @@ trap cleanup EXIT
 SOLOS_DAEMON_SOCKET="$socket_path" \
 SOLOS_RUNTIME_SNAPSHOT="$snapshot" \
 SOLOS_GHOST_RESOLUTION_STORE="$state_path" \
+SOLOS_GHOST_AUDIT_STORE="$audit_store" \
+SOLOS_GHOST_AUDIT_DIR="$audit_root" \
+SOLOS_GHOST_AUDIT_VERIFIER="$verifier_bin" \
   "$daemon_bin" >"$daemon_log" 2>&1 &
 daemon_pid=$!
 

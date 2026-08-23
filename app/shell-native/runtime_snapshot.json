@@ -1,8 +1,8 @@
 {
   "schemaVersion": "solos.runtime.snapshot.v1",
-  "productVersion": "1.0.0-rc1",
+  "productVersion": "1.0.0-rc2",
   "sessionLabel": "lcpby · SolOS operating layer active",
-  "systemLabel": "Linux base system attached · systemd · wayland · online",
+  "systemLabel": "Linux base system attached · systemd · x11 · online",
   "walletLabel": "Wallet bridge pending · ownership surface visible",
   "agentStatus": "Ghost active · local pipeline online",
   "runtimeMode": "runtime-intermediary",
@@ -10,12 +10,12 @@
   "runtimeRole": "Intermediary layer between Linux base system and SolOS operating layer",
   "mediationStatus": "Host facts detected and normalized into SolOS-facing runtime state",
   "home": {
-    "summaryTitle": "Ghost now has a first layered intelligence module",
-    "summarySubtitle": "AI-era synthesis: data + results = algorithms, grounded in host runtime, outcomes, and optional Brave web search.",
-    "summaryBody": "This build gives Ghost a first perceptron-lineage pipeline with stacked stages: runtime data ingestion, result/outcome synthesis, and algorithmic next-action output. Classical code starts from algorithms + data = results; Ghost is being oriented toward data + results = algorithms. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 8d 17h 42m. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
-    "nextActionTitle": "Next useful move",
-    "nextActionSubtitle": "Promote Ghost from research pipeline to task executor",
-    "nextActionBody": "The next module should add task intents and tool actions so Ghost can turn researched guidance into explicit SolOS commands, approval requests, and user-visible outcomes."
+    "summaryTitle": "Ghost now turns a real input into a reproducible audit",
+    "summarySubtitle": "Exact input hashing, transparent risk routing, approval, one isolated Linux effect, and a separate verifier receipt.",
+    "summaryBody": "This build keeps Ghost's data + results = algorithms pipeline, retains the selected resolution contract, and adds a real-input audit whose embedded instructions remain inert. After narrow approval, Ghost writes one owner-only proof artifact and a separate executable verifies its hashes. Host state comes from Ubuntu 24.04.4 LTS, kernel 7.0.0-28-generic, hostname lcpby-HP-ENVY-TS-17-Notebook-PC, user lcpby, uptime 22d 3h 30m. The selected resolution is selected at 20%. Web grounding currently reports: Ghost did not find a Brave Search API key in the known SolOS/runtime config paths or environment..",
+    "nextActionTitle": "Run the Ghost Audit Challenge",
+    "nextActionSubtitle": "Real input -> explain -> approve -> isolated proof -> independent receipt",
+    "nextActionBody": "Open Agent, submit text you choose, inspect the deterministic scope/risk route, deny once, then approve only ghost.audit.proof.write and run the separate verifier. Never submit a secret."
   },
   "ghost": {
     "presenceLabel": "Ghost present in shell",
@@ -53,7 +53,7 @@
       {
         "name": "data",
         "status": "active",
-        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session wayland, uptime 8d 17h 42m, network online."
+        "detail": "Ghost reads host runtime facts from Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC, session x11, uptime 22d 3h 30m, network online."
       },
       {
         "name": "results",
@@ -303,6 +303,138 @@
       "approvalPolicy": "Repo edits and local builds can proceed in the development workspace. External messages, social posts, wallet signatures, paid-provider calls, and destructive commands stay approval-gated.",
       "quotaPolicy": "Heart Pass quota is verification-required with 25 remaining in hybrid-sponsored-byok mode; this route spends 0 research queries.",
       "nextStep": "Persist trace outcomes and accepted/rejected examples so Ghost can compare future routes against expected behavior."
+    },
+    "resolutionLoop": {
+      "schema": "solos.ghost.resolutions.v1",
+      "updatedAt": 1787521734,
+      "selectedId": "resolution-safe-workspace",
+      "summary": "One bounded objective is selected. Ghost can turn it into a visible plan, ask for approval, execute one mediated capability, and retain evidence of the result.",
+      "resolutions": [
+        {
+          "id": "resolution-safe-workspace",
+          "title": "Restore my workspace, safely",
+          "objective": "Resume the Workspace module without bypassing the SolOS approval boundary.",
+          "targetOutcome": "Workspace is active, the user approval is recorded, and the app.open.safe result is attached as evidence.",
+          "status": "selected",
+          "readiness": "ready",
+          "progress": 20,
+          "currentStep": "Build a bounded plan",
+          "capability": "app.open.safe",
+          "approvalRequired": true,
+          "resultSummary": "Objective selected; execution has not started.",
+          "createdAt": 1787521734,
+          "updatedAt": 1787521734,
+          "steps": [
+            {
+              "id": "understand",
+              "title": "Understand the objective",
+              "status": "completed",
+              "capability": "task.intent.classify",
+              "approvalRequired": false,
+              "result": "Classified as a bounded local app action."
+            },
+            {
+              "id": "plan",
+              "title": "Build a bounded plan",
+              "status": "active",
+              "capability": "task.plan.local",
+              "approvalRequired": false,
+              "result": ""
+            },
+            {
+              "id": "approval",
+              "title": "Ask for explicit approval",
+              "status": "pending",
+              "capability": "approval.request",
+              "approvalRequired": true,
+              "result": ""
+            },
+            {
+              "id": "execute",
+              "title": "Execute app.open.safe",
+              "status": "pending",
+              "capability": "app.open.safe",
+              "approvalRequired": true,
+              "result": ""
+            },
+            {
+              "id": "verify",
+              "title": "Verify the target outcome",
+              "status": "pending",
+              "capability": "app.state.read",
+              "approvalRequired": false,
+              "result": ""
+            }
+          ],
+          "evidence": [
+            {
+              "kind": "selection",
+              "label": "Objective selected",
+              "detail": "Ghost selected a ready local objective that can be completed through an existing mediated capability.",
+              "recordedAt": 1787521734
+            }
+          ]
+        },
+        {
+          "id": "resolution-grounded-answer",
+          "title": "Research a grounded answer",
+          "objective": "Research a fresh question and return source-linked evidence.",
+          "targetOutcome": "Answer, citations, quota receipt, and trace are retained together.",
+          "status": "candidate",
+          "readiness": "needs-quota-or-byok",
+          "progress": 0,
+          "currentStep": "Waiting for a configured research route",
+          "capability": "web.search.read",
+          "approvalRequired": true,
+          "resultSummary": "Not executable until a quota or BYOK route is available.",
+          "createdAt": 1787521734,
+          "updatedAt": 1787521734,
+          "steps": [
+            {
+              "id": "research-route",
+              "title": "Configure a grounded research route",
+              "status": "blocked",
+              "capability": "web.search.read",
+              "approvalRequired": true,
+              "result": "Heart Pass quota or BYOK is required."
+            }
+          ],
+          "evidence": []
+        },
+        {
+          "id": "resolution-public-launch",
+          "title": "Prepare and publish a launch",
+          "objective": "Turn a completed product change into a reviewed multi-channel launch.",
+          "targetOutcome": "Verified public URLs are attached to the same resolution trace.",
+          "status": "candidate",
+          "readiness": "needs-public-send-adapter",
+          "progress": 0,
+          "currentStep": "Waiting for an account-bound publish adapter",
+          "capability": "public.post.create",
+          "approvalRequired": true,
+          "resultSummary": "Not executable inside SolOS until a public-send adapter exists.",
+          "createdAt": 1787521734,
+          "updatedAt": 1787521734,
+          "steps": [
+            {
+              "id": "publish-adapter",
+              "title": "Connect an approval-bound publish adapter",
+              "status": "blocked",
+              "capability": "public.post.create",
+              "approvalRequired": true,
+              "result": "Public posting remains outside the current runtime capability manifest."
+            }
+          ],
+          "evidence": []
+        }
+      ]
+    },
+    "auditChallenge": {
+      "schema": "solos.ghost.audits.v1",
+      "updatedAt": 1787521734,
+      "activeId": null,
+      "summary": "No audit input has been submitted yet. Ghost treats submitted text as inert data, explains its route, waits for approval, writes one isolated Linux artifact, and requires an independent read-back verifier.",
+      "audits": []
     }
   },
   "heartPass": {
@@ -320,6 +452,7 @@
     "verificationStatus": "needs-wallet",
     "lastCheckedAt": "never",
     "configPath": "../../config/heart_pass.json",
+    "pulsoRewardsClaimed": 0,
     "quotaLayer": {
       "title": "Heart Pass Quota Layer",
       "status": "verification-required",
@@ -339,6 +472,7 @@
       "Early-supporter identity surface",
       "Guided Ghost/Brave key onboarding eligibility",
       "Quota Layer: 25 local pilot queries, byok fallback, status planned",
+      "Pulso Founder rewards synchronized: 0",
       "Future pass-gated experimental Ghost capabilities",
       "Transparent usage and quota story without investment/yield promises"
     ]
@@ -363,7 +497,7 @@
   "activityFeed": [
     {
       "title": "Linux base system detected",
-      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, wayland as the active session type, and uptime 8d 17h 42m.",
+      "detail": "Runtime intermediary attached to Ubuntu 24.04.4 LTS on lcpby-HP-ENVY-TS-17-Notebook-PC with systemd as init, x11 as the active session type, and uptime 22d 3h 30m.",
       "status": "active"
     },
     {
@@ -394,7 +528,7 @@
       "description": "Ghost should open Brave's API key page for the SolOS user, let them pay or subscribe on their own account, then return and configure a repo-local key instead of sharing the developer key.",
       "requestedBy": "ghost-brain",
       "capability": "web.search.read",
-      "scope": "ghost onboarding -> Brave key acquisition -> solos/config/ghost.json",
+      "scope": "ghost onboarding -> Brave key acquisition -> ignored solos/config/ghost.local.json",
       "risk": "medium",
       "status": "pending",
       "createdAt": "ghost-module-bootstrap"
@@ -440,20 +574,20 @@
   ],
   "hostRuntime": {
     "os": "Ubuntu 24.04.4 LTS",
-    "kernel": "7.0.0",
+    "kernel": "7.0.0-28-generic",
     "initSystem": "systemd",
-    "sessionType": "wayland",
+    "sessionType": "x11",
     "desktopSession": "ubuntu:GNOME",
     "shell": "/bin/bash",
     "hostname": "lcpby-HP-ENVY-TS-17-Notebook-PC",
     "user": "lcpby",
-    "uptime": "8d 17h 42m"
+    "uptime": "22d 3h 30m"
   },
   "systemStatus": {
     "online": true,
     "approvalsCount": 2,
     "notificationsCount": 5,
-    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · wayland · uptime 8d 17h 42m"
+    "hostRuntimeSummary": "lcpby-HP-ENVY-TS-17-Notebook-PC · lcpby · x11 · uptime 22d 3h 30m"
   },
   "capabilityManifest": {
     "schema": "solos.capabilities.v1",
@@ -469,6 +603,30 @@
         "approval": "once-per-request",
         "executable": true,
         "audit": "required"
+      },
+      {
+        "id": "ghost.audit.proof.write",
+        "scopes": [
+          "write",
+          "local",
+          "isolated"
+        ],
+        "risk": "low",
+        "approval": "once-per-audit",
+        "executable": true,
+        "audit": "required"
+      },
+      {
+        "id": "ghost.audit.proof.verify",
+        "scopes": [
+          "read",
+          "local",
+          "independent-process"
+        ],
+        "risk": "low",
+        "approval": "none-after-approved-write",
+        "executable": true,
+        "audit": "receipt-required"
       },
       {
         "id": "web.search.read",

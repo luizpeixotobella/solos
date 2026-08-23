@@ -1,0 +1,29 @@
+{
+  "schema": "solos.ghost.audit.pilot.v1",
+  "updatedAt": "2026-08-23T21:45:00Z",
+  "status": "recruiting-after-release",
+  "cohortTarget": 10,
+  "validReviewerReturns": 0,
+  "secondAuditReturns": 0,
+  "positiveUsefulnessVerdicts": 0,
+  "concreteSupportSignals": 0,
+  "acquisitionBaseline": {
+    "source": "GitHub Traffic API",
+    "observedAt": "2026-08-23",
+    "windowStart": "2026-08-09",
+    "windowEnd": "2026-08-22",
+    "totalClones": 24,
+    "uniqueCloners": 17,
+    "interpretation": "Unique cloners are an aggregate acquisition signal, not identified people or paying users."
+  },
+  "validationGate": {
+    "machineReceipts": 10,
+    "usefulOrCorrectClassifications": 7,
+    "wouldRunAgain": 5,
+    "returnedWithinSevenDays": 3,
+    "supportSignals": 2
+  },
+  "supportTestBrl": [10, 25, 50],
+  "publicIssueTemplate": "ghost-audit-pilot.yml",
+  "notes": "Only reproducible receipts and explicit reviewer answers count. Do not collect secrets or publish exact sensitive inputs."
+}

@@ -44,6 +44,19 @@ class GhostRuntime : public QObject
     Q_PROPERTY(QString resolutionCurrentStep READ resolutionCurrentStep NOTIFY stateChanged)
     Q_PROPERTY(int resolutionProgress READ resolutionProgress NOTIFY stateChanged)
     Q_PROPERTY(QStringList resolutionLines READ resolutionLines NOTIFY stateChanged)
+    Q_PROPERTY(QString auditStatus READ auditStatus NOTIFY stateChanged)
+    Q_PROPERTY(QString auditSummary READ auditSummary NOTIFY stateChanged)
+    Q_PROPERTY(QString auditActiveId READ auditActiveId NOTIFY stateChanged)
+    Q_PROPERTY(QString auditInput READ auditInput NOTIFY stateChanged)
+    Q_PROPERTY(QString auditInputSha256 READ auditInputSha256 NOTIFY stateChanged)
+    Q_PROPERTY(QString auditRequestClass READ auditRequestClass NOTIFY stateChanged)
+    Q_PROPERTY(QString auditRisk READ auditRisk NOTIFY stateChanged)
+    Q_PROPERTY(QString auditRoute READ auditRoute NOTIFY stateChanged)
+    Q_PROPERTY(QString auditCurrentStep READ auditCurrentStep NOTIFY stateChanged)
+    Q_PROPERTY(int auditProgress READ auditProgress NOTIFY stateChanged)
+    Q_PROPERTY(QString auditArtifactPath READ auditArtifactPath NOTIFY stateChanged)
+    Q_PROPERTY(QString auditReceiptPath READ auditReceiptPath NOTIFY stateChanged)
+    Q_PROPERTY(QStringList auditLines READ auditLines NOTIFY stateChanged)
 
 public:
     explicit GhostRuntime(QObject *parent = nullptr);
@@ -85,6 +98,19 @@ public:
     QString resolutionCurrentStep() const;
     int resolutionProgress() const;
     QStringList resolutionLines() const;
+    QString auditStatus() const;
+    QString auditSummary() const;
+    QString auditActiveId() const;
+    QString auditInput() const;
+    QString auditInputSha256() const;
+    QString auditRequestClass() const;
+    QString auditRisk() const;
+    QString auditRoute() const;
+    QString auditCurrentStep() const;
+    int auditProgress() const;
+    QString auditArtifactPath() const;
+    QString auditReceiptPath() const;
+    QStringList auditLines() const;
 
     void setLabels(const QString &presence,
                    const QString &mode,
@@ -122,7 +148,20 @@ public:
                    const QString &resolutionSelectedId,
                    const QString &resolutionCurrentStep,
                    int resolutionProgress,
-                   const QStringList &resolutionLines);
+                   const QStringList &resolutionLines,
+                   const QString &auditStatus,
+                   const QString &auditSummary,
+                   const QString &auditActiveId,
+                   const QString &auditInput,
+                   const QString &auditInputSha256,
+                   const QString &auditRequestClass,
+                   const QString &auditRisk,
+                   const QString &auditRoute,
+                   const QString &auditCurrentStep,
+                   int auditProgress,
+                   const QString &auditArtifactPath,
+                   const QString &auditReceiptPath,
+                   const QStringList &auditLines);
 
 signals:
     void stateChanged();
@@ -165,4 +204,17 @@ private:
     QString m_resolutionCurrentStep;
     int m_resolutionProgress = 0;
     QStringList m_resolutionLines;
+    QString m_auditStatus;
+    QString m_auditSummary;
+    QString m_auditActiveId;
+    QString m_auditInput;
+    QString m_auditInputSha256;
+    QString m_auditRequestClass;
+    QString m_auditRisk;
+    QString m_auditRoute;
+    QString m_auditCurrentStep;
+    int m_auditProgress = 0;
+    QString m_auditArtifactPath;
+    QString m_auditReceiptPath;
+    QStringList m_auditLines;
 };

@@ -9,6 +9,7 @@ mod host_runtime;
 mod surface_catalog;
 
 use host_runtime::{detect_host_runtime, detect_online, HostRuntime};
+use solos_runtime_core::ghost_audit::{seed_store as seed_audit_store, GhostAuditStore};
 use solos_runtime_core::ghost_resolution::{
     default_store_path, load_or_default, GhostResolutionStore,
 };
@@ -260,6 +261,7 @@ struct GhostState {
     actionTrace: GhostActionTrace,
     routeExplanation: GhostRouteExplanation,
     resolutionLoop: GhostResolutionStore,
+    auditChallenge: GhostAuditStore,
 }
 
 #[derive(Serialize)]
@@ -1044,10 +1046,11 @@ fn main() {
         eprintln!("[ghost-resolution] {error}; using a non-persistent seed");
         solos_runtime_core::ghost_resolution::seed_store()
     });
+    let ghost_audit_challenge = seed_audit_store();
 
     let snapshot = RuntimeSnapshot {
         schemaVersion: "solos.runtime.snapshot.v1".into(),
-        productVersion: "1.0.0-rc1".into(),
+        productVersion: "1.0.0-rc2".into(),
         sessionLabel: format!("{} · SolOS operating layer active", host.user),
         systemLabel: format!(
             "Linux base system attached · {} · {} · {}",
@@ -1064,18 +1067,18 @@ fn main() {
         runtimeRole: "Intermediary layer between Linux base system and SolOS operating layer".into(),
         mediationStatus: "Host facts detected and normalized into SolOS-facing runtime state".into(),
         home: HomeState {
-            summaryTitle: "Ghost now closes one objective from selection to evidence".into(),
-            summarySubtitle: "A selected resolution becomes a bounded plan, a visible approval, one mediated capability, and a verified result.".into(),
+            summaryTitle: "Ghost now turns a real input into a reproducible audit".into(),
+            summarySubtitle: "Exact input hashing, transparent risk routing, approval, one isolated Linux effect, and a separate verifier receipt.".into(),
             summaryBody: format!(
-                "This build keeps Ghost's data + results = algorithms pipeline, then links it to one real resolution contract: objective selection, bounded planning, approval, app.open.safe execution, app.state.read verification, and retained evidence. Host state comes from {}, kernel {}, hostname {}, user {}, uptime {}. The selected resolution is {} at {}%. Web grounding currently reports: {}.",
+                "This build keeps Ghost's data + results = algorithms pipeline, retains the selected resolution contract, and adds a real-input audit whose embedded instructions remain inert. After narrow approval, Ghost writes one owner-only proof artifact and a separate executable verifies its hashes. Host state comes from {}, kernel {}, hostname {}, user {}, uptime {}. The selected resolution is {} at {}%. Web grounding currently reports: {}.",
                 host.os, host.kernel, host.hostname, host.user, host.uptime,
                 ghost_resolution_loop.resolutions.iter().find(|resolution| Some(resolution.id.as_str()) == ghost_resolution_loop.selected_id.as_deref()).map(|resolution| resolution.status.as_str()).unwrap_or("not-selected"),
                 ghost_resolution_loop.resolutions.iter().find(|resolution| Some(resolution.id.as_str()) == ghost_resolution_loop.selected_id.as_deref()).map(|resolution| resolution.progress).unwrap_or(0),
                 ghost_research.summary
             ),
-            nextActionTitle: "Resolve the selected objective".into(),
-            nextActionSubtitle: "Plan -> approve -> execute -> verify".into(),
-            nextActionBody: "Open Ghost Resolution Loop, review the selected Workspace objective, prepare its bounded plan, and decide the app.open.safe approval. The Daemon retains every transition and the final evidence.".into(),
+            nextActionTitle: "Run the Ghost Audit Challenge".into(),
+            nextActionSubtitle: "Real input -> explain -> approve -> isolated proof -> independent receipt".into(),
+            nextActionBody: "Open Agent, submit text you choose, inspect the deterministic scope/risk route, deny once, then approve only ghost.audit.proof.write and run the separate verifier. Never submit a secret.".into(),
         },
         ghost: GhostState {
             presenceLabel: "Ghost present in shell".into(),
@@ -1155,6 +1158,7 @@ fn main() {
             actionTrace: ghost_action_trace,
             routeExplanation: ghost_route_explanation,
             resolutionLoop: ghost_resolution_loop,
+            auditChallenge: ghost_audit_challenge,
         },
         heartPass: heart_pass,
         quickActions: quick_actions,
@@ -1815,6 +1819,22 @@ fn build_capability_manifest() -> CapabilityManifest {
                 approval: "once-per-request".into(),
                 executable: true,
                 audit: "required".into(),
+            },
+            CapabilityDefinition {
+                id: "ghost.audit.proof.write".into(),
+                scopes: vec!["write".into(), "local".into(), "isolated".into()],
+                risk: "low".into(),
+                approval: "once-per-audit".into(),
+                executable: true,
+                audit: "required".into(),
+            },
+            CapabilityDefinition {
+                id: "ghost.audit.proof.verify".into(),
+                scopes: vec!["read".into(), "local".into(), "independent-process".into()],
+                risk: "low".into(),
+                approval: "none-after-approved-write".into(),
+                executable: true,
+                audit: "receipt-required".into(),
             },
             CapabilityDefinition {
                 id: "web.search.read".into(),

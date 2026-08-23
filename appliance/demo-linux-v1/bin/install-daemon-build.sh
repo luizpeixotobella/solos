@@ -11,7 +11,8 @@ if [[ "${EUID}" -ne 0 ]]; then
 fi
 
 cd "$RUNTIME_DIR"
-cargo build --release --bin solos-daemon
+cargo build --release --bin solos-daemon --bin ghost-audit-verify
 install -d -m 0755 "$TARGET_ROOT/bin"
 install -m 0755 target/release/solos-daemon "$TARGET_ROOT/bin/solos-daemon"
-echo "Installed SolOS Daemon to $TARGET_ROOT/bin/solos-daemon"
+install -m 0755 target/release/ghost-audit-verify "$TARGET_ROOT/bin/ghost-audit-verify"
+echo "Installed SolOS Daemon and Ghost audit verifier to $TARGET_ROOT/bin"

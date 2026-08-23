@@ -21,7 +21,7 @@ export const initialSession: UserSession = {
 
 export const initialSystemStatus: SystemStatus = {
   online: true,
-  version: "v1.0.0-rc1",
+  version: "v1.0.0-rc2",
   syncState: "Synced",
   notificationsCount: 2,
   approvalsCount: 0,

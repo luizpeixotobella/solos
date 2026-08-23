@@ -1,8 +1,8 @@
 # SolOS Product Completion Plan
 
-Date: 2026-08-19
+Date: 2026-08-23
 
-Status: v1.0 RC1 verified; first selected-to-resolved Ghost beta journey complete.
+Status: v1.0 RC2 candidate; real-input Ghost Audit Pilot implemented for a ten-reviewer product/fundraising validation gate.
 
 ## Purpose
 
@@ -44,11 +44,14 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [x] Ghost Resolution Loop selects one objective, builds a bounded plan, stops for approval, executes `app.open.safe`, verifies the Workspace state and retains evidence.
 - [x] Ghost resolution state is versioned, atomically persisted by the Daemon and injected into the RC1 snapshot read model.
 - [x] Native and web Agent surfaces expose the selected goal, progress, ordered steps, approval decision, result and unavailable future candidates.
+- [x] Ghost Audit Challenge accepts real input, keeps embedded instructions inert, writes one approval-bound Linux artifact and produces a portable receipt through a separate verifier process.
+- [x] Ten-reviewer pilot contract, GitHub return form and acquisition baseline exist for testing usefulness, return behavior and concrete support intent.
 
 ### Partially done
 
 - [~] Home is model-backed enough to show environment summary and next useful action, but not yet driven by a broad live event stream.
 - [~] Agent now persists trace outcomes and completes one real bounded resolution route; general task execution, research and public-send routes remain unavailable.
+- [~] Ghost now has a real-input integrity/safety audit pilot, but its deterministic classification still requires human evaluation and the local receipt is not remote attestation.
 - [~] Wallet shows pass/quota semantics, but real wallet/account state remains limited to the current Heart Pass path.
 - [~] Apps has registry-style structure, but not yet a real launcher/capability bridge.
 - [~] Pulso appears as a planned app/roadmap surface, but not yet as a real data-capture or credit-ledger system.
@@ -61,6 +64,8 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 
 ### Not done yet
 
+- [ ] Collect ten independent Ghost Audit receipts plus human usefulness verdicts; implementation is ready, cohort progress is 0/10 before public release.
+- [ ] Validate repeat use and concrete support intent before claiming fundraising conversion.
 - [x] Persist Ghost trace outcomes and accepted/rejected/corrected examples.
 - [x] Add versioned schema invariants and tests for the runtime snapshot contract.
 - [x] Add a typed tool/capability manifest with read, write, sensitive, network, wallet, and public-posting scopes.
@@ -79,45 +84,44 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [ ] Build and smoke-test the demo ISO path in a VM.
 - [x] Publish a repeatable v1 demo script and release checklist.
 - [ ] Split the broad Qt controller into runtime, Ghost, Wallet and Apps-facing controllers/services.
-- [~] Move durable domain state/events behind Daemon-owned stores instead of treating the aggregate snapshot as the only internal bus; Ghost resolutions are the first completed store.
+- [~] Move durable domain state/events behind Daemon-owned stores instead of treating the aggregate snapshot as the only internal bus; Ghost resolutions and real-input audits are the first completed stores.
 
-## Recommended next engineering slice
+## Recommended next product slice
 
-The next slice should be **Quota Accounting and Launcher Hardening**, while continuing the domain-controller extraction.
+The next slice should be **Release and Measure the Ten-Reviewer Ghost Audit Pilot**. Quota accounting and launcher hardening remain the next engineering work after this validation gate produces real reviewer evidence.
 
 Reason:
 
-- Ghost trace persistence, the first mediated action and one complete selected-to-resolved journey now exist.
-- The Daemon owns the Ghost resolution store, while research quota and broader events still need the same durable treatment.
-- The broad Qt controller still carries configuration and domain operations that should move toward natural ownership.
-- Smaller domain seams improve testability without changing the integrated SolOS experience.
+- GitHub already reports 24 clones and 17 unique cloners in the current rolling traffic window, but no identified reviewer or revenue conversion yet.
+- The audit kit now gives those cloners one concrete exchange: run their own input, receive a reproducible receipt and judge Ghost's classification.
+- More feature claims before return/usefulness/payment evidence would repeat the old marketing-first error.
+- Ten structured returns are enough to decide whether to harden classification, improve packaging, change the offer or stop this direction.
 
 ### Scope
 
-- Extract the remaining runtime assembly into domain modules, starting with Wallet/quota and Ghost.
-- Split shell configuration/persistence work away from the presentation controller.
-- Connect real provider-backed Ghost research to fail-closed quota decrementing and BYOK fallback.
-- Harden Apps from the demonstrator state change into a declared launcher result boundary.
-- Continue adding Daemon-owned durable event/state stores with bounded schemas and explicit revocation/retention.
-- Preserve the aggregate RC1 snapshot as a compatibility/read-model surface.
-- Add focused unit tests and executable seam smokes for each extraction.
+- Publish the verified code, one-command pilot and GitHub return form.
+- Invite no more than ten initial reviewers from the existing technical audience.
+- Count only reproducible receipts plus explicit human verdicts.
+- Measure classification usefulness, second-run intent, seven-day return and concrete support level.
+- Record anonymized aggregate outcomes in `data/ghost-audit-pilot.json` without publishing sensitive inputs.
+- Use reviewer errors to add focused evaluation cases before changing the classifier.
+- Decide the next engineering investment from the gate instead of assuming product-market fit.
 
 ### Non-goals
 
-- No microservice split.
-- No rewrite of the shell or snapshot contract.
-- No autonomous filesystem, Wallet, public-posting or paid-provider action.
-- No hosted quota backend until signed proof and cost supervision exist.
+- No claim that GitHub unique cloners are identified humans or customers.
+- No secrets, seed phrases, passwords or confidential text in audit inputs.
+- No arbitrary filesystem, shell, Wallet, public-posting or paid-provider execution.
+- No remote-attestation or factual-truth claim from the local integrity receipt.
+- No investment, yield, guaranteed return or cash-redemption wording in the support offer.
 
 ### Verification gate
 
-- `cargo fmt`
-- `cargo test`
-- runtime snapshot generation with JSON inspection
-- native shell build
-- native executable smoke with QML error inspection
-- web build and repository-default server smoke
-- docs updated in SolOS and CMS
+- `./tools/verify-v1.sh`
+- valid GitHub issue form after push
+- ten receipt/review records or an explicit end date with the actual shortfall
+- aggregate pilot counters updated without sensitive content
+- public copy limited to what the receipt and human-return data actually prove
 
 ## Product roadmap to v1.0
 
@@ -183,6 +187,21 @@ Acceptance:
 Acceptance:
 
 - A reviewer can follow one objective from selection to a verified result without hidden execution or an unsupported capability claim.
+
+### Milestone 3.6 - Ghost real-input audit pilot
+
+- [x] Accept exact reviewer input instead of only a seeded objective.
+- [x] Treat embedded instructions as inert data and expose deterministic scope/risk signals.
+- [x] Stop at explicit approval before a real isolated Linux filesystem effect.
+- [x] Verify read-back in a separate executable and bind input/artifact SHA-256 to a portable receipt.
+- [x] Fail closed on artifact tampering.
+- [x] Persist the audit and receipt across Daemon restart.
+- [x] Expose the flow in the native Agent surface and a one-command clone pilot.
+- [x] Define a ten-reviewer GitHub return and support-signal gate.
+
+Acceptance:
+
+- Ten independent clone users can run their own inputs, return machine receipts plus human verdicts, and give measurable evidence about usefulness, repeat intent and willingness to support continued work.
 
 ### Milestone 4 - Quota accounting
 

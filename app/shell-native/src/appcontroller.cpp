@@ -67,7 +67,7 @@ bool invokeDaemon(const QString &method, const QJsonObject &params, QString &err
     payload.append('\n');
     if (socket.write(payload) != payload.size() || !socket.waitForBytesWritten(1000)
         || !socket.waitForReadyRead(1500)) {
-        error = QStringLiteral("SolOS Daemon did not answer the Ghost resolution request");
+        error = QStringLiteral("SolOS Daemon did not answer the Ghost request");
         return false;
     }
 
@@ -449,6 +449,46 @@ bool AppController::resetGhostResolutions()
 {
     QString error;
     if (!invokeDaemon(QStringLiteral("ghost.resolutions.reset"), QJsonObject{}, error)) {
+        m_runtimeStatus = error;
+        emit runtimeStateChanged();
+        return false;
+    }
+    loadRuntimeSnapshot();
+    return true;
+}
+
+bool AppController::prepareGhostAudit(const QString &input)
+{
+    QString error;
+    if (!invokeDaemon(QStringLiteral("ghost.audit.prepare"),
+                      QJsonObject{{QStringLiteral("input"), input}}, error)) {
+        m_runtimeStatus = error;
+        emit runtimeStateChanged();
+        return false;
+    }
+    loadRuntimeSnapshot();
+    return true;
+}
+
+bool AppController::decideGhostAudit(const QString &auditId, bool approved)
+{
+    QString error;
+    if (!invokeDaemon(QStringLiteral("ghost.audit.decide"),
+                      QJsonObject{{QStringLiteral("id"), auditId},
+                                  {QStringLiteral("approved"), approved}}, error)) {
+        m_runtimeStatus = error;
+        emit runtimeStateChanged();
+        return false;
+    }
+    loadRuntimeSnapshot();
+    return true;
+}
+
+bool AppController::verifyGhostAudit(const QString &auditId)
+{
+    QString error;
+    if (!invokeDaemon(QStringLiteral("ghost.audit.verify"),
+                      QJsonObject{{QStringLiteral("id"), auditId}}, error)) {
         m_runtimeStatus = error;
         emit runtimeStateChanged();
         return false;
@@ -1114,7 +1154,20 @@ void AppController::loadRuntimeSnapshot()
                              snapshot.ghostResolutionSelectedId,
                              snapshot.ghostResolutionCurrentStep,
                              snapshot.ghostResolutionProgress,
-                             snapshot.ghostResolutionLines);
+                             snapshot.ghostResolutionLines,
+                             snapshot.ghostAuditStatus,
+                             snapshot.ghostAuditSummary,
+                             snapshot.ghostAuditActiveId,
+                             snapshot.ghostAuditInput,
+                             snapshot.ghostAuditInputSha256,
+                             snapshot.ghostAuditRequestClass,
+                             snapshot.ghostAuditRisk,
+                             snapshot.ghostAuditRoute,
+                             snapshot.ghostAuditCurrentStep,
+                             snapshot.ghostAuditProgress,
+                             snapshot.ghostAuditArtifactPath,
+                             snapshot.ghostAuditReceiptPath,
+                             snapshot.ghostAuditLines);
     m_quickActionsModel.setEntries(snapshot.quickActions);
     m_activityFeedModel.setEntries(snapshot.activityFeed);
     m_approvalQueueModel.setEntries(snapshot.approvals);

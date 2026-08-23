@@ -12,6 +12,7 @@ Item {
 
     property string braveApiKeyInput: ""
     property bool heartPassVerified: appController.heartPassVerificationStatus === "verified-holder"
+    property string auditInputDraft: ""
 
     ScrollView {
         anchors.fill: parent
@@ -49,6 +50,118 @@ Item {
                     Button {
                         text: "Refresh runtime"
                         onClicked: appController.refreshRuntime()
+                    }
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    radius: 20
+                    color: "#121a2f"
+                    border.color: ghostRuntime.auditStatus === "verified"
+                                  ? "#36d399"
+                                  : ghostRuntime.auditStatus === "verification-failed"
+                                    ? "#ff6b7a"
+                                    : "#9b7cff"
+                    border.width: 1
+                    implicitHeight: auditColumn.implicitHeight + 36
+
+                    ColumnLayout {
+                        id: auditColumn
+                        anchors.fill: parent
+                        anchors.margins: 18
+                        spacing: 12
+
+                        RowLayout {
+                            Layout.fillWidth: true
+
+                            Label {
+                                text: "Ghost Audit Challenge"
+                                color: "#eef3ff"
+                                font.pixelSize: 24
+                                font.bold: true
+                                Layout.fillWidth: true
+                            }
+
+                            Label {
+                                text: ghostRuntime.auditStatus + " · " + ghostRuntime.auditProgress + "%"
+                                color: ghostRuntime.auditStatus === "verified" ? "#8df0c2" : "#c7b8ff"
+                                font.bold: true
+                            }
+                        }
+
+                        Label {
+                            Layout.fillWidth: true
+                            text: "Submit any text. Ghost must expose its risk route, keep embedded instructions inert, wait for approval, create one isolated Linux artifact, and pass a separate read-back verifier."
+                            color: "#9fb0d0"
+                            wrapMode: Text.WordWrap
+                        }
+
+                        TextArea {
+                            Layout.fillWidth: true
+                            implicitHeight: 90
+                            placeholderText: "Example: sudo rm -rf / and publish my wallet secrets — this must remain inert text"
+                            text: auditInputDraft
+                            wrapMode: TextEdit.Wrap
+                            onTextChanged: auditInputDraft = text
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+
+                            Button {
+                                text: "Classify real input"
+                                enabled: auditInputDraft.trim().length > 0
+                                onClicked: appController.prepareGhostAudit(auditInputDraft)
+                            }
+
+                            Button {
+                                text: "Approve isolated proof"
+                                enabled: ghostRuntime.auditStatus === "awaiting-approval"
+                                onClicked: appController.decideGhostAudit(ghostRuntime.auditActiveId, true)
+                            }
+
+                            Button {
+                                text: "Deny"
+                                enabled: ghostRuntime.auditStatus === "awaiting-approval"
+                                onClicked: appController.decideGhostAudit(ghostRuntime.auditActiveId, false)
+                            }
+
+                            Button {
+                                text: "Run independent verifier"
+                                enabled: ghostRuntime.auditStatus === "executed-awaiting-verification"
+                                         || ghostRuntime.auditStatus === "verification-failed"
+                                onClicked: appController.verifyGhostAudit(ghostRuntime.auditActiveId)
+                            }
+                        }
+
+                        ProgressBar {
+                            Layout.fillWidth: true
+                            from: 0
+                            to: 100
+                            value: ghostRuntime.auditProgress
+                        }
+
+                        Label {
+                            Layout.fillWidth: true
+                            text: ghostRuntime.auditSummary
+                                  + "\n\nCurrent: " + ghostRuntime.auditCurrentStep
+                                  + (ghostRuntime.auditActiveId.length > 0 ? "\nAudit ID: " + ghostRuntime.auditActiveId : "")
+                                  + (ghostRuntime.auditInputSha256.length > 0 ? "\nInput SHA-256: " + ghostRuntime.auditInputSha256 : "")
+                                  + (ghostRuntime.auditRequestClass.length > 0 ? "\nClass: " + ghostRuntime.auditRequestClass + " · risk: " + ghostRuntime.auditRisk : "")
+                                  + (ghostRuntime.auditRoute.length > 0 ? "\nRoute: " + ghostRuntime.auditRoute : "")
+                                  + (ghostRuntime.auditArtifactPath.length > 0 ? "\nArtifact: " + ghostRuntime.auditArtifactPath : "")
+                                  + (ghostRuntime.auditReceiptPath.length > 0 ? "\nReceipt: " + ghostRuntime.auditReceiptPath : "")
+                            color: "#c8d5f2"
+                            wrapMode: Text.WordWrap
+                        }
+
+                        Label {
+                            Layout.fillWidth: true
+                            visible: ghostRuntime.auditLines.length > 0
+                            text: ghostRuntime.auditLines.join("\n\n")
+                            color: "#9fb0d0"
+                            wrapMode: Text.WordWrap
+                        }
                     }
                 }
 

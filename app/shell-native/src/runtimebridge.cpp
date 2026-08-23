@@ -197,6 +197,41 @@ QStringList parseGhostResolutionLines(const QJsonArray &array)
     return lines;
 }
 
+QStringList parseStringArray(const QJsonArray &array);
+
+QStringList parseGhostAuditLines(const QJsonObject &audit)
+{
+    QStringList lines;
+    if (audit.isEmpty()) {
+        return lines;
+    }
+    const QJsonObject classification = audit.value(QStringLiteral("classification")).toObject();
+    const QStringList scopes = parseStringArray(classification.value(QStringLiteral("detectedScopes")).toArray());
+    lines.append(QStringLiteral("Class: %1 · risk: %2\nScopes: %3\nInput execution: %4")
+        .arg(classification.value(QStringLiteral("requestClass")).toString(),
+             classification.value(QStringLiteral("risk")).toString(),
+             scopes.join(QStringLiteral(", ")),
+             classification.value(QStringLiteral("embeddedInputExecution")).toBool()
+                 ? QStringLiteral("enabled")
+                 : QStringLiteral("disabled — text remains inert data")));
+
+    for (const QJsonValue &value : audit.value(QStringLiteral("steps")).toArray()) {
+        const QJsonObject step = value.toObject();
+        lines.append(QStringLiteral("%1 [%2]\nCapability: %3\n%4")
+            .arg(step.value(QStringLiteral("title")).toString(),
+                 step.value(QStringLiteral("status")).toString(),
+                 step.value(QStringLiteral("capability")).toString(),
+                 step.value(QStringLiteral("result")).toString()));
+    }
+    for (const QJsonValue &value : audit.value(QStringLiteral("evidence")).toArray()) {
+        const QJsonObject evidence = value.toObject();
+        lines.append(QStringLiteral("Evidence · %1\n%2")
+            .arg(evidence.value(QStringLiteral("label")).toString(),
+                 evidence.value(QStringLiteral("detail")).toString()));
+    }
+    return lines;
+}
+
 QStringList parseStringArray(const QJsonArray &array)
 {
     QStringList lines;
@@ -268,6 +303,7 @@ RuntimeSnapshotData RuntimeBridge::parseSnapshot(const QByteArray &payload)
     const QJsonObject actionTrace = ghost.value(QStringLiteral("actionTrace")).toObject();
     const QJsonObject routeExplanation = ghost.value(QStringLiteral("routeExplanation")).toObject();
     const QJsonObject resolutionLoop = ghost.value(QStringLiteral("resolutionLoop")).toObject();
+    const QJsonObject auditChallenge = ghost.value(QStringLiteral("auditChallenge")).toObject();
 
     snapshot.sessionLabel = root.value(QStringLiteral("sessionLabel")).toString();
     snapshot.systemLabel = root.value(QStringLiteral("systemLabel")).toString();
@@ -342,6 +378,33 @@ RuntimeSnapshotData RuntimeBridge::parseSnapshot(const QByteArray &payload)
     }
     if (snapshot.ghostResolutionStatus.isEmpty()) {
         snapshot.ghostResolutionStatus = QStringLiteral("ready-for-selection");
+    }
+
+    snapshot.ghostAuditSummary = auditChallenge.value(QStringLiteral("summary")).toString();
+    snapshot.ghostAuditActiveId = auditChallenge.value(QStringLiteral("activeId")).toString();
+    const QJsonArray audits = auditChallenge.value(QStringLiteral("audits")).toArray();
+    for (const QJsonValue &value : audits) {
+        const QJsonObject audit = value.toObject();
+        if (audit.value(QStringLiteral("id")).toString() != snapshot.ghostAuditActiveId) {
+            continue;
+        }
+        const QJsonObject classification = audit.value(QStringLiteral("classification")).toObject();
+        snapshot.ghostAuditStatus = audit.value(QStringLiteral("status")).toString();
+        snapshot.ghostAuditInput = audit.value(QStringLiteral("input")).toString();
+        snapshot.ghostAuditInputSha256 = audit.value(QStringLiteral("inputSha256")).toString();
+        snapshot.ghostAuditRequestClass = classification.value(QStringLiteral("requestClass")).toString();
+        snapshot.ghostAuditRisk = classification.value(QStringLiteral("risk")).toString();
+        snapshot.ghostAuditRoute = classification.value(QStringLiteral("selectedRoute")).toString();
+        snapshot.ghostAuditCurrentStep = audit.value(QStringLiteral("currentStep")).toString();
+        snapshot.ghostAuditProgress = audit.value(QStringLiteral("progress")).toInt();
+        snapshot.ghostAuditArtifactPath = audit.value(QStringLiteral("artifactPath")).toString();
+        snapshot.ghostAuditReceiptPath = audit.value(QStringLiteral("receiptPath")).toString();
+        snapshot.ghostAuditLines = parseGhostAuditLines(audit);
+        break;
+    }
+    if (snapshot.ghostAuditStatus.isEmpty()) {
+        snapshot.ghostAuditStatus = QStringLiteral("waiting-for-input");
+        snapshot.ghostAuditCurrentStep = QStringLiteral("Submit an input for transparent classification");
     }
 
     snapshot.heartPassTitle = heartPass.value(QStringLiteral("title")).toString();
