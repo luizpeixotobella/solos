@@ -36,6 +36,7 @@ Implemented and verified:
 - social RLS denies anonymous, non-member, self-declared-only and policy-stale access;
 - text-only post submission is atomic, limited to three per hour and always enters human review, even when automated moderation says `allow`;
 - mutation routes require a trusted same-host Origin and use database-backed fixed-window rate limits keyed by server-side HMAC rather than raw IP;
+- production `PULSO_INVITE_PEPPER` and `PULSO_RATE_LIMIT_PEPPER` secrets are stored in Render; the resulting deploy succeeded, a trusted unauthenticated mutation reached the expected `401 authentication_required`, and a foreign Origin still failed with `403 invalid_origin`;
 - human moderation publishes only to the limited adult feed and records an append-style operator event;
 - chronological feed is capped at twelve raw items per explicit page, with at most two visible posts per author;
 - self-service export includes Alpha membership and social deletion revokes the membership;
@@ -43,6 +44,8 @@ Implemented and verified:
 - targeted ESLint completed without findings, the Next.js production build passed, the migration applied, and linked database lint found only two pre-existing Founder-function warnings.
 
 Production truth immediately after the migration: `alpha_enabled=false`, registration/feed/posting gates false, `kill_switch=true`, and zero members/invites/operator events.
+
+Runtime truth after the Render secret checkpoint: `PULSO_ALPHA_ENABLED` remains absent/false. Secret availability removes a configuration failure but does not open registration, feed or posting.
 
 ## Non-negotiable Alpha 0 boundaries
 
@@ -180,6 +183,7 @@ Primary references:
 - [x] replace self-declared publishing with an adult-verification plus admin-allowlist contract;
 - [x] deny and minimize unknown/minor access instead of creating read-only social profiles;
 - [x] add durable distributed rate limiting across instances without storing raw IP addresses;
+- [x] configure production invite/rate-limit peppers while keeping the runtime Alpha gate closed;
 - [x] add explicit trusted-Origin/CSRF rejection to mutating JSON routes;
 - [x] require premoderation for every Alpha 0 post;
 - [x] add Pulso-specific rules, privacy notice and versioned purpose/consent receipts; focused legal review remains required before invitations;
