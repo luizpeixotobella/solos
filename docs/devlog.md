@@ -4,6 +4,7 @@
 
 - Converted the reserved Pulso Alpha 0 direction into a fail-closed CMS/server/database implementation without authorizing launch.
 - The production database now enforces verified-adult invite membership, Brazil/policy binding, ten active participants, text-only human premoderation, limited-feed RLS and append-style operator evidence.
+- Versioned Alpha rules and purpose-bound consent receipts now exist; invite redemption, receipt creation and membership activation share one transaction, while social deletion revokes both membership and consent.
 - Environment and database gates remain closed and the kill switch remains engaged. Distributed HMAC-keyed rate limits and trusted-Origin checks now exist; the next Pulso gate is terms/consent receipts, operator MFA, appeal, abuse/RLS tests and backup/restore evidence.
 
 ## 2026-08-23 — Ghost Audit Pilot becomes a real-input product test

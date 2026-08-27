@@ -39,6 +39,7 @@ Implemented and verified:
 - human moderation publishes only to the limited adult feed and records an append-style operator event;
 - chronological feed is capped at twelve raw items per explicit page, with at most two visible posts per author;
 - self-service export includes Alpha membership and social deletion revokes the membership;
+- versioned Alpha rules are public, invite acceptance writes a purpose-bound consent receipt atomically, export includes it and social deletion revokes it;
 - targeted ESLint completed without findings, the Next.js production build passed, the migration applied, and linked database lint found only two pre-existing Founder-function warnings.
 
 Production truth immediately after the migration: `alpha_enabled=false`, registration/feed/posting gates false, `kill_switch=true`, and zero members/invites/operator events.
@@ -181,7 +182,7 @@ Primary references:
 - [x] add durable distributed rate limiting across instances without storing raw IP addresses;
 - [x] add explicit trusted-Origin/CSRF rejection to mutating JSON routes;
 - [x] require premoderation for every Alpha 0 post;
-- add Pulso-specific terms, privacy notice, community rules and versioned purpose/consent receipts;
+- [x] add Pulso-specific rules, privacy notice and versioned purpose/consent receipts; focused legal review remains required before invitations;
 - [x] add a moderator kill switch and queue-only behavior;
 - require MFA for operator access;
 - seed one reviewed topic and a small set of reviewed posts;
