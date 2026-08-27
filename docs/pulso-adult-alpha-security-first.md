@@ -2,7 +2,7 @@
 
 Date: 2026-08-26
 
-Status: **P0 fail-closed implementation landed in the CMS and production database; all operational gates remain closed; not a public-launch authorization**.
+Status: **P0 fail-closed implementation and operator-MFA gate are live; the runtime is armed while all database gates remain closed pending physical MFA enrollment; not a public-launch authorization**.
 
 ## Decision
 
@@ -45,7 +45,7 @@ Implemented and verified:
 
 Production truth immediately after the migration: `alpha_enabled=false`, registration/feed/posting gates false, `kill_switch=true`, and zero members/invites/operator events.
 
-Runtime truth after the Render secret checkpoint: `PULSO_ALPHA_ENABLED` remains absent/false. Secret availability removes a configuration failure but does not open registration, feed or posting.
+Runtime truth after the 2026-08-27 checkpoint: `PULSO_ALPHA_ENABLED=true` is live. Database `alpha_enabled`, registration, feed and posting remain false with `kill_switch=true`, so runtime readiness alone opens no social access.
 
 ## Non-negotiable Alpha 0 boundaries
 
@@ -188,7 +188,7 @@ Primary references:
 - [x] require premoderation for every Alpha 0 post;
 - [x] add Pulso-specific rules, privacy notice and versioned purpose/consent receipts; focused legal review remains required before invitations;
 - [x] add a moderator kill switch and queue-only behavior;
-- require MFA for operator access;
+- [~] MFA is enforced for Pulso operator controls and moderation; physical TOTP enrollment/verification remains the final owner-controlled gate;
 - seed one reviewed topic and a small set of reviewed posts;
 - execute abuse tests, RLS tests, backup/restore and production smoke checks.
 
