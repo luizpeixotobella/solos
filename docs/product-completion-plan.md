@@ -2,7 +2,7 @@
 
 Date: 2026-08-23
 
-Status: v1.0 RC2 candidate; real-input Ghost Audit Pilot implemented for a ten-reviewer product/fundraising validation gate.
+Status: v1.0 RC2 candidate plus a fail-closed Pulso Alpha 0 P0 implementation; Ghost reviewer validation and Pulso operational readiness remain separate gates.
 
 ## Purpose
 
@@ -54,7 +54,7 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [~] Ghost now has a real-input integrity/safety audit pilot, but its deterministic classification still requires human evaluation and the local receipt is not remote attestation.
 - [~] Wallet shows pass/quota semantics, but real wallet/account state remains limited to the current Heart Pass path.
 - [~] Apps has registry-style structure, but not yet a real launcher/capability bridge.
-- [~] Pulso appears as a planned app/roadmap surface, but not yet as a real data-capture or credit-ledger system.
+- [~] Pulso now has a real CMS/server/database Alpha 0 contract for verified-adult invites, text submission, human premoderation, bounded feed, export/delete and operator evidence, but all gates remain closed and it is not yet a native SolOS app.
 - [~] Runtime state is structured and partly host-derived, but still depends on snapshot output rather than a durable service/API/event layer.
 - [~] A persistent Rust Daemon now provides an owner-only Unix socket, health, RC1 snapshot compatibility, bounded local events and the first durable domain store for Ghost resolutions; broader durable event/domain stores remain next work.
 - [~] Demo appliance documentation exists, but the current native shell has not yet replaced the browser-kiosk path as the tested primary demo session.
@@ -74,7 +74,7 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [ ] Connect Ghost research usage to quota accounting.
 - [x] Define the provider-neutral server-side quota/proxy contract for sponsored usage; runtime remains disabled until a signed-proof backend exists.
 - [ ] Define Pulso Credits ledger, caps, anti-fraud, expiry, and cost guardrails.
-- [ ] Add Pulso consent/export/delete/moderation before real social capture.
+- [x] Add Pulso Alpha 0 export/delete/moderation and fail-closed invite/adult gates before real social capture.
 - [x] Require signed holder/session proof before sponsored quota calls.
 - [x] Define a provider-neutral retrieval boundary; Brave remains the first adapter.
 - [x] Add scoped Ghost memory classes with revocation semantics.

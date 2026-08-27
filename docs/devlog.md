@@ -1,5 +1,11 @@
 # SolOS Devlog
 
+## 2026-08-26 — Pulso Alpha 0 fail-closed foundation
+
+- Converted the reserved Pulso Alpha 0 direction into a fail-closed CMS/server/database implementation without authorizing launch.
+- The production database now enforces verified-adult invite membership, Brazil/policy binding, ten active participants, text-only human premoderation, limited-feed RLS and append-style operator evidence.
+- Environment and database gates remain closed and the kill switch remains engaged. Distributed HMAC-keyed rate limits and trusted-Origin checks now exist; the next Pulso gate is terms/consent receipts, operator MFA, appeal, abuse/RLS tests and backup/restore evidence.
+
 ## 2026-08-23 — Ghost Audit Pilot becomes a real-input product test
 
 - Added a Daemon-owned Ghost audit store for real reviewer input, exact SHA-256 capture, transparent deterministic scope/risk classification and visible approval.

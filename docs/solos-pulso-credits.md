@@ -4,6 +4,14 @@ Date: 2026-07-14
 
 Status: product/economic direction for a future SolOS app surface.
 
+## Reserved Alpha 0 direction — 2026-08-26
+
+The proposed first operational cohort is Brazil-only, invite-only, text-only and limited to at most ten verified adults. No children or teenagers enter the social surface. Publishing requires more than self-declaration and every Alpha 0 post is human-premoderated.
+
+`Pulso da Hora` is a short-lived, explainable **content** score; it is not a person score and cannot be purchased with Pulso Credits. Ghost may learn from consented signals plus reviewed results only in shadow mode until evaluation, human approval, signed versioning and rollback exist.
+
+Full reservation: `docs/pulso-adult-alpha-security-first.md`.
+
 ## What SolOS Pulso is
 
 SolOS Pulso is a planned SolOS-integrated social surface for consented human signals.
