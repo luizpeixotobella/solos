@@ -1,0 +1,18 @@
+[Unit]
+Description=SolOS owner-local runtime intermediary daemon
+After=default.target
+
+[Service]
+Type=simple
+EnvironmentFile=-%h/.config/solos/daemon.env
+Environment=SOLOS_DAEMON_SOCKET=%t/solos/daemon.sock
+Environment=SOLOS_RUNTIME_SNAPSHOT=%h/.local/lib/solos/share/runtime_snapshot.json
+Environment=SOLOS_GHOST_AUDIT_VERIFIER=%h/.local/lib/solos/bin/ghost-audit-verify
+ExecStart=%h/.local/lib/solos/bin/solos-daemon
+Restart=on-failure
+RestartSec=2
+RuntimeDirectory=solos
+RuntimeDirectoryMode=0700
+
+[Install]
+WantedBy=default.target

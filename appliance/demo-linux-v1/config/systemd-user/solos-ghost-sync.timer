@@ -1,0 +1,11 @@
+[Unit]
+Description=Send minimized SolOS Ghost evidence to the CMS every five minutes
+
+[Timer]
+OnBootSec=90s
+OnUnitActiveSec=5min
+Persistent=true
+Unit=solos-ghost-sync.service
+
+[Install]
+WantedBy=timers.target

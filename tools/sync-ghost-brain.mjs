@@ -7,7 +7,8 @@ import os from "node:os";
 import path from "node:path";
 
 const endpoint = process.env.SOLOS_GHOST_CMS_ENDPOINT || "https://luiz-bella-artes.net/api/ghost/bridge";
-const secret = process.env.SOLOS_GHOST_CMS_SECRET || "";
+const secretFile = process.env.SOLOS_GHOST_CMS_SECRET_FILE || "";
+const secret = process.env.SOLOS_GHOST_CMS_SECRET || (secretFile ? (await readFile(secretFile, "utf8")).trim() : "");
 const runtimeDir = process.env.XDG_RUNTIME_DIR || path.join(os.tmpdir(), `solos-${process.getuid?.() ?? process.pid}`);
 const socketPath = process.env.SOLOS_DAEMON_SOCKET || path.join(runtimeDir, "solos/daemon.sock");
 const stateRoot = process.env.XDG_STATE_HOME || path.join(os.homedir(), ".local/state");
@@ -18,7 +19,7 @@ if (!endpoint.startsWith("https://") && !endpoint.startsWith("http://127.0.0.1:"
   throw new Error("SOLOS_GHOST_CMS_ENDPOINT must use HTTPS (or loopback HTTP for a local smoke test)");
 }
 if (!dryRun && secret.length < 32) {
-  throw new Error("SOLOS_GHOST_CMS_SECRET must contain at least 32 characters");
+  throw new Error("SOLOS_GHOST_CMS_SECRET or its protected secret file must contain at least 32 characters");
 }
 
 async function loadCursor() {

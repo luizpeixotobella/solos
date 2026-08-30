@@ -1,0 +1,13 @@
+[Unit]
+Description=Sync minimized SolOS Ghost evidence to the private CMS monitor
+After=solos-daemon.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=SOLOS_DAEMON_SOCKET=%t/solos/daemon.sock
+Environment=SOLOS_GHOST_CMS_SECRET_FILE=%h/.config/solos/ghost-sync-secret
+ExecStart=%h/.local/lib/solos/tools/sync-ghost-brain.mjs
+
+[Install]
+WantedBy=default.target

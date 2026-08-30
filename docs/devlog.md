@@ -5,6 +5,7 @@
 - Replaced the Daemon's in-memory-only event ring with a versioned, atomic, bounded ledger that retains sequence continuity across restart.
 - Added cursor reads and a deliberately minimized export contract; local event payloads and personal data never cross into the CMS.
 - Added an HMAC-SHA256 client and five-minute systemd timer for the private Ghost Brain Monitor, with cursor advancement only after CMS acceptance.
+- Added a rootless owner-local installer and protected secret-file support so the Daemon and evidence timer can remain active on a real workstation rather than only inside the appliance image.
 - Turned Apps into an exact-allowlist native launcher with stable IDs, capability metadata and a Daemon `apps.launch` evidence event before navigation.
 - Centralized native colors/status treatments in a QML `Theme` singleton and completed bounded scrolling for content-heavy surfaces.
 - Corrected the Daemon installer repository-root resolution and included the evidence-sync tool in the runtime install.
