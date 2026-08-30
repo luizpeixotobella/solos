@@ -130,7 +130,7 @@ Current SolOS native implementation:
 - Wallet Hub and Agent/Ghost both render a Heart Pass Quota card so the allowance and fallback model are visible before a sponsored backend exists.
 - Because the anchor asset is ERC-1155, verification uses `balanceOf(wallet, tokenId)` through Polygon JSON-RPC and maps results to `verified-holder`, `not-holder`, or `verification-error`.
 - Ghost/Brave onboarding is gated by `verified-holder`: the UI disables Brave key entry until Heart Pass verification succeeds, and the controller refuses Brave key save/validation unless the pass is verified.
-- Sponsored provider calls are not implemented yet. The next technical layer is signed holder/session proof plus a server-side quota/proxy service.
+- Sponsored provider calls are not implemented yet. Signed holder/session proof and the server-side quota/proxy contract exist; the next gate is an authorized provider executor with explicit credential and cost ownership.
 - Founder Rewards now provide the first campaign-issued allowance path: a verified CMS contribution can become Pulso Credits, an authenticated Ghost-query redemption and an atomic Wallet-bound claim. See `founder-rewards-contract.md`.
 - Runtime-core exposes an explicit fail-closed local quota debit; generating snapshots never consumes allowance.
 
