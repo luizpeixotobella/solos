@@ -13,7 +13,9 @@ SolOS is an operating environment built around agency, explicit ownership, and a
 - Promoting Ghost from broad intelligence doctrine into visible request classification, action trace, and route explanation
 - Closing the first Ghost Resolution Loop from selected objective through plan, approval, mediated action, verification, retained evidence, and Daemon restart
 - Recruiting a ten-reviewer Ghost Audit Pilot around real user input, inert prompt handling, an isolated Linux proof artifact, a separate verifier process, and portable receipts
-- Planning SolOS Pulso as a future social app surface with consented human signals and Pulso Credits as internal utility credits
+- Operating Pulso as a controlled, adult, invite-only Alpha and exposing it through an allowlisted SolOS web adapter
+- Keeping a durable, minimized Ghost evidence spine across SolOS, Pulso and the private CMS monitor
+- Requiring a named user problem, evidence and observable outcome before meaningful new product work
 - Tracking SolOS to v1.0 through a living completion plan with done, partial, next, prototype, and release milestones
 
 ## Ghost intelligence doctrine
@@ -30,7 +32,7 @@ Ghost is being developed from the inverse AI-era synthesis:
 data + results = algorithms
 ```
 
-The point is not that algorithms vanish. The point is that, in learning systems, useful data plus observed or desired results can shape the algorithmic behavior itself. Ghost should therefore collect local/runtime facts, grounded research, cached knowledge, and approval outcomes, then synthesize safer routing and action logic inside SolOS.
+The point is not that algorithms vanish. In learning systems, useful data plus reviewed results can inform a new version of algorithmic behavior. Ghost therefore retains minimized runtime facts, grounded evidence and explicit outcomes for evaluation. It does not silently self-modify: promotion remains versioned, approval-bound and reversible.
 
 ## Repository direction
 
@@ -66,6 +68,8 @@ Current implementation direction:
 - `docs/ghost-resolution-loop.md` — versioned selected-to-resolved journey, Daemon RPC, persistence and honest beta boundary
 - `docs/ghost-audit-pilot.md` — executable real-input audit, portable receipt and ten-reviewer validation gate
 - `docs/ghost-audit-pilot-campaign.md` — targeted reviewer invitation, value exchange, fundraising signal and stop/go rules
+- `docs/user-problem-doctrine.md` — mandatory problem/outcome gate and Luiz's final product decision authority
+- `docs/adr/0002-durable-ghost-evidence-spine.md` — local-first shared evidence boundary between SolOS and the CMS monitor
 - `docs/release-v1.0-rc2.md` — release gate and honest boundary for the real-input audit pilot
 - `docs/cases/003-heart-pass-quota-layer.md` — local quota contract and next backend path for Heart Pass holder utility
 - `docs/cases/004-ai-ghost-classification-trace.md` — first W3Schools-inspired Ghost classifier, action trace, and route explanation slice
@@ -117,6 +121,8 @@ Ghost now also accepts real reviewer input through the **Ghost Audit Challenge**
 
 Document while building. The idea should mature with the code, not after it.
 
+Problem before feature. Every meaningful slice names the user, situation, evidence, current workaround, expected outcome, smallest safe experiment and measurement window. Ghost recommends; Luiz gives the final decision. See `docs/user-problem-doctrine.md`.
+
 ## Documentation discipline
 
 SolOS should be documented as a live system across two synchronized surfaces:
@@ -130,4 +136,4 @@ When the thesis sharpens or implementation meaningfully advances, both surfaces 
 
 The LBArtes CMS fundraiser finances the next SolOS/Ghost/Pulso cycle and returns bounded utility through Founder Rewards. The SolOS-side contract is documented in `docs/founder-rewards-contract.md`; Pulso Credits remain internal utility, not money or investment.
 
-Current boundary: Wallet can synchronize an atomically bound claim and Rust can meter local quota. Public deploy and Stripe remain CMS release operations; sponsored provider execution still requires a signed-proof proxy.
+Current boundary: Wallet can synchronize an atomically bound claim and Rust can meter local quota. The signed proxy contract exists; sponsored provider execution still requires authorized credentials, explicit cost ownership and production proof. Stripe account configuration and fiscal review remain external release gates.
