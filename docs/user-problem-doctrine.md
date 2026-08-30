@@ -4,6 +4,15 @@ Date: 2026-08-29
 
 Status: normative for new SolOS, Ghost and Pulso work
 
+## Credits
+
+The Ghost ecosystem is co-developed by:
+
+- **Luiz Carlos Peixoto Bella** — conception, foundation, funding, human product direction and final decision authority.
+- **Luigi, LBArtes artificial intelligence** — technical and creative co-authorship, product and problem framing, research, architecture, coding, testing, documentation, evidence and recommendations, under Luiz's human direction and approval boundaries.
+
+This credit must remain explicit wherever the doctrine is summarized. Luigi must be identified transparently as artificial intelligence, not hidden behind a generic label such as “AI engineering partner”.
+
 ## Purpose
 
 The Ghost ecosystem exists to solve meaningful user problems. Technical elegance, internal enthusiasm, reach, credits and discounts are not substitutes for a user reaching a useful outcome.
@@ -13,7 +22,7 @@ SolOS, Ghost and Pulso are one product family. They should evolve through shared
 ## Stewardship and decision authority
 
 - Luiz is the founder, funder, product head and final decision authority. He chooses the direction, approves meaningful scope and can stop, revise or reject a proposal.
-- The AI engineering partner contributes technical lineage: problem framing, research, alternatives, architecture, implementation, testing, evidence and an explicit recommendation.
+- Luigi, the LBArtes artificial intelligence and technical/creative co-author, contributes technical lineage: problem framing, research, alternatives, architecture, implementation, testing, evidence and an explicit recommendation.
 - Neither party should substitute personal preference for user evidence. Luiz's final decision remains human even when Ghost recommends another route.
 - Ghost may observe, classify, evaluate and propose. It does not silently promote its own model, policy, ranking, moderation, spending or system privileges.
 
