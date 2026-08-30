@@ -1,156 +1,72 @@
 # SolOS Roadmap
 
-## Phase 0 — Foundation
+Updated: 2026-08-29
 
-- [x] Boot a Qt/QML native shell
-- [x] Add sidebar navigation
-- [x] Add top status bar
-- [x] Add basic section cards
-- [x] Fix first-pass layout issues in cards
-- [x] Split `Main.qml` into screen components
-- [x] Establish a living completion plan for SolOS v1.0 in `docs/product-completion-plan.md`
-- [ ] Introduce reusable shell theme tokens
-- [ ] Add scroll support for content-heavy screens
+This roadmap is a compact status map. The acceptance criteria and release gates live in `docs/product-completion-plan.md`.
 
-## Phase 1 — Native information architecture
+## 1. Foundation and product language
 
-- [~] Home quick actions model
-- [~] Home summary / next-action state via `HomeState`
-- [~] Agent surface with task/activity feed
-- [~] Wallet overview model
-- [~] App registry surface with richer metadata
-- [~] Approval queue UI
+- [x] Native Qt/QML shell with Home, Agent/Ghost, Wallet and Apps.
+- [x] Linux base -> Rust runtime intermediary -> SolOS operating layer architecture.
+- [x] Reusable QML theme tokens and bounded scrolling for content-heavy screens.
+- [x] Product thesis, architecture, roadmap, devlog and release checklists.
+- [x] Coherent-outside/modular-inside ADR and domain extraction rule.
 
-## Phase 2 — Real system integration
+## 2. Runtime and mediation
 
-- [~] Replace predetermined runtime snapshot content with progressively real Linux-host-derived state
-- [~] Connect shell state to real host runtime data
-- [~] Model approvals as first-class runtime-backed entities before binding them to real command/task state
-- [~] Add Ghost web onboarding with repository-local Brave key configuration and validate-before-save policy
-- [~] Add local monthly Brave usage metering so each user can see remaining search allowance
-- [~] Add Ghost request classification, action trace, and route explanation to the runtime/UI contract
-- [x] Gate the guided Brave/Ghost onboarding with an optional SolOS Heart Pass ownership check
-- [~] Define SolOS Pulso as a planned social app surface with consented signals and Pulso Credits
-- [ ] Design a backend quota/proxy layer for future sponsored Brave/OpenAI credits without exposing shared provider keys
-- [ ] Add callback/deep-link return flow from Brave key onboarding into SolOS
-- [ ] Connect approvals to real command/task state
-- [ ] Connect wallet panel to real account state
-- [ ] Add launcher bridge for modules/apps
-- [ ] Add Pulso as a real app module after consent, credit ledger, and cost guardrails exist
-- [ ] Introduce clearer capability boundaries so controllers stop behaving like staging points for semi-static copy
+- [x] Host-derived facts and versioned compatibility snapshot.
+- [x] Owner-only persistent Daemon over a Unix socket.
+- [x] Typed capabilities, default-deny approvals and one safe mediated action.
+- [x] Durable, atomic stores for Ghost resolutions and real-input audits.
+- [x] Bounded event/evidence ledger that survives Daemon restarts.
+- [x] Cursor-based minimized event export with no local payload disclosure.
+- [~] Continue extracting domain controllers/services from the broad Qt controller.
+- [~] Continue replacing snapshot-only state with narrow Daemon APIs without breaking compatibility.
 
-## Phase 3 — OS identity
+## 3. Ghost system intelligence
 
-- [ ] Formalize visual language
-- [ ] Define interaction grammar for approvals and agent actions
-- [ ] Write expanded thesis / manifesto
-- [ ] Turn doctrine into product constraints
+- [x] Doctrine, request classification, route explanation and action trace.
+- [x] Selected -> planned -> approval-bound -> resolved journey with retained evidence.
+- [x] Ghost Audit Challenge, portable verifier and ten-reviewer evaluation contract.
+- [x] Scoped memory/revocation and provider-neutral retrieval contracts.
+- [x] Durable operational evidence exported to the private CMS Ghost Brain Monitor through HMAC authentication.
+- [~] Capture explicit human accepted/rejected/corrected feedback as evaluation data separate from operational logs.
+- [ ] Complete the ten-reviewer pilot and publish an evidence-based usefulness/return report.
+- [ ] Connect a provider-backed research executor only after credentials, cost ownership and signed server proof exist.
+- [ ] Add multilingual intent/tone evaluation with source-language citations; do not reduce this to UI translation.
 
-## Phase 4 — Selective systems migration
+## 4. Wallet, quota and Heart Pass
 
-- [x] Define which subsystems should stay in C++ for now
-- [x] Identify Rust candidates by safety/concurrency/integration risk
-- [x] Prototype one Rust subsystem behind a clear interface boundary
-- [~] Establish C++/Rust interoperability rules for the shell and future runtime layers
+- [x] Heart Pass ownership/session proof visible in runtime and Wallet.
+- [x] Local fail-closed quota metering, exhaustion state and BYOK fallback.
+- [x] Provider-neutral signed quota/proxy contract.
+- [x] Founder reward grant, redemption, atomic Wallet binding and Pulso Credits ledger.
+- [ ] Authorize and meter a real provider request only after the external secret/cost gate is approved.
+- [ ] Expand Wallet beyond the current pass/quota account path when a concrete second account capability exists.
 
-Current first boundary:
+## 5. Apps and Pulso
 
-- Linux remains the real runtime substrate
-- C++/Qt/QML shell remains the presentation layer
-- Rust runtime core reads and emits structured host-backed orchestration state
-- JSON snapshot contract acts as the first integration seam before a heavier IPC or FFI decision
-- the current snapshot now carries live host facts plus a first `systemStatus` contract and richer approval objects
-- next iteration should turn this from a structured host snapshot seam into progressively real mediated runtime services and approval execution boundaries
-- Ghost now has a first functional prototype path: layered runtime data + optional Brave-grounded research + user-owned key onboarding inside the SolOS repo
-- Heart Pass now exposes a local `quotaLayer` contract beside verified ownership state, making planned allowance, usage, fallback, and provider-cost boundaries visible before any sponsored backend exists
+- [x] Registry with stable IDs, status, capability and launch target.
+- [x] Exact-allowlist native launcher; each launch is recorded through the Daemon.
+- [x] Controlled Pulso web adapter in the SolOS Apps surface.
+- [x] Pulso Alpha 0.2 production Value Loop: adult consent, moderation, export/delete, semantic reactions, comments, profiles, reposts, private images, disclosed sponsored agents, Ghost topics and credits guardrails.
+- [ ] Create a native Pulso surface only when it adds a real system capability beyond the web adapter.
+- [ ] Add another app integration only through the same declared-capability and evidence boundary.
 
-## Migration principle
+## 6. Appliance and release
 
-Rust should enter SolOS gradually and intentionally.
+- [x] Browser-kiosk and native shell packaging paths.
+- [x] Web, Rust, Ghost resolution/audit and native smoke gates in `tools/verify-v1.sh`.
+- [x] Daemon installer and optional five-minute CMS evidence-sync timer.
+- [x] Dependency audit with zero known npm vulnerabilities at this release pass.
+- [ ] Build and boot the demo ISO in a VM on a host with `live-build`, `xorriso` and QEMU.
+- [ ] Tag the public demo candidate after VM boot proof and ten-reviewer evidence are attached.
 
-Priority targets are the parts most likely to benefit from stronger memory safety and clearer concurrency boundaries, such as:
+## External gates, not hidden code debt
 
-- runtime/integration adapters over Linux host services
-- approval/task orchestration backends
-- parsers and capability layers
-- future system-facing modules
+- Human Ghost reviewer responses.
+- Provider credentials, paid-usage ownership and signed production proof.
+- Stripe account-side links/secrets and fiscal/legal review where applicable.
+- A VM-capable build host for ISO boot evidence.
 
-The current Qt/QML shell can continue evolving in C++ while those boundaries become clearer, and without claiming ownership of the Linux runtime itself.
-
-## Ghost multilingual capability update
-
-The Ghost roadmap now includes multilingual human fluency as a core capability, adjacent to local runtime facts, web-grounded research, approvals, and knowledge caching.
-
-- [~] Represent language support in the runtime snapshot and Agent/Ghost surface.
-- [ ] Add language detection for user requests and runtime events.
-- [ ] Prefer the user's active language for Ghost replies, approval explanations, onboarding, and task summaries.
-- [ ] Preserve source-language citations and translated summaries when Brave/data-mined evidence is used.
-- [ ] Treat cultural context, idiom, tone, and register as part of Ghost's intent layer instead of generic translation cleanup.
-
-This update is intentionally modest in implementation but important in direction: Ghost should grow into a multilingual operating agent, not a monolingual assistant with translated UI strings.
-
-## Ghost operational readiness update
-
-Ghost now has an explicit readiness layer in the runtime snapshot and native shell.
-
-- [x] Add `ghost.operationalReadiness` to the runtime-core snapshot.
-- [x] Surface readiness status and pillars in the native Agent/Ghost screen.
-- [x] Document the 2026 agent-readiness model in `docs/ghost-operational-readiness-2026.md`.
-- [ ] Add a typed tool manifest with read/write/sensitive scopes.
-- [~] Represent trace summaries for request classification, route selection, quota impact, approval policy, and outcome.
-- [ ] Persist trace summaries for retrieval, tool calls, approvals, and outcomes.
-- [ ] Split Ghost memory into scoped classes with revocation semantics.
-- [ ] Add provider-neutral retrieval adapters beyond Brave.
-- [ ] Connect readiness results to the future task/action router.
-
-## Heart Pass Quota Layer update
-
-The first local quota slice is now implemented.
-
-- [x] Add `quotaLayer` to `config/heart_pass.json`.
-- [x] Emit `heartPass.quotaLayer` from `runtime-core`.
-- [x] Parse quota fields through the Qt runtime bridge and `AppController`.
-- [x] Render quota cards in Wallet and Agent/Ghost.
-- [x] Keep sponsored quota disabled until Heart Pass verification succeeds.
-- [ ] Add real usage decrementing when Ghost research executes.
-- [ ] Define the server-side quota/proxy endpoint.
-- [ ] Add signed holder/session proof before sponsored provider calls.
-
-## Product completion plan update
-
-SolOS now has a living completion plan in `docs/product-completion-plan.md`.
-
-Current v1.0 path:
-
-1. [x] Publish the current baseline and make status visible.
-2. [ ] Persist Ghost trace outcomes and evaluation examples.
-3. [ ] Add typed tool/capability manifest and approval policy.
-4. [ ] Execute the first low-risk mediated action through runtime state.
-5. [ ] Connect Ghost research usage to quota accounting.
-6. [ ] Model Pulso Credits as internal utility ledger with caps, anti-fraud, expiry, and cost guardrails.
-7. [ ] Harden Wallet and Heart Pass proof for future sponsored quota.
-8. [ ] Turn Apps into a real launcher/capability boundary, including Pulso as a planned social app surface.
-9. [ ] Smoke-test the demo appliance path.
-10. [ ] Stabilize UI polish, release checklist, and v1 demo candidate.
-
-## SolOS Pulso update
-
-Pulso is now part of the roadmap as a planned social app surface, not a live data-capture feature.
-
-- [x] Document Pulso and Pulso Credits in `docs/solos-pulso-credits.md`.
-- [x] Expose a public read-only preview through the CMS at `/solos/pulso`.
-- [~] Show Pulso as a planned module in the SolOS app registry.
-- [ ] Add consent, auth, moderation, export/delete, and anti-fraud before real capture.
-- [ ] Add a credit ledger before showing Pulso Credits in Wallet.
-- [ ] Connect Ghost topics and aggregate summaries only after consent rules exist.
-
-## Founder fundraiser update — 2026-08-02
-
-- [x] Define Founder Heart and Pulso Credits reward contract.
-- [x] Implement production grant, redemption and atomic Wallet claim.
-- [x] Synchronize claimed allowance into native Wallet.
-- [x] Add fail-closed Rust quota consumption.
-- [x] Complete critical CMS/SolOS security hardening.
-- [ ] Push/deploy the documented release.
-- [ ] Configure Stripe outside the runtime and verify signed webhooks.
-- [ ] Connect sponsored provider execution only after signed holder/session proof exists.
+These gates must remain visible and fail closed. They are not permission to fake completion, embed shared secrets or claim autonomous learning.

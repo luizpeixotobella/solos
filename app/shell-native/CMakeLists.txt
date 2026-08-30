@@ -9,6 +9,8 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Qml Network)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
+set_source_files_properties(qml/Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
+
 qt_add_executable(solos-shell-native
     src/main.cpp
     src/appcontroller.cpp
@@ -33,6 +35,7 @@ qt_add_qml_module(solos-shell-native
     URI SolOS.Shell
     VERSION 1.0
     QML_FILES
+        qml/Theme.qml
         qml/Main.qml
         qml/components/SectionCard.qml
         qml/components/SidebarNav.qml

@@ -24,6 +24,7 @@ O runtime segue um monólito modular: um crate e um Daemon persistente, com resp
 - `host_runtime.rs` — descoberta e normalização de fatos do Linux;
 - `surface_catalog.rs` — catálogo de apps, approvals e ações rápidas expostas à operating layer;
 - `main.rs` — composição compatível do snapshot RC1 enquanto Ghost, Wallet/quota e contracts são extraídos progressivamente;
+- `event_ledger.rs` — ledger persistente, sequenciado e minimizado para evidência do ecossistema;
 - `bin/solos-daemon.rs` — processo persistente e protocolo local owner-only.
 
 Regra: **coeso por fora, modular por dentro**. O snapshot agregado continua como read model de compatibilidade, não como justificativa para manter todos os domínios num único arquivo.
@@ -100,7 +101,7 @@ O output atual é um snapshot JSON que representa o contrato inicial entre:
 
 ## Daemon persistente
 
-O crate também fornece `solos-daemon`, o primeiro serviço persistente do runtime intermediário. Ele usa socket Unix local com permissão exclusiva do usuário, oferece saúde, o snapshot compatível com o RC1 e um buffer limitado de eventos locais. O protocolo inicial não permite execução arbitrária.
+O crate também fornece `solos-daemon`, o primeiro serviço persistente do runtime intermediário. Ele usa socket Unix local com permissão exclusiva do usuário, oferece saúde, o snapshot compatível com o RC1 e um ledger limitado de eventos que sobrevive a reinícios. O protocolo inicial não permite execução arbitrária.
 
 ```bash
 cargo run --bin solos-daemon
@@ -118,12 +119,11 @@ O comando exige Heart Pass verificado, quota ativa e saldo suficiente. Ele persi
 
 ## Próximos passos
 
-1. acrescentar schema e testes para os contratos emitidos
-2. persistir resultados aceitos/rejeitados a partir de `ghost.actionTrace`
-3. conectar o executor provider-backed ao comando de consumo de `heartPass.quotaLayer`
-4. definir endpoint/prova para a futura quota service sem expor chaves de provedor no cliente
-5. evoluir para serviço local ou biblioteca FFI quando o boundary estabilizar
-6. expor eventos e APIs de mediação em vez de depender só de snapshot estático
+1. persistir feedback humano aceito/rejeitado/corrigido como avaliação separada do ledger operacional
+2. conectar o executor provider-backed ao comando de consumo de `heartPass.quotaLayer`
+3. implementar a quota service assinada sem expor chaves de provedor no cliente
+4. evoluir para serviço local ou biblioteca FFI quando o boundary estabilizar
+5. migrar novos domínios para APIs de mediação sem romper o snapshot de compatibilidade
 
 ## Ghost Audit Challenge
 

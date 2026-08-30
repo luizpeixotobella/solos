@@ -2,11 +2,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import SolOS.Shell 1.0
+
 Rectangle {
     id: root
-    color: "#17213a"
+    color: Theme.panelMuted
     radius: 16
-    border.color: "#2a3a5d"
+    border.color: Theme.borderMuted
     border.width: 1
     implicitHeight: content.implicitHeight + 28
 
@@ -27,7 +29,7 @@ Rectangle {
 
             Label {
                 text: root.title
-                color: "#eef3ff"
+                color: Theme.textStrong
                 font.bold: true
                 Layout.fillWidth: true
                 wrapMode: Text.WordWrap
@@ -35,9 +37,9 @@ Rectangle {
 
             Rectangle {
                 radius: 10
-                color: root.status === "active" ? "#143a2d"
-                     : root.status === "ready" ? "#2a2c58"
-                     : "#3a2b14"
+                color: root.status === "active" ? Theme.panelOnline
+                     : root.status === "ready" ? Theme.panelReady
+                     : Theme.panelWaiting
                 implicitHeight: 24
                 implicitWidth: statusLabel.implicitWidth + 18
 
@@ -45,7 +47,7 @@ Rectangle {
                     id: statusLabel
                     anchors.centerIn: parent
                     text: root.status
-                    color: "#dfe8ff"
+                    color: Theme.textBright
                     font.pixelSize: 12
                 }
             }
@@ -53,7 +55,7 @@ Rectangle {
 
         Label {
             text: root.detail
-            color: "#9fb0d0"
+            color: Theme.textSoft
             Layout.fillWidth: true
             wrapMode: Text.WordWrap
         }

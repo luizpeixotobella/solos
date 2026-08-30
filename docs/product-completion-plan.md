@@ -1,8 +1,8 @@
 # SolOS Product Completion Plan
 
-Date: 2026-08-23
+Date: 2026-08-29
 
-Status: v1.0 RC2 candidate plus a fail-closed Pulso Alpha 0 P0 implementation; Ghost reviewer validation and Pulso operational readiness remain separate gates.
+Status: v1.0 RC2 plus a controlled Pulso Alpha and the first durable cross-ecosystem Ghost evidence spine; reviewer validation, provider-backed research and VM proof remain separate gates.
 
 ## Purpose
 
@@ -46,6 +46,12 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [x] Native and web Agent surfaces expose the selected goal, progress, ordered steps, approval decision, result and unavailable future candidates.
 - [x] Ghost Audit Challenge accepts real input, keeps embedded instructions inert, writes one approval-bound Linux artifact and produces a portable receipt through a separate verifier process.
 - [x] Ten-reviewer pilot contract, GitHub return form and acquisition baseline exist for testing usefulness, return behavior and concrete support intent.
+- [x] Daemon events now survive restart in a versioned, atomic, bounded ledger instead of an in-memory-only ring.
+- [x] A minimized `events.export` contract and HMAC CMS bridge connect live SolOS evidence to the private Ghost Brain Monitor without copying local payloads or personal data.
+- [x] Apps now carries stable IDs, status, capability and launch targets; the native launcher accepts only an exact allowlist and records `apps.launch` through the Daemon before navigation.
+- [x] Native shell colors, spacing and status treatments now use a reusable QML `Theme` singleton; Wallet and every content-heavy screen have bounded scrolling.
+- [x] The Daemon installer resolves the repository root correctly and installs the Ghost CMS sync tool beside the runtime binaries.
+- [x] Shell web dependencies were refreshed to remove the known `nanoid` advisory; `npm audit` reports zero vulnerabilities.
 
 ### Partially done
 
@@ -53,11 +59,11 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [~] Agent now persists trace outcomes and completes one real bounded resolution route; general task execution, research and public-send routes remain unavailable.
 - [~] Ghost now has a real-input integrity/safety audit pilot, but its deterministic classification still requires human evaluation and the local receipt is not remote attestation.
 - [~] Wallet shows pass/quota semantics, but real wallet/account state remains limited to the current Heart Pass path.
-- [~] Apps has registry-style structure, but not yet a real launcher/capability bridge.
-- [~] Pulso now has a real CMS/server/database Alpha 0 contract for verified-adult invites, text submission, human premoderation, bounded feed, export/delete and operator evidence, but all gates remain closed and it is not yet a native SolOS app.
+- [~] Apps has a real allowlisted launcher/capability bridge for native screens and the Pulso web adapter; it is not yet a general Linux desktop launcher.
+- [~] Pulso now operates a controlled adult Alpha and has a separately consented Alpha 0.1 CMS/server/database layer for semantic reactions, threaded human-premoderated comments, minimal profiles, reposts, private lightweight images, disclosed adult-sponsored AI agents and deterministic no-model Ghost topic selection; it is not yet a native SolOS app.
 - [~] Runtime state is structured and partly host-derived, but still depends on snapshot output rather than a durable service/API/event layer.
-- [~] A persistent Rust Daemon now provides an owner-only Unix socket, health, RC1 snapshot compatibility, bounded local events and the first durable domain store for Ghost resolutions; broader durable event/domain stores remain next work.
-- [~] Demo appliance documentation exists, but the current native shell has not yet replaced the browser-kiosk path as the tested primary demo session.
+- [~] A persistent Rust Daemon now provides an owner-only Unix socket, health, RC1 snapshot compatibility, a durable event/evidence ledger and stores for Ghost resolutions/audits; additional domain stores remain incremental work.
+- [~] Demo appliance packaging, browser-kiosk and native smoke paths exist; this host lacks `live-build`, `xorriso` and QEMU and therefore cannot supply the final booted-ISO proof.
 - [~] CMS and public narrative are aligned through the last quota-runtime cycle, but now need a standing completion dashboard rather than only campaign updates.
 - [~] Runtime-core now has its first internal modules, while Ghost, Wallet/quota and contract assembly still need domain extraction.
 - [~] The Qt shell is split into screens/models, while `AppController` remains broader than the desired domain-controller boundary.
@@ -71,24 +77,24 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [x] Add a typed tool/capability manifest with read, write, sensitive, network, wallet, and public-posting scopes.
 - [x] Connect approvals to the first safe mediated action (`app.open.safe`) in the demonstrator.
 - [x] Link objective selection, plan, approval, mediated action, verification and retained evidence in one complete Ghost resolution.
-- [ ] Connect Ghost research usage to quota accounting.
+- [~] Connect Ghost research usage to quota accounting: the fail-closed Rust meter, exhaustion state and BYOK fallback exist; no provider-backed executor is authorized yet.
 - [x] Define the provider-neutral server-side quota/proxy contract for sponsored usage; runtime remains disabled until a signed-proof backend exists.
-- [ ] Define Pulso Credits ledger, caps, anti-fraud, expiry, and cost guardrails.
+- [x] Define Pulso Credits ledger, caps, anti-fraud, expiry, and cost guardrails through the production Alpha 0.2 Value Loop.
 - [x] Add Pulso Alpha 0 export/delete/moderation and fail-closed invite/adult gates before real social capture.
 - [x] Require signed holder/session proof before sponsored quota calls.
 - [x] Define a provider-neutral retrieval boundary; Brave remains the first adapter.
 - [x] Add scoped Ghost memory classes with revocation semantics.
 - [x] Expose honest Wallet/session proof state beyond UI-only assumptions.
 - [x] Add an app launcher bridge in the demonstrator and capability declarations for runtime mediation.
-- [ ] Formalize reusable shell theme tokens and scroll behavior for content-heavy screens.
+- [x] Formalize reusable shell theme tokens and scroll behavior for content-heavy screens.
 - [ ] Build and smoke-test the demo ISO path in a VM.
 - [x] Publish a repeatable v1 demo script and release checklist.
 - [ ] Split the broad Qt controller into runtime, Ghost, Wallet and Apps-facing controllers/services.
-- [~] Move durable domain state/events behind Daemon-owned stores instead of treating the aggregate snapshot as the only internal bus; Ghost resolutions and real-input audits are the first completed stores.
+- [~] Move durable domain state/events behind Daemon-owned stores instead of treating the aggregate snapshot as the only internal bus; resolutions, real-input audits and the shared event/evidence ledger are complete stores.
 
 ## Recommended next product slice
 
-The next slice should be **Release and Measure the Ten-Reviewer Ghost Audit Pilot**. Quota accounting and launcher hardening remain the next engineering work after this validation gate produces real reviewer evidence.
+The next product gate remains **Release and Measure the Ten-Reviewer Ghost Audit Pilot**. The next engineering slice is provider-backed research behind the existing signed-proof/BYOK boundary; the local meter, launcher hardening and durable evidence spine are now implemented.
 
 Reason:
 
@@ -205,10 +211,11 @@ Acceptance:
 
 ### Milestone 4 - Quota accounting
 
-- [ ] Connect Ghost research usage to local quota decrementing.
-- [ ] Preserve BYOK fallback.
-- [ ] Add service-unavailable and quota-exhausted states.
+- [x] Connect an authorized Ghost research execution contract to local quota decrementing before provider access.
+- [x] Preserve BYOK fallback.
+- [x] Add service-unavailable and quota-exhausted states.
 - [x] Draft server-side quota/proxy endpoint shape.
+- [ ] Connect an actual provider-backed executor and remote usage sync after credentials, cost ownership and signed server proof exist.
 
 Acceptance:
 
@@ -227,10 +234,10 @@ Acceptance:
 
 ### Milestone 6 - App launcher and capability boundary
 
-- [ ] Turn Apps from registry surface into launcher bridge.
-- [ ] Map each app/module to declared capabilities.
-- [ ] Feed launcher actions into trace and approval policy.
-- [ ] Keep SolOS Pulso visible as planned until consent, credit ledger, and cost model are real.
+- [x] Turn Apps from registry surface into an allowlisted launcher bridge.
+- [x] Map each app/module to declared capabilities and stable IDs.
+- [x] Feed launcher actions into the Daemon evidence ledger.
+- [~] Expose Pulso through a controlled web adapter now that consent, ledger and guardrails are real; a native Pulso surface remains separate.
 
 Acceptance:
 
@@ -238,11 +245,11 @@ Acceptance:
 
 ### Milestone 7 - Demo appliance
 
-- [ ] Build web shell assets for browser-kiosk validation.
-- [ ] Package the demo Linux appliance path.
+- [x] Build web shell assets for browser-kiosk validation.
+- [x] Package the demo Linux appliance path.
 - [ ] Test ISO or VM boot path.
-- [ ] Decide when native shell becomes primary demo session.
-- [ ] Document smoke-test checklist.
+- [x] Keep the native shell as the primary assisted demo and browser kiosk as the portable fallback until VM proof closes.
+- [x] Document smoke-test checklist.
 
 Acceptance:
 
@@ -250,10 +257,10 @@ Acceptance:
 
 ### Milestone 8 - Product polish and release discipline
 
-- [ ] Stabilize theme tokens and scrolling.
-- [ ] Fix content-heavy screen behavior.
+- [x] Stabilize theme tokens and scrolling.
+- [x] Fix content-heavy screen behavior.
 - [x] Add release checklist.
-- [ ] Add architecture decision records for major choices.
+- [x] Add architecture decision records for major choices; continue adding ADRs when a new major boundary changes.
 - [~] Tag a v1 demo candidate after the final clean verification and push.
 
 Acceptance:

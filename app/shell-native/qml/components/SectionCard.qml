@@ -2,11 +2,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import SolOS.Shell 1.0
+
 Rectangle {
     id: root
-    color: "#121a2f"
-    radius: 20
-    border.color: "#263453"
+    color: Theme.surface
+    radius: Theme.cardRadius
+    border.color: Theme.border
     border.width: 1
     implicitHeight: contentColumn.implicitHeight + 36
 
@@ -19,12 +21,12 @@ Rectangle {
     ColumnLayout {
         id: contentColumn
         anchors.fill: parent
-        anchors.margins: 18
+        anchors.margins: Theme.cardPadding
         spacing: 10
 
         Label {
             text: root.title
-            color: "#eef3ff"
+            color: Theme.textStrong
             font.pixelSize: 20
             font.bold: true
             Layout.fillWidth: true
@@ -33,7 +35,7 @@ Rectangle {
 
         Label {
             text: root.subtitle
-            color: "#73d0ff"
+            color: Theme.accent
             font.pixelSize: 13
             Layout.fillWidth: true
             wrapMode: Text.WordWrap
@@ -41,7 +43,7 @@ Rectangle {
 
         Label {
             text: root.body
-            color: "#9fb0d0"
+            color: Theme.textSoft
             Layout.fillWidth: true
             wrapMode: Text.WordWrap
         }

@@ -133,6 +133,7 @@ public:
     Q_INVOKABLE bool prepareGhostAudit(const QString &input);
     Q_INVOKABLE bool decideGhostAudit(const QString &auditId, bool approved);
     Q_INVOKABLE bool verifyGhostAudit(const QString &auditId);
+    Q_INVOKABLE bool launchApp(const QString &appId);
     Q_INVOKABLE void openUrl(const QString &url);
 
 signals:

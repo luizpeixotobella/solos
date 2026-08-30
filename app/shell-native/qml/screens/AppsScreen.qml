@@ -50,15 +50,21 @@ Item {
                         model: appRegistryModel
 
                         delegate: AppTile {
+                            required property string appId
                             required property string name
                             required property string subtitle
                             required property string description
+                            required property string status
+                            required property string capability
 
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignTop
                             appName: name
                             appSubtitle: subtitle
                             appDescription: description
+                            appStatus: status
+                            appCapability: capability
+                            onLaunchRequested: appController.launchApp(appId)
                         }
                     }
                 }

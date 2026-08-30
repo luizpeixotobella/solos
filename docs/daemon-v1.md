@@ -15,8 +15,10 @@ The SolOS Daemon is the persistent process boundary of the runtime intermediary.
 
 - `health.get`: daemon health, uptime and snapshot availability.
 - `snapshot.get`: the existing runtime snapshot, preserving RC1 compatibility.
-- `events.list`: bounded in-memory event history.
-- `event.publish`: restricted `shell.*` and `ghost.*` local events.
+- `events.health`: schema, retained count, sequence and owner-local store health.
+- `events.list`: cursor-based reads from the bounded durable ledger.
+- `events.export`: minimized CMS envelopes that deliberately omit every local payload.
+- `event.publish`: restricted `shell.*`, `ghost.*`, `pulso.*`, `wallet.*` and `apps.*` local events.
 - `ghost.resolutions.get`: read the Daemon-owned Ghost resolution store.
 - `ghost.resolution.select`: select a ready objective.
 - `ghost.resolution.start`: build its bounded plan and open the approval boundary.
@@ -33,7 +35,13 @@ Example request:
 {"id":"health-1","method":"health.get"}
 ```
 
-The socket directory is mode `0700` and the socket is mode `0600`. The protocol does not expose arbitrary shell execution, wallet actions or network calls. Resolution persistence is restricted to the Daemon-owned versioned state store and committed atomically.
+The socket directory is mode `0700` and the socket is mode `0600`. The protocol does not expose arbitrary shell execution, wallet actions or network calls. Resolution, audit and event-ledger persistence use versioned Daemon-owned stores committed atomically. `SOLOS_EVENT_STORE` can override the XDG/user-state default.
+
+## Ghost ecosystem bridge
+
+`tools/sync-ghost-brain.mjs` reads only `events.export`, signs the exact request body with HMAC-SHA256 and advances an owner-local sequence cursor only after the CMS accepts the batch. The exported envelope contains event identity, kind, timestamp, lifecycle stage and sequence; it never copies the local `data` payload. The CMS endpoint accepts only `source=solos_daemon`, rejects personal-data flags and unsafe evidence keys, checks a five-minute signature window and deduplicates by event key.
+
+The optional `solos-ghost-sync.timer` runs every five minutes. Store the shared secret only in the local protected environment file and the CMS deployment secret manager. The CMS remains an observability/review surface; mediation and local evidence ownership stay in the Daemon.
 
 Ghost audit bundles are also owner-only (`0700` directory, `0600` JSON files). Set `SOLOS_GHOST_AUDIT_STORE`, `SOLOS_GHOST_AUDIT_DIR`, and `SOLOS_GHOST_AUDIT_VERIFIER` to isolate a pilot run. The submitted input is deliberately retained verbatim in the local artifact, so secrets must never be used as audit inputs.
 

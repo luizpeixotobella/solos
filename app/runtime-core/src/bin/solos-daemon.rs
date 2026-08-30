@@ -1,5 +1,10 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use solos_runtime_core::event_ledger::{
+    append as append_event, default_store_path as default_event_store_path, export_brain_events,
+    list_after as list_events_after, load_or_create as load_or_create_event_ledger,
+    save_atomic as save_event_ledger_atomic, EventLedger,
+};
 use solos_runtime_core::ghost_audit::{
     apply_receipt, decide_audit, default_artifact_root,
     default_store_path as default_audit_store_path, load_or_create as load_or_create_audit_store,
@@ -10,7 +15,6 @@ use solos_runtime_core::ghost_resolution::{
     decide_resolution, default_store_path, load_or_create, reset_store, save_atomic,
     select_resolution, start_resolution, GhostResolutionStore,
 };
-use std::collections::VecDeque;
 use std::env;
 use std::fs;
 use std::io::{BufRead, BufReader, Write};
@@ -22,7 +26,6 @@ use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 const PROTOCOL: &str = "solos.daemon.protocol.v1";
-const EVENT_LIMIT: usize = 256;
 
 #[derive(Debug, Deserialize)]
 struct Request {
@@ -50,9 +53,10 @@ struct DaemonState {
     audit_path: PathBuf,
     audit_root: PathBuf,
     audit_verifier_path: PathBuf,
+    event_path: PathBuf,
     resolution_lock: Arc<Mutex<()>>,
     audit_lock: Arc<Mutex<()>>,
-    events: Arc<Mutex<VecDeque<Value>>>,
+    events: Arc<Mutex<EventLedger>>,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -79,6 +83,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .unwrap_or_else(|| PathBuf::from("."))
                 .join("ghost-audit-verify")
         });
+    let event_path = default_event_store_path();
+    let event_ledger = load_or_create_event_ledger(&event_path)?;
 
     prepare_socket(&socket_path)?;
     let listener = UnixListener::bind(&socket_path)?;
@@ -91,9 +97,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         audit_path,
         audit_root,
         audit_verifier_path,
+        event_path,
         resolution_lock: Arc::new(Mutex::new(())),
         audit_lock: Arc::new(Mutex::new(())),
-        events: Arc::new(Mutex::new(VecDeque::new())),
+        events: Arc::new(Mutex::new(event_ledger)),
     };
     publish_event(&state, "daemon.started", json!({"socket": socket_path}))?;
 
@@ -162,6 +169,8 @@ fn dispatch(request: Request, state: &DaemonState) -> Response {
             "snapshotPath": state.snapshot_path,
             "ghostAuditVerifierAvailable": state.audit_verifier_path.is_file(),
             "ghostAuditVerifierPath": state.audit_verifier_path,
+            "eventLedgerAvailable": state.event_path.is_file(),
+            "eventLedgerPath": state.event_path,
         })),
         "snapshot.get" => read_snapshot(state),
         "ghost.audits.get" => with_audit_store(state, |store| Ok(json!(store))),
@@ -237,22 +246,85 @@ fn dispatch(request: Request, state: &DaemonState) -> Response {
             reset_store(store);
             Ok(json!({"status": "reset", "selectedId": store.selected_id}))
         }),
-        "events.list" => state
+        "events.health" => state
             .events
             .lock()
-            .map(|events| json!({"events": events.iter().cloned().collect::<Vec<_>>() }))
-            .map_err(|_| "event store unavailable".to_string()),
+            .map(|ledger| {
+                json!({
+                    "status": "healthy",
+                    "schema": ledger.schema,
+                    "retainedEvents": ledger.events.len(),
+                    "nextSequence": ledger.next_sequence,
+                    "updatedAt": ledger.updated_at,
+                    "storePath": state.event_path,
+                })
+            })
+            .map_err(|_| "event ledger unavailable".to_string()),
+        "events.list" => {
+            let after_sequence = request
+                .params
+                .get("afterSequence")
+                .and_then(Value::as_u64)
+                .unwrap_or(0);
+            let limit = request
+                .params
+                .get("limit")
+                .and_then(Value::as_u64)
+                .unwrap_or(256) as usize;
+            state
+                .events
+                .lock()
+                .map(|ledger| {
+                    json!({
+                        "events": list_events_after(&ledger, after_sequence, limit),
+                        "nextSequence": ledger.next_sequence,
+                    })
+                })
+                .map_err(|_| "event ledger unavailable".to_string())
+        }
+        "events.export" => {
+            let after_sequence = request
+                .params
+                .get("afterSequence")
+                .and_then(Value::as_u64)
+                .unwrap_or(0);
+            let limit = request
+                .params
+                .get("limit")
+                .and_then(Value::as_u64)
+                .unwrap_or(100) as usize;
+            state
+                .events
+                .lock()
+                .map(|ledger| {
+                    let events = export_brain_events(&ledger, after_sequence, limit);
+                    let last_sequence = events
+                        .last()
+                        .and_then(|event| event.get("metrics"))
+                        .and_then(|metrics| metrics.get("sequence"))
+                        .and_then(Value::as_u64)
+                        .unwrap_or(after_sequence);
+                    json!({
+                        "schema": "solos.ghost.brain-export.v1",
+                        "events": events,
+                        "afterSequence": after_sequence,
+                        "lastSequence": last_sequence,
+                    })
+                })
+                .map_err(|_| "event ledger unavailable".to_string())
+        }
         "event.publish" => {
             let kind = request.params.get("kind").and_then(Value::as_str);
             match kind {
-                Some(kind) if kind.starts_with("shell.") || kind.starts_with("ghost.") => {
+                Some(kind) if ["shell.", "ghost.", "pulso.", "wallet.", "apps."]
+                    .iter().any(|prefix| kind.starts_with(prefix)) => {
                     publish_event(
                         state,
                         kind,
                         request.params.get("data").cloned().unwrap_or(Value::Null),
                     )
                 }
-                _ => Err("event kind must use an allowed shell.* or ghost.* namespace".into()),
+                _ => Err("event kind must use an allowed shell.*, ghost.*, pulso.*, wallet.*, or apps.* namespace".into()),
             }
         }
         _ => Err(format!("unknown method: {}", request.method)),
@@ -373,7 +445,11 @@ fn mutate_audit(
     publish_event(
         state,
         event_kind,
-        json!({"result": result, "auditChallenge": store}),
+        json!({
+            "result": result,
+            "auditCount": store.audits.len(),
+            "storeUpdatedAt": store.updated_at,
+        }),
     )?;
     Ok(json!({"transition": result, "auditChallenge": store}))
 }
@@ -435,18 +511,13 @@ fn verify_audit_with_external_process(state: &DaemonState, id: &str) -> Result<V
 }
 
 fn publish_event(state: &DaemonState, kind: &str, data: Value) -> Result<Value, String> {
-    let event = json!({
-        "schema": "solos.daemon.event.v1",
-        "kind": kind,
-        "timestamp": now(),
-        "data": data,
-    });
-    let mut events = state.events.lock().map_err(|_| "event store unavailable")?;
-    if events.len() == EVENT_LIMIT {
-        events.pop_front();
-    }
-    events.push_back(event.clone());
-    Ok(event)
+    let mut ledger = state
+        .events
+        .lock()
+        .map_err(|_| "event ledger unavailable")?;
+    let event = append_event(&mut ledger, kind, data)?;
+    save_event_ledger_atomic(&state.event_path, &ledger)?;
+    serde_json::to_value(event).map_err(|error| format!("could not serialize event: {error}"))
 }
 
 fn success(id: Option<String>, result: Value) -> Response {
@@ -497,7 +568,13 @@ mod tests {
             audit_verifier_path: root.join("ghost-audit-verify"),
             resolution_lock: Arc::new(Mutex::new(())),
             audit_lock: Arc::new(Mutex::new(())),
-            events: Arc::new(Mutex::new(VecDeque::new())),
+            event_path: root.join("ghost-events.json"),
+            events: Arc::new(Mutex::new(EventLedger {
+                schema: "solos.daemon.event-ledger.v1".into(),
+                updated_at: now(),
+                next_sequence: 1,
+                events: vec![],
+            })),
         }
     }
 
@@ -522,7 +599,7 @@ mod tests {
             Request {
                 id: None,
                 method: "event.publish".into(),
-                params: json!({"kind": "wallet.transfer", "data": {}}),
+                params: json!({"kind": "public.post", "data": {}}),
             },
             &state(),
         );
@@ -530,7 +607,7 @@ mod tests {
     }
 
     #[test]
-    fn event_ring_keeps_published_event() {
+    fn event_ledger_keeps_published_event() {
         let state = state();
         let response = dispatch(
             Request {
@@ -541,7 +618,18 @@ mod tests {
             &state,
         );
         assert!(response.ok);
-        assert_eq!(state.events.lock().unwrap().len(), 1);
+        assert_eq!(state.events.lock().unwrap().events.len(), 1);
+    }
+
+    #[test]
+    fn event_ledger_survives_daemon_state_reload() {
+        let state = state();
+        publish_event(&state, "ghost.trace", json!({"route": "local"})).unwrap();
+        let reloaded = load_or_create_event_ledger(&state.event_path).unwrap();
+        assert_eq!(reloaded.events.len(), 1);
+        assert_eq!(reloaded.events[0].kind, "ghost.trace");
+        let parent = state.event_path.parent().unwrap();
+        fs::remove_dir_all(parent).unwrap();
     }
 
     #[test]

@@ -8,7 +8,7 @@ Status: **P0 fail-closed implementation and operator-MFA gate are live; the runt
 
 Pulso can plausibly launch as a small operational prototype if the release is defined honestly as:
 
-> **Pulso Alpha 0 — Brazil-only, verified-adult, invite-only, text-only and human-premoderated.**
+> **Pulso Alpha — Brazil-only, verified-adult, invite-only and human-premoderated. Alpha 0.1 adds separately consented lightweight images and bounded social signals.**
 
 This is not approval for a global public social network, minor participation, media uploads, live streaming, direct messages, autonomous AI moderation, or self-modifying ranking.
 
@@ -34,7 +34,7 @@ Implemented and verified:
 - one-use invite token hash plus peppered recipient-email HMAC; no raw invite token, birth date or document copy is stored;
 - atomic invite redemption, Brazil/policy binding and a transactional cap of ten active adults;
 - social RLS denies anonymous, non-member, self-declared-only and policy-stale access;
-- text-only post submission is atomic, limited to three per hour and always enters human review, even when automated moderation says `allow`;
+- text/image post submission is atomic, limited to three per hour and always enters human review, even when automated moderation says `allow`; images require a separate Alpha 0.1 receipt and are stripped/re-encoded below 1 MB;
 - mutation routes require a trusted same-host Origin and use database-backed fixed-window rate limits keyed by server-side HMAC rather than raw IP;
 - production `PULSO_INVITE_PEPPER` and `PULSO_RATE_LIMIT_PEPPER` secrets are stored in Render; the resulting deploy succeeded, a trusted unauthenticated mutation reached the expected `401 authentication_required`, and a foreign Origin still failed with `403 invalid_origin`;
 - human moderation publishes only to the limited adult feed and records an append-style operator event;
@@ -189,7 +189,9 @@ Primary references:
 - [x] add Pulso-specific rules, privacy notice and versioned purpose/consent receipts; focused legal review remains required before invitations;
 - [x] add a moderator kill switch and queue-only behavior;
 - [~] MFA is enforced for Pulso operator controls and moderation; physical TOTP enrollment/verification remains the final owner-controlled gate;
-- seed one reviewed topic and a small set of reviewed posts;
+- [x] add a reviewed topic bank and deterministic no-model Ghost shadow selector; first production run remains deployment-bound;
+- [x] add separately consented semantic reactions, threaded comments, minimal profiles, reposts and private lightweight images;
+- [x] add disclosed, adult-sponsored AI-agent identities with revocable read/comment-only credentials and human premoderation;
 - execute abuse tests, RLS tests, backup/restore and production smoke checks.
 
 ### P1 — before expanding beyond ten people
@@ -220,8 +222,9 @@ Not allowed:
 ## Recommended first cohort
 
 - Luiz plus up to nine invited adults;
-- one active theme;
-- text posts only;
+- one active theme selected from a reviewed bank;
+- text plus private re-encoded WebP images below 1 MB after supplemental consent;
+- semantic reactions, human-premoderated threads and disclosed agent comments;
 - one moderator/operator window;
 - one-week observation period;
 - success measured by safety, clarity, useful participation, appeal correctness, repeat intent and cost—not volume or watch time.

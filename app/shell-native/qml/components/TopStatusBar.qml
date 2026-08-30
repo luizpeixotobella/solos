@@ -2,11 +2,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import SolOS.Shell 1.0
+
 Rectangle {
     id: root
-    color: "#121a2f"
+    color: Theme.surface
     radius: 18
-    border.color: "#263453"
+    border.color: Theme.border
     border.width: 1
     implicitHeight: content.implicitHeight + 36
 
@@ -22,7 +24,7 @@ Rectangle {
     GridLayout {
         id: content
         anchors.fill: parent
-        anchors.margins: 18
+        anchors.margins: Theme.cardPadding
         columns: width > 1280 ? 4 : width > 900 ? 2 : 1
         rowSpacing: 12
         columnSpacing: 18
@@ -34,7 +36,7 @@ Rectangle {
 
             Label {
                 text: root.sessionLabel
-                color: "#eef3ff"
+                color: Theme.textStrong
                 font.pixelSize: 18
                 font.bold: true
                 Layout.fillWidth: true
@@ -43,7 +45,7 @@ Rectangle {
 
             Label {
                 text: root.systemLabel
-                color: "#9fb0d0"
+                color: Theme.textSoft
                 Layout.fillWidth: true
                 wrapMode: Text.WordWrap
             }
@@ -54,8 +56,8 @@ Rectangle {
             Layout.minimumWidth: 240
             Layout.preferredWidth: 320
             radius: 14
-            color: "#18233d"
-            border.color: "#2a3a5d"
+            color: Theme.surfaceRaised
+            border.color: Theme.borderMuted
             border.width: 1
             implicitHeight: walletText.implicitHeight + 24
 
@@ -64,7 +66,7 @@ Rectangle {
                 anchors.fill: parent
                 anchors.margins: 12
                 text: root.walletLabel
-                color: "#dfe8ff"
+                color: Theme.textBright
                 wrapMode: Text.WordWrap
                 verticalAlignment: Text.AlignVCenter
             }
@@ -75,8 +77,8 @@ Rectangle {
             Layout.minimumWidth: 220
             Layout.preferredWidth: 280
             radius: 14
-            color: "#1a1f3f"
-            border.color: "#3b4580"
+            color: Theme.panelAlt
+            border.color: Theme.borderStrong
             border.width: 1
             implicitHeight: agentText.implicitHeight + 24
 
@@ -85,7 +87,7 @@ Rectangle {
                 anchors.fill: parent
                 anchors.margins: 12
                 text: root.agentStatus
-                color: "#c7d7ff"
+                color: Theme.textBlue
                 wrapMode: Text.WordWrap
                 verticalAlignment: Text.AlignVCenter
             }
@@ -96,8 +98,8 @@ Rectangle {
             Layout.minimumWidth: 240
             Layout.preferredWidth: 340
             radius: 14
-            color: "#142038"
-            border.color: root.online ? "#2f8f6b" : "#6a4a4a"
+            color: Theme.networkPanel
+            border.color: root.online ? Theme.onlineBorder : Theme.offlineBorder
             border.width: 1
             implicitHeight: runtimeColumn.implicitHeight + 24
 
@@ -112,27 +114,27 @@ Rectangle {
 
                     Label {
                         text: root.online ? "Runtime online" : "Runtime offline"
-                        color: root.online ? "#8df0c2" : "#ffb1b1"
+                        color: root.online ? Theme.successText : Theme.offlineText
                         font.bold: true
                         Layout.fillWidth: true
                     }
 
                     Label {
                         text: root.approvalsCount + " approvals"
-                        color: "#dfe8ff"
+                        color: Theme.textBright
                     }
                 }
 
                 Label {
                     text: root.hostRuntimeSummary
-                    color: "#9fb0d0"
+                    color: Theme.textSoft
                     Layout.fillWidth: true
                     wrapMode: Text.WordWrap
                 }
 
                 Label {
                     text: root.notificationsCount + " runtime events visible"
-                    color: "#73d0ff"
+                    color: Theme.accent
                     Layout.fillWidth: true
                     wrapMode: Text.WordWrap
                 }

@@ -2,9 +2,11 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import SolOS.Shell 1.0
+
 Rectangle {
     id: root
-    color: "#10182b"
+    color: Theme.sidebar
 
     property string currentScreen: "Home"
     signal screenSelected(string screen)
@@ -16,14 +18,14 @@ Rectangle {
 
         Label {
             text: "SolOS"
-            color: "#eef3ff"
+            color: Theme.textStrong
             font.pixelSize: 28
             font.bold: true
         }
 
         Label {
             text: "native shell"
-            color: "#8aa0c8"
+            color: Theme.textSidebar
             font.pixelSize: 13
         }
 
@@ -44,8 +46,8 @@ Rectangle {
         Rectangle {
             Layout.fillWidth: true
             radius: 14
-            color: "#17213a"
-            border.color: "#2a3a5d"
+            color: Theme.panelMuted
+            border.color: Theme.borderMuted
             border.width: 1
             implicitHeight: statusColumn.implicitHeight + 24
 
@@ -57,12 +59,12 @@ Rectangle {
 
                 Label {
                     text: "Ghost"
-                    color: "#eef3ff"
+                    color: Theme.textStrong
                     font.bold: true
                 }
                 Label {
                     text: "Active · approval-aware"
-                    color: "#9fb0d0"
+                    color: Theme.textSoft
                     wrapMode: Text.Wrap
                 }
             }

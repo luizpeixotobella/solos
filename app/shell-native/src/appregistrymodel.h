@@ -5,9 +5,13 @@
 #include <QVector>
 
 struct AppRegistryEntry {
+    QString id;
     QString name;
     QString subtitle;
     QString description;
+    QString status;
+    QString capability;
+    QString launchTarget;
 };
 
 class AppRegistryModel : public QAbstractListModel
@@ -16,9 +20,13 @@ class AppRegistryModel : public QAbstractListModel
 
 public:
     enum Roles {
-        NameRole = Qt::UserRole + 1,
+        IdRole = Qt::UserRole + 1,
+        NameRole,
         SubtitleRole,
-        DescriptionRole
+        DescriptionRole,
+        StatusRole,
+        CapabilityRole,
+        LaunchTargetRole
     };
 
     explicit AppRegistryModel(QObject *parent = nullptr);

@@ -1,5 +1,17 @@
 # SolOS Devlog
 
+## 2026-08-29 — Durable Ghost ecosystem evidence and cleanup pass
+
+- Replaced the Daemon's in-memory-only event ring with a versioned, atomic, bounded ledger that retains sequence continuity across restart.
+- Added cursor reads and a deliberately minimized export contract; local event payloads and personal data never cross into the CMS.
+- Added an HMAC-SHA256 client and five-minute systemd timer for the private Ghost Brain Monitor, with cursor advancement only after CMS acceptance.
+- Turned Apps into an exact-allowlist native launcher with stable IDs, capability metadata and a Daemon `apps.launch` evidence event before navigation.
+- Centralized native colors/status treatments in a QML `Theme` singleton and completed bounded scrolling for content-heavy surfaces.
+- Corrected the Daemon installer repository-root resolution and included the evidence-sync tool in the runtime install.
+- Refreshed the web-shell lockfile; `npm audit` reports zero known vulnerabilities.
+- Added ADR 0002 to keep Ghost ecosystem intelligence centralized as a safe evidence spine, while explicitly separating operational telemetry from human/model evaluation data.
+- Reconciled the roadmap and completion plan so already-shipped work is no longer listed as future work; VM boot, provider authorization and reviewer responses remain honest external gates.
+
 ## 2026-08-26 — Pulso Alpha 0 fail-closed foundation
 
 - Converted the reserved Pulso Alpha 0 direction into a fail-closed CMS/server/database implementation without authorizing launch.

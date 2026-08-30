@@ -9,9 +9,21 @@ Item {
     property string heartPassWalletInput: ""
     property string pulsoClaimInput: ""
 
-    ColumnLayout {
+    ScrollView {
         anchors.fill: parent
-        spacing: 16
+        clip: true
+
+        Item {
+            width: parent.width
+            implicitHeight: content.implicitHeight + 24
+
+            ColumnLayout {
+                id: content
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.margins: 8
+                spacing: Theme.screenGap
 
         SectionCard {
             Layout.fillWidth: true
@@ -22,28 +34,28 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            radius: 20
-            color: "#121a2f"
-            border.color: "#263453"
+            radius: Theme.cardRadius
+            color: Theme.surface
+            border.color: Theme.border
             border.width: 1
             implicitHeight: pulsoRewardColumn.implicitHeight + 36
 
             ColumnLayout {
                 id: pulsoRewardColumn
                 anchors.fill: parent
-                anchors.margins: 18
+                anchors.margins: Theme.cardPadding
                 spacing: 10
 
                 Label {
                     text: "Pulso Founder Reward"
-                    color: "#eef3ff"
+                    color: Theme.textStrong
                     font.pixelSize: 20
                     font.bold: true
                 }
 
                 Label {
                     text: "Paste the claim code shown in the authenticated Pulso rewards page. The claim is bound to the verified Polygon wallet and adds its Ghost-query allowance to this Wallet."
-                    color: "#9fb0d0"
+                    color: Theme.textSoft
                     Layout.fillWidth: true
                     wrapMode: Text.WordWrap
                 }
@@ -107,21 +119,21 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            radius: 20
-            color: "#121a2f"
-            border.color: "#263453"
+            radius: Theme.cardRadius
+            color: Theme.surface
+            border.color: Theme.border
             border.width: 1
             implicitHeight: heartPassConfigColumn.implicitHeight + 36
 
             ColumnLayout {
                 id: heartPassConfigColumn
                 anchors.fill: parent
-                anchors.margins: 18
+                anchors.margins: Theme.cardPadding
                 spacing: 10
 
                 Label {
                     text: "Heart Pass local wallet"
-                    color: "#eef3ff"
+                    color: Theme.textStrong
                     font.pixelSize: 20
                     font.bold: true
                     Layout.fillWidth: true
@@ -129,7 +141,7 @@ Item {
 
                 Label {
                     text: "Store the Polygon wallet address locally. On-chain NFT ownership verification comes in the next stage."
-                    color: "#9fb0d0"
+                    color: Theme.textSoft
                     Layout.fillWidth: true
                     wrapMode: Text.WordWrap
                 }
@@ -168,6 +180,8 @@ Item {
                     }
                 }
             }
+            }
         }
     }
+}
 }

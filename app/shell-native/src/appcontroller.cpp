@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QHash>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -1027,6 +1028,47 @@ bool AppController::claimPulsoGhostReward(const QString &claimCode)
 void AppController::openUrl(const QString &url)
 {
     QDesktopServices::openUrl(QUrl(url));
+}
+
+bool AppController::launchApp(const QString &appId)
+{
+    static const QHash<QString, QString> targets {
+        {QStringLiteral("workspace"), QStringLiteral("screen:Home")},
+        {QStringLiteral("approval-lane"), QStringLiteral("screen:Agent")},
+        {QStringLiteral("wallet-hub"), QStringLiteral("screen:Wallet")},
+        {QStringLiteral("ghost-console"), QStringLiteral("screen:Agent")},
+        {QStringLiteral("solos-pulso"), QStringLiteral("https://luiz-bella-artes.net/solos/pulso")},
+    };
+    if (!targets.contains(appId)) {
+        m_runtimeStatus = QStringLiteral("Launcher denied an unknown app id");
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    QString error;
+    QJsonObject data;
+    data.insert(QStringLiteral("appId"), appId);
+    data.insert(QStringLiteral("capability"), QStringLiteral("app.open.safe"));
+    data.insert(QStringLiteral("targetType"), targets.value(appId).startsWith(QStringLiteral("screen:"))
+        ? QStringLiteral("native-screen") : QStringLiteral("allowlisted-url"));
+    if (!invokeDaemon(QStringLiteral("event.publish"), QJsonObject {
+        {QStringLiteral("kind"), QStringLiteral("apps.launch")},
+        {QStringLiteral("data"), data},
+    }, error)) {
+        m_runtimeStatus = error;
+        emit runtimeStateChanged();
+        return false;
+    }
+
+    const QString target = targets.value(appId);
+    if (target.startsWith(QStringLiteral("screen:"))) {
+        setCurrentScreen(target.sliced(7));
+    } else {
+        QDesktopServices::openUrl(QUrl(target));
+    }
+    m_runtimeStatus = QStringLiteral("Launcher mediated app.open.safe for ") + appId;
+    emit runtimeStateChanged();
+    return true;
 }
 
 void AppController::loadRuntimeSnapshot()

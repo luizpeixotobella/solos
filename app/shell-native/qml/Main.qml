@@ -10,16 +10,7 @@ ApplicationWindow {
     height: 900
     visible: true
     title: "SolOS Native Shell"
-    color: "#0b1020"
-
-    property color bg0: "#0b1020"
-    property color bg1: "#121a2f"
-    property color bg2: "#18233d"
-    property color line: "#263453"
-    property color textStrong: "#eef3ff"
-    property color textSoft: "#9fb0d0"
-    property color accent: "#73d0ff"
-    property color accent2: "#8b7dff"
+    color: Theme.background
     property var appController: globalAppController
 
     RowLayout {

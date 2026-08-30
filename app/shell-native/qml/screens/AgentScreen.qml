@@ -55,20 +55,20 @@ Item {
 
                 Rectangle {
                     Layout.fillWidth: true
-                    radius: 20
-                    color: "#121a2f"
+                    radius: Theme.cardRadius
+                    color: Theme.surface
                     border.color: ghostRuntime.auditStatus === "verified"
-                                  ? "#36d399"
+                                  ? Theme.success
                                   : ghostRuntime.auditStatus === "verification-failed"
-                                    ? "#ff6b7a"
-                                    : "#9b7cff"
+                                    ? Theme.danger
+                                    : Theme.accentPurple
                     border.width: 1
                     implicitHeight: auditColumn.implicitHeight + 36
 
                     ColumnLayout {
                         id: auditColumn
                         anchors.fill: parent
-                        anchors.margins: 18
+                        anchors.margins: Theme.cardPadding
                         spacing: 12
 
                         RowLayout {
@@ -76,7 +76,7 @@ Item {
 
                             Label {
                                 text: "Ghost Audit Challenge"
-                                color: "#eef3ff"
+                                color: Theme.textStrong
                                 font.pixelSize: 24
                                 font.bold: true
                                 Layout.fillWidth: true
@@ -84,7 +84,7 @@ Item {
 
                             Label {
                                 text: ghostRuntime.auditStatus + " · " + ghostRuntime.auditProgress + "%"
-                                color: ghostRuntime.auditStatus === "verified" ? "#8df0c2" : "#c7b8ff"
+                                color: ghostRuntime.auditStatus === "verified" ? Theme.successText : Theme.purpleText
                                 font.bold: true
                             }
                         }
@@ -92,7 +92,7 @@ Item {
                         Label {
                             Layout.fillWidth: true
                             text: "Submit any text. Ghost must expose its risk route, keep embedded instructions inert, wait for approval, create one isolated Linux artifact, and pass a separate read-back verifier."
-                            color: "#9fb0d0"
+                            color: Theme.textSoft
                             wrapMode: Text.WordWrap
                         }
 
@@ -151,7 +151,7 @@ Item {
                                   + (ghostRuntime.auditRoute.length > 0 ? "\nRoute: " + ghostRuntime.auditRoute : "")
                                   + (ghostRuntime.auditArtifactPath.length > 0 ? "\nArtifact: " + ghostRuntime.auditArtifactPath : "")
                                   + (ghostRuntime.auditReceiptPath.length > 0 ? "\nReceipt: " + ghostRuntime.auditReceiptPath : "")
-                            color: "#c8d5f2"
+                            color: Theme.textBody
                             wrapMode: Text.WordWrap
                         }
 
@@ -159,7 +159,7 @@ Item {
                             Layout.fillWidth: true
                             visible: ghostRuntime.auditLines.length > 0
                             text: ghostRuntime.auditLines.join("\n\n")
-                            color: "#9fb0d0"
+                            color: Theme.textSoft
                             wrapMode: Text.WordWrap
                         }
                     }
@@ -167,16 +167,16 @@ Item {
 
                 Rectangle {
                     Layout.fillWidth: true
-                    radius: 20
-                    color: "#121a2f"
-                    border.color: ghostRuntime.resolutionStatus === "resolved" ? "#36d399" : "#5267ff"
+                    radius: Theme.cardRadius
+                    color: Theme.surface
+                    border.color: ghostRuntime.resolutionStatus === "resolved" ? Theme.success : Theme.blueBorder
                     border.width: 1
                     implicitHeight: resolutionColumn.implicitHeight + 36
 
                     ColumnLayout {
                         id: resolutionColumn
                         anchors.fill: parent
-                        anchors.margins: 18
+                        anchors.margins: Theme.cardPadding
                         spacing: 12
 
                         RowLayout {
@@ -184,7 +184,7 @@ Item {
 
                             Label {
                                 text: "Ghost Resolution Loop"
-                                color: "#eef3ff"
+                                color: Theme.textStrong
                                 font.pixelSize: 24
                                 font.bold: true
                                 Layout.fillWidth: true
@@ -192,7 +192,7 @@ Item {
 
                             Label {
                                 text: ghostRuntime.resolutionStatus + " · " + ghostRuntime.resolutionProgress + "%"
-                                color: ghostRuntime.resolutionStatus === "resolved" ? "#8df0c2" : "#73d0ff"
+                                color: ghostRuntime.resolutionStatus === "resolved" ? Theme.successText : Theme.accent
                                 font.bold: true
                             }
                         }
@@ -209,7 +209,7 @@ Item {
                             text: ghostRuntime.resolutionSummary
                                   + "\n\nCurrent: " + ghostRuntime.resolutionCurrentStep
                                   + "\nSelected: " + ghostRuntime.resolutionSelectedId
-                            color: "#9fb0d0"
+                            color: Theme.textSoft
                             wrapMode: Text.WordWrap
                         }
 
@@ -218,7 +218,7 @@ Item {
                             text: ghostRuntime.resolutionLines.length > 0
                                   ? ghostRuntime.resolutionLines.join("\n\n")
                                   : "No Ghost resolutions loaded."
-                            color: "#c8d5f2"
+                            color: Theme.textBody
                             wrapMode: Text.WordWrap
                         }
 
@@ -264,21 +264,21 @@ Item {
 
                     Rectangle {
                         Layout.fillWidth: true
-                        radius: 20
-                        color: "#121a2f"
-                        border.color: "#263453"
+                        radius: Theme.cardRadius
+                        color: Theme.surface
+                        border.color: Theme.border
                         border.width: 1
                         implicitHeight: onboardingColumn.implicitHeight + 36
 
                         ColumnLayout {
                             id: onboardingColumn
                             anchors.fill: parent
-                            anchors.margins: 18
+                            anchors.margins: Theme.cardPadding
                             spacing: 10
 
                             Label {
                                 text: ghostRuntime.onboardingTitle
-                                color: "#eef3ff"
+                                color: Theme.textStrong
                                 font.pixelSize: 20
                                 font.bold: true
                                 Layout.fillWidth: true
@@ -287,14 +287,14 @@ Item {
 
                             Label {
                                 text: ghostRuntime.onboardingStatus
-                                color: "#73d0ff"
+                                color: Theme.accent
                                 Layout.fillWidth: true
                                 wrapMode: Text.WordWrap
                             }
 
                             Label {
                                 text: ghostRuntime.onboardingBody + "\n\nOpen: " + ghostRuntime.onboardingUrl
-                                color: "#9fb0d0"
+                                color: Theme.textSoft
                                 Layout.fillWidth: true
                                 wrapMode: Text.WordWrap
                             }
@@ -334,7 +334,7 @@ Item {
 
                             Label {
                                 text: appController.ghostConfigStatus + "\nHeart Pass: " + appController.heartPassVerificationStatus
-                                color: heartPassVerified ? "#8df0c2" : "#ffd479"
+                                color: heartPassVerified ? Theme.successText : Theme.warning
                                 Layout.fillWidth: true
                                 wrapMode: Text.WordWrap
                             }

@@ -23,9 +23,13 @@ pub(crate) struct ApprovalEntry {
 
 #[derive(Serialize)]
 pub(crate) struct AppEntry {
+    id: String,
     name: String,
     subtitle: String,
     description: String,
+    status: String,
+    capability: String,
+    launch_target: String,
 }
 
 pub(crate) fn build_quick_actions() -> Vec<QuickAction> {
@@ -78,29 +82,49 @@ pub(crate) fn build_approvals() -> Vec<ApprovalEntry> {
 pub(crate) fn build_app_registry() -> Vec<AppEntry> {
     vec![
         AppEntry {
+            id: "workspace".into(),
             name: "Workspace".into(),
             subtitle: "Operating layer context".into(),
             description: "Coordinates user tasks, notes, and live environment state above the runtime intermediary.".into(),
+            status: "available".into(),
+            capability: "app.open.safe".into(),
+            launch_target: "screen:Home".into(),
         },
         AppEntry {
+            id: "approval-lane".into(),
             name: "Approval Lane".into(),
             subtitle: "Policy boundary".into(),
             description: "Surfaces runtime-mediated host actions that require explicit consent before execution.".into(),
+            status: "available".into(),
+            capability: "app.open.safe".into(),
+            launch_target: "screen:Agent".into(),
         },
         AppEntry {
+            id: "wallet-hub".into(),
             name: "Wallet Hub".into(),
             subtitle: "Ownership surface".into(),
             description: "Keeps identity, balances, and signing visible through explicit runtime-mediated flows.".into(),
+            status: "available".into(),
+            capability: "app.open.safe".into(),
+            launch_target: "screen:Wallet".into(),
         },
         AppEntry {
+            id: "ghost-console".into(),
             name: "Ghost Console".into(),
             subtitle: "Layered intelligence module".into(),
             description: "Turns runtime data plus optional Brave research into structured results and next-step algorithms inside SolOS.".into(),
+            status: "available".into(),
+            capability: "app.open.safe".into(),
+            launch_target: "screen:Agent".into(),
         },
         AppEntry {
+            id: "solos-pulso".into(),
             name: "SolOS Pulso".into(),
-            subtitle: "Planned social signal surface".into(),
-            description: "Future consented social layer for posts, topics, video signals, and Pulso Credits with Wallet, Ghost, and Approvals mediation.".into(),
+            subtitle: "Controlled Alpha adapter".into(),
+            description: "Opens the consented Pulso Alpha through an exact allowlisted route while its native SolOS surface remains a later product slice.".into(),
+            status: "connected-alpha".into(),
+            capability: "app.open.safe".into(),
+            launch_target: "https://luiz-bella-artes.net/solos/pulso".into(),
         },
     ]
 }
@@ -114,5 +138,8 @@ mod tests {
         assert_eq!(build_quick_actions().len(), 3);
         assert_eq!(build_approvals().len(), 2);
         assert_eq!(build_app_registry().len(), 5);
+        assert!(build_app_registry()
+            .iter()
+            .all(|app| app.capability == "app.open.safe"));
     }
 }

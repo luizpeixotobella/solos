@@ -43,9 +43,13 @@ ApprovalQueueEntry parseApprovalEntry(const QJsonObject &object)
 AppRegistryEntry parseAppEntry(const QJsonObject &object)
 {
     return {
+        object.value(QStringLiteral("id")).toString(),
         object.value(QStringLiteral("name")).toString(),
         object.value(QStringLiteral("subtitle")).toString(),
-        object.value(QStringLiteral("description")).toString()
+        object.value(QStringLiteral("description")).toString(),
+        object.value(QStringLiteral("status")).toString(),
+        object.value(QStringLiteral("capability")).toString(),
+        object.value(QStringLiteral("launch_target")).toString()
     };
 }
 
