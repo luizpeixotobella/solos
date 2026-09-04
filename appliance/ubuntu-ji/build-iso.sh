@@ -25,7 +25,6 @@ lb config \
   --archive-areas "main restricted universe multiverse" \
   --binary-images iso-hybrid \
   --bootappend-live "boot=casper components username=solos hostname=solos locales=pt_BR.UTF-8 keyboard-layouts=br" \
-  --debian-installer none \
   --memtest none
 
 install -d config/package-lists config/includes.chroot/opt/solos-src config/includes.chroot/usr/local/bin
