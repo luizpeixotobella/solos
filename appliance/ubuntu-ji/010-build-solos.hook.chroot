@@ -1,0 +1,44 @@
+#!/bin/sh
+set -eu
+
+cd /opt/solos-src/app/runtime-core
+cargo build --release --locked --bin solos-daemon --bin ghost-audit-verify
+install -d /opt/solos/releases/bootstrap/bin
+install -m 0755 target/release/solos-daemon /opt/solos/releases/bootstrap/bin/
+install -m 0755 target/release/ghost-audit-verify /opt/solos/releases/bootstrap/bin/
+
+cmake -S /opt/solos-src/app/shell-native -B /tmp/solos-shell-build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build /tmp/solos-shell-build
+install -m 0755 /tmp/solos-shell-build/solos-shell-native /opt/solos/releases/bootstrap/bin/
+ln -sfn /opt/solos/releases/bootstrap /opt/solos/current
+
+cat >/usr/share/applications/solos.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=SolOS
+Comment=SolOS Just Intelligent operating layer
+Exec=/opt/solos/current/bin/solos-shell-native
+Icon=utilities-system-monitor
+Terminal=false
+Categories=System;Development;
+EOF
+
+install -d /etc/xdg/autostart
+cp /usr/share/applications/solos.desktop /etc/xdg/autostart/solos.desktop
+
+cat >/etc/systemd/user/solos-daemon.service <<'EOF'
+[Unit]
+Description=SolOS runtime and Ghost daemon
+After=network-online.target
+
+[Service]
+ExecStart=/opt/solos/current/bin/solos-daemon serve
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
+EOF
+
+install -d /etc/systemd/user/default.target.wants
+ln -sfn /etc/systemd/user/solos-daemon.service /etc/systemd/user/default.target.wants/solos-daemon.service

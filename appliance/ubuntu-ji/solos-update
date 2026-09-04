@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="${SOLOS_SOURCE_DIR:-/opt/solos-src}"
+RELEASE_ROOT="${SOLOS_RELEASE_ROOT:-/opt/solos/releases}"
+ACTIVE_LINK="${SOLOS_ACTIVE_LINK:-/opt/solos/current}"
+STATE_DIR="${SOLOS_UPDATE_STATE_DIR:-/var/lib/solos-update}"
+ACTION="${1:-help}"
+
+case "$ACTION" in
+  check)
+    git -C "$SOURCE_DIR" fetch --prune origin
+    echo "Current: $(git -C "$SOURCE_DIR" rev-parse --short HEAD)"
+    echo "Candidate: $(git -C "$SOURCE_DIR" rev-parse --short origin/main)"
+    git -C "$SOURCE_DIR" log --oneline --decorate HEAD..origin/main
+    ;;
+  verify)
+    CANDIDATE="$(git -C "$SOURCE_DIR" rev-parse origin/main)"
+    VERIFY_DIR="$(mktemp -d)"
+    trap 'rm -rf "$VERIFY_DIR"' EXIT
+    git -C "$SOURCE_DIR" archive "$CANDIDATE" | tar -x -C "$VERIFY_DIR"
+    cargo test --manifest-path "$VERIFY_DIR/app/runtime-core/Cargo.toml" --locked
+    cmake -S "$VERIFY_DIR/app/shell-native" -B "$VERIFY_DIR/shell-build" -G Ninja -DCMAKE_BUILD_TYPE=Release
+    cmake --build "$VERIFY_DIR/shell-build"
+    echo "$CANDIDATE" | sudo tee "$STATE_DIR/verified-candidate" >/dev/null
+    echo "Verified candidate: ${CANDIDATE:0:12}"
+    ;;
+  apply)
+    [[ "${EUID}" -eq 0 ]] || { echo "apply requires sudo" >&2; exit 1; }
+    [[ -s "$STATE_DIR/verified-candidate" ]] || { echo "Run solos-update verify first" >&2; exit 1; }
+    CANDIDATE="$(cat "$STATE_DIR/verified-candidate")"
+    [[ "$CANDIDATE" = "$(git -C "$SOURCE_DIR" rev-parse origin/main)" ]] || { echo "Verified candidate is stale" >&2; exit 1; }
+    RELEASE_DIR="$RELEASE_ROOT/$CANDIDATE"
+    install -d "$RELEASE_DIR/bin" "$STATE_DIR"
+    git -C "$SOURCE_DIR" checkout --detach "$CANDIDATE"
+    cargo build --manifest-path "$SOURCE_DIR/app/runtime-core/Cargo.toml" --release --locked --bin solos-daemon --bin ghost-audit-verify
+    cmake -S "$SOURCE_DIR/app/shell-native" -B "$SOURCE_DIR/.solos-shell-release" -G Ninja -DCMAKE_BUILD_TYPE=Release
+    cmake --build "$SOURCE_DIR/.solos-shell-release"
+    install -m 0755 "$SOURCE_DIR/app/runtime-core/target/release/solos-daemon" "$RELEASE_DIR/bin/"
+    install -m 0755 "$SOURCE_DIR/app/runtime-core/target/release/ghost-audit-verify" "$RELEASE_DIR/bin/"
+    install -m 0755 "$SOURCE_DIR/.solos-shell-release/solos-shell-native" "$RELEASE_DIR/bin/"
+    readlink -f "$ACTIVE_LINK" > "$STATE_DIR/previous-release" || true
+    ln -sfn "$RELEASE_DIR" "$ACTIVE_LINK"
+    systemctl --user restart solos-daemon.service 2>/dev/null || true
+    echo "Applied verified release: ${CANDIDATE:0:12}"
+    ;;
+  rollback)
+    [[ "${EUID}" -eq 0 ]] || { echo "rollback requires sudo" >&2; exit 1; }
+    [[ -s "$STATE_DIR/previous-release" ]] || { echo "No previous release recorded" >&2; exit 1; }
+    PREVIOUS="$(cat "$STATE_DIR/previous-release")"
+    [[ -x "$PREVIOUS/bin/solos-daemon" ]] || { echo "Previous release is invalid" >&2; exit 1; }
+    ln -sfn "$PREVIOUS" "$ACTIVE_LINK"
+    echo "Rolled back to: $PREVIOUS"
+    ;;
+  *)
+    echo "Usage: solos-update {check|verify|apply|rollback}"
+    ;;
+esac

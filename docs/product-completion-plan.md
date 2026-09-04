@@ -77,6 +77,7 @@ The goal is not to inflate SolOS into a finished custom operating system too ear
 - [x] Add a typed tool/capability manifest with read, write, sensitive, network, wallet, and public-posting scopes.
 - [x] Connect approvals to the first safe mediated action (`app.open.safe`) in the demonstrator.
 - [x] Link objective selection, plan, approval, mediated action, verification and retained evidence in one complete Ghost resolution.
+- [x] Add a bounded Ghost autonomy governor with the Just Intelligent (JI) maxim; verified outcomes can improve proposal readiness without bypassing approvals.
 - [~] Connect Ghost research usage to quota accounting: the fail-closed Rust meter, exhaustion state and BYOK fallback exist; no provider-backed executor is authorized yet.
 - [x] Define the provider-neutral server-side quota/proxy contract for sponsored usage; runtime remains disabled until a signed-proof backend exists.
 - [x] Define Pulso Credits ledger, caps, anti-fraud, expiry, and cost guardrails through the production Alpha 0.2 Value Loop.
@@ -266,6 +267,20 @@ Acceptance:
 Acceptance:
 
 - SolOS v1.0 is demonstrable, documented, scoped, and honest about what is prototype, what is runtime-mediated, and what remains future work.
+
+### Milestone 9 - Ubuntu Just Intelligent appliance
+
+- [x] Add a reproducible Ubuntu 24.04 live-ISO build definition with native shell, Rust runtime and normal terminal access.
+- [x] Add an approval-bound `solos-update` loop with check, isolated verify, explicit apply and rollback.
+- [x] Keep the first image non-destructive: live boot before any disk installer.
+- [ ] Produce the first ISO artifact and SHA-256 in CI or on a clean Ubuntu builder.
+- [ ] Boot-test the artifact in QEMU and one spare physical machine.
+- [ ] Add signed release metadata and SBOM before enabling update checks outside development.
+- [ ] Connect SolOS runtime notifications to the Pulso notification API after the CMS migration is deployed.
+
+Acceptance:
+
+- Luiz can boot an Ubuntu-based SolOS environment, open a terminal, run the native shell and Ghost, inspect a candidate update, verify it, apply it explicitly and roll it back without silent self-modification.
 
 ## Prototype board
 
