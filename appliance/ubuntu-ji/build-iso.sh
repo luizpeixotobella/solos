@@ -10,7 +10,7 @@ if [[ "${EUID}" -ne 0 ]]; then
   echo "Run with sudo: sudo $0" >&2
   exit 1
 fi
-for command in lb debootstrap xorriso mksquashfs rsync; do
+for command in lb debootstrap genisoimage grub-mkimage isohybrid mksquashfs rsync; do
   command -v "$command" >/dev/null || { echo "Missing command: $command" >&2; exit 1; }
 done
 [[ -f "$SOLOS_REPO/app/runtime-core/Cargo.toml" ]] || { echo "Invalid SOLOS_REPO: $SOLOS_REPO" >&2; exit 1; }
@@ -24,7 +24,9 @@ lb config \
   --architectures amd64 \
   --archive-areas "main restricted universe multiverse" \
   --binary-images iso-hybrid \
+  --bootloader grub2 \
   --bootappend-live "boot=casper components username=solos hostname=solos locales=pt_BR.UTF-8 keyboard-layouts=br" \
+  --debian-installer false \
   --memtest none
 
 install -d config/package-lists config/includes.chroot/opt/solos-src config/includes.chroot/usr/local/bin
