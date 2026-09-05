@@ -15,6 +15,19 @@ for command in lb debootstrap genisoimage grub-mkimage isohybrid mksquashfs rsyn
 done
 [[ -f "$SOLOS_REPO/app/runtime-core/Cargo.toml" ]] || { echo "Invalid SOLOS_REPO: $SOLOS_REPO" >&2; exit 1; }
 
+# Ubuntu Noble ships live-build 3.x, whose GRUB2 ISO helper predates the
+# mandatory prefix argument in GRUB 2.12. Patch that single generated command
+# on the ephemeral build host; fail closed if the expected helper is absent.
+LIVE_BUILD_BINARY_ISO="/usr/lib/live/build/lb_binary_iso"
+[[ -f "$LIVE_BUILD_BINARY_ISO" ]] || { echo "Missing live-build GRUB2 ISO helper" >&2; exit 1; }
+if grep -Fq 'grub-mkimage -d ${input_dir} -o ${core_img}' "$LIVE_BUILD_BINARY_ISO"; then
+  sed -i 's|grub-mkimage -d ${input_dir} -o ${core_img}|grub-mkimage -d ${input_dir} -p /boot/grub -o ${core_img}|' "$LIVE_BUILD_BINARY_ISO"
+fi
+grep -Fq 'grub-mkimage -d ${input_dir} -p /boot/grub -o ${core_img}' "$LIVE_BUILD_BINARY_ISO" || {
+  echo "Unsupported live-build GRUB2 helper format" >&2
+  exit 1
+}
+
 install -d -m 0755 "$BUILD_DIR" "$OUT_DIR"
 cd "$BUILD_DIR"
 lb clean --purge || true
@@ -24,6 +37,7 @@ lb config \
   --architectures amd64 \
   --archive-areas "main restricted universe multiverse" \
   --binary-images iso-hybrid \
+  --build-with-chroot false \
   --bootloader grub2 \
   --bootappend-live "boot=casper components username=solos hostname=solos locales=pt_BR.UTF-8 keyboard-layouts=br" \
   --debian-installer false \
