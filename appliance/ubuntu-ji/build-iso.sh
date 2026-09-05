@@ -20,10 +20,10 @@ done
 # on the ephemeral build host; fail closed if the expected helper is absent.
 LIVE_BUILD_BINARY_ISO="/usr/lib/live/build/lb_binary_iso"
 [[ -f "$LIVE_BUILD_BINARY_ISO" ]] || { echo "Missing live-build GRUB2 ISO helper" >&2; exit 1; }
-if grep -Fq 'grub-mkimage -d ${input_dir} -o ${core_img}' "$LIVE_BUILD_BINARY_ISO"; then
-  sed -i 's|grub-mkimage -d ${input_dir} -o ${core_img}|grub-mkimage -d ${input_dir} -p /boot/grub -o ${core_img}|' "$LIVE_BUILD_BINARY_ISO"
+if grep -Fq 'grub-mkimage -d \${input_dir} -o \${core_img}' "$LIVE_BUILD_BINARY_ISO"; then
+  sed -i 's|grub-mkimage -d \\${input_dir} -o \\${core_img}|grub-mkimage -d \\${input_dir} -p /boot/grub -o \\${core_img}|' "$LIVE_BUILD_BINARY_ISO"
 fi
-grep -Fq 'grub-mkimage -d ${input_dir} -p /boot/grub -o ${core_img}' "$LIVE_BUILD_BINARY_ISO" || {
+grep -Fq 'grub-mkimage -d \${input_dir} -p /boot/grub -o \${core_img}' "$LIVE_BUILD_BINARY_ISO" || {
   echo "Unsupported live-build GRUB2 helper format" >&2
   exit 1
 }
