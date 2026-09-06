@@ -9,7 +9,13 @@ mod host_runtime;
 mod surface_catalog;
 
 use host_runtime::{detect_host_runtime, detect_online, HostRuntime};
+use solos_runtime_core::event_ledger::{
+    default_store_path as default_event_store_path, load_or_create as load_or_create_event_ledger,
+};
 use solos_runtime_core::ghost_audit::{seed_store as seed_audit_store, GhostAuditStore};
+use solos_runtime_core::ghost_autonomy::{
+    derive as derive_ghost_autonomy, signals_from_events, GhostAutonomyGovernor,
+};
 use solos_runtime_core::ghost_resolution::{
     default_store_path, load_or_default, GhostResolutionStore,
 };
@@ -260,6 +266,7 @@ struct GhostState {
     requestClassifier: GhostRequestClassifier,
     actionTrace: GhostActionTrace,
     routeExplanation: GhostRouteExplanation,
+    autonomyGovernor: GhostAutonomyGovernor,
     resolutionLoop: GhostResolutionStore,
     auditChallenge: GhostAuditStore,
 }
@@ -1008,6 +1015,11 @@ fn main() {
     let (ghost_pipeline, ghost_research, ghost_intents, ghost_initiation) =
         ghost_brain.process(&host, online);
     let heart_pass_verified = heart_pass.verificationStatus == "verified-holder";
+    let event_ledger =
+        load_or_create_event_ledger(&default_event_store_path()).unwrap_or_else(|error| {
+            eprintln!("[ghost-autonomy] {error}; using an empty evidence projection");
+            solos_runtime_core::event_ledger::empty_ledger()
+        });
     let ghost_onboarding_status = if heart_pass_verified {
         ghost_brain.intelligence.onboarding_status.clone()
     } else {
@@ -1040,6 +1052,12 @@ fn main() {
     let ghost_action_trace = build_ghost_action_trace(&heart_pass);
     let ghost_route_explanation =
         build_ghost_route_explanation(online, &ghost_research, &heart_pass);
+    let autonomy_signals = signals_from_events(
+        &event_ledger.events,
+        online && ghost_research.status == "ready",
+        heart_pass_verified,
+    );
+    let ghost_autonomy = derive_ghost_autonomy(&autonomy_signals);
     let trace_evaluation = load_trace_evaluation();
     let wallet_session = build_wallet_session(&heart_pass);
     let ghost_resolution_loop = load_or_default(&default_store_path()).unwrap_or_else(|error| {
@@ -1058,9 +1076,9 @@ fn main() {
         ),
         walletLabel: "Wallet bridge pending · ownership surface visible".into(),
         agentStatus: if ghost_research.status == "ready" {
-            "Ghost active · web-grounded · approval-aware".into()
+            format!("Ghost active · web-grounded · approval-aware · JI {}", ghost_autonomy.level)
         } else {
-            "Ghost active · local pipeline online".into()
+            format!("Ghost active · local pipeline online · JI {}", ghost_autonomy.level)
         },
         runtimeMode: "runtime-intermediary".into(),
         runtimeSource: "Rust runtime-core mediates between Linux host services and the SolOS operating layer.".into(),
@@ -1082,9 +1100,9 @@ fn main() {
         },
         ghost: GhostState {
             presenceLabel: "Ghost present in shell".into(),
-            modeLabel: "layered-intelligence · approval-aware · web-grounded when configured".into(),
+            modeLabel: format!("layered-intelligence · just-intelligent · {} · approval-aware", ghost_autonomy.level),
             thesisLabel: "Ghost should become a native orchestration layer that combines local runtime reality, web research, and explicit approvals into useful operating behavior.".into(),
-            intelligenceSummary: "Perceptron-lineage layered pipeline: data plus results synthesize action-shaping algorithms.".into(),
+            intelligenceSummary: format!("Perceptron-lineage layered pipeline: data plus results synthesize action-shaping algorithms. {}", ghost_autonomy.summary),
             webStatusLabel: if heart_pass_verified {
                 format!("Brave research status: {}", ghost_research.status)
             } else {
@@ -1157,6 +1175,7 @@ fn main() {
             requestClassifier: ghost_request_classifier,
             actionTrace: ghost_action_trace,
             routeExplanation: ghost_route_explanation,
+            autonomyGovernor: ghost_autonomy,
             resolutionLoop: ghost_resolution_loop,
             auditChallenge: ghost_audit_challenge,
         },

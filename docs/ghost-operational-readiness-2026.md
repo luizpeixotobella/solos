@@ -81,6 +81,8 @@ Ghost needs traces before autonomy. A useful trace should preserve:
 
 The current runtime snapshot exposes state and activity, but does not yet persist traces or grade task outcomes.
 
+The next slice adds a bounded autonomy governor. It projects minimized ledger metadata into `ghost.autonomyGovernor` and makes the progression explicit: `observe` → `propose-with-evidence` → `approval-bound`. This is the SolOS **Just Intelligent (JI)** layer: better context-sensitive routing, not silent permission escalation. A verified outcome can improve the proposal lane; it cannot authorize unattended host writes, network calls, wallet actions, or public posts.
+
 ### Language and tone mediation
 
 Language support is part of operating intelligence. Ghost should route intent, approval explanations, retrieved evidence, and final responses through the user's active language and register.
@@ -97,6 +99,7 @@ Implemented now:
 Still missing:
 
 - persistent trace log
+- autonomy governor connected to reviewed outcomes and a signed policy
 - typed tool manifest
 - real task/action router
 - memory classes and revocation UI

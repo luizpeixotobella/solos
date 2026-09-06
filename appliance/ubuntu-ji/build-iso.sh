@@ -10,7 +10,7 @@ if [[ "${EUID}" -ne 0 ]]; then
   echo "Run with sudo: sudo $0" >&2
   exit 1
 fi
-for command in lb debootstrap xorriso grep-aptavail grub-mkimage mksquashfs rsync; do
+for command in lb debootstrap genisoimage xorriso grep-aptavail grub-mkimage isohybrid mksquashfs rsync; do
   command -v "$command" >/dev/null || { echo "Missing command: $command" >&2; exit 1; }
 done
 [[ -f "$SOLOS_REPO/app/runtime-core/Cargo.toml" ]] || { echo "Invalid SOLOS_REPO: $SOLOS_REPO" >&2; exit 1; }

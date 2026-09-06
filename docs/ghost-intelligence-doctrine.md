@@ -58,6 +58,12 @@ Ghost should grow as a layered system:
 
 This is the intended meaning of `data + results = algorithms` inside SolOS.
 
+## Just Intelligent (JI)
+
+The next behavioral maxim is **Just Intelligent**: intelligence should be mimetized in the operating flow, appearing as the right amount of context, tool choice, tone, evidence, approval, and next action at the right moment. This extends the operational intuition of Just in Time without turning Ghost into a theatrical or permanently active assistant.
+
+Ghost's autonomy must grow from verified outcomes and reviewed feedback. Durable operational events are evidence of execution, not automatic learning. The current governor can move from observe to propose-with-evidence and approval-bound operation, while keeping writes, network, wallet, shell, and public-posting capabilities behind explicit approval.
+
 ## Boundary
 
 Not every AI feature is machine learning. Rule-based validation, filters, scoring, and symbolic routing can still be intelligent automation. Ghost may use both:

@@ -66,6 +66,8 @@ O snapshot agora também expõe a primeira camada de classificação e trace:
 
 Essa camada mostra classe do pedido, nível de segurança, ferramentas necessárias, aprovação, custo de cota, rota escolhida e resultado esperado antes de o Ghost sugerir execução.
 
+O snapshot também expõe `ghost.autonomyGovernor`, a primeira política de autonomia progressiva do Ghost. Ela materializa a máxima **Just Intelligent (JI)**: inteligência mimetizada no fluxo, na medida certa e no momento certo. Traces e outcomes verificados podem liberar uma proposta mais autônoma, mas nunca removem a aprovação explícita de ações com efeito no host, na rede, na wallet ou em publicação pública. Veja `docs/ghost-just-intelligent.md`.
+
 ## O que este crate não é
 
 Ele não é:
@@ -124,6 +126,8 @@ O comando exige Heart Pass verificado, quota ativa e saldo suficiente. Ele persi
 3. implementar a quota service assinada sem expor chaves de provedor no cliente
 4. evoluir para serviço local ou biblioteca FFI quando o boundary estabilizar
 5. migrar novos domínios para APIs de mediação sem romper o snapshot de compatibilidade
+
+6. conectar outcomes avaliados ao governador JI com política assinada, expiração e rollback
 
 ## Ghost Audit Challenge
 
