@@ -10,7 +10,7 @@ if [[ "${EUID}" -ne 0 ]]; then
   echo "Run with sudo: sudo $0" >&2
   exit 1
 fi
-for command in lb debootstrap genisoimage xorriso grep-aptavail grub-mkimage isohybrid mksquashfs rsync; do
+for command in lb debootstrap genisoimage xorriso grep-aptavail grub-mkimage mksquashfs rsync; do
   command -v "$command" >/dev/null || { echo "Missing command: $command" >&2; exit 1; }
 done
 [[ -f "$SOLOS_REPO/app/runtime-core/Cargo.toml" ]] || { echo "Invalid SOLOS_REPO: $SOLOS_REPO" >&2; exit 1; }
@@ -56,6 +56,12 @@ install -m 0755 "$SCRIPT_DIR/010-build-solos.hook.chroot" config/hooks/normal/01
 lb build
 ISO_PATH="$(find . -maxdepth 1 -type f -name '*.hybrid.iso' -o -name '*.iso' | head -n 1)"
 [[ -n "$ISO_PATH" ]] || { echo "ISO output not found" >&2; exit 1; }
-install -m 0644 "$ISO_PATH" "$OUT_DIR/solos-ubuntu-ji-amd64.iso"
+# xorriso creates the ISO but does not add a hybrid MBR by default.
+# Use xorriso again to write the GRUB2 hybrid MBR to the same file.
+xorriso -indev "$ISO_PATH" \
+  -boot_image any bin_path=/boot/grub/i386-pc/eltorito.img \
+  -boot_image any partition_table=on \
+  -boot_image any partition_cyl_align=all \
+  -outdev "$OUT_DIR/solos-ubuntu-ji-amd64.iso"
 sha256sum "$OUT_DIR/solos-ubuntu-ji-amd64.iso" > "$OUT_DIR/solos-ubuntu-ji-amd64.iso.sha256"
 echo "Built: $OUT_DIR/solos-ubuntu-ji-amd64.iso"
