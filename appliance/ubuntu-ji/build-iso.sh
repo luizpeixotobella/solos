@@ -36,7 +36,7 @@ lb config \
   --distribution noble \
   --architectures amd64 \
   --archive-areas "main restricted universe multiverse" \
-  --binary-images iso-hybrid \
+  --binary-images iso \
   --build-with-chroot false \
   --bootloader grub2 \
   --bootappend-live "boot=casper components username=solos hostname=solos locales=pt_BR.UTF-8 keyboard-layouts=br" \
