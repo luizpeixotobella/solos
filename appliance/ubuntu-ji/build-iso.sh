@@ -120,8 +120,10 @@ xorriso -indev "$BASE_ISO" \
   -commit
 
 [[ -s "$OUTPUT_ISO" ]] || { echo "xorriso did not create the output ISO" >&2; exit 1; }
-EFI_BOOT="$(xorriso -indev "$OUTPUT_ISO" -find / -type f -print 2>/dev/null | grep -i '/EFI/BOOT/BOOTX64\.EFI' || true)"
-[[ -n "$EFI_BOOT" ]] || { echo "UEFI BOOTX64.EFI missing from output ISO" >&2; exit 1; }
+if ! xorriso -indev "$OUTPUT_ISO" -ls /EFI/BOOT/BOOTX64.EFI 2>/dev/null | grep -qi 'BOOTX64\.EFI'; then
+  echo "UEFI BOOTX64.EFI missing from output ISO" >&2
+  exit 1
+fi
 ELTORITO_REPORT="$BUILD_DIR/el-torito.txt"
 xorriso -indev "$OUTPUT_ISO" -report_el_torito plain > "$ELTORITO_REPORT"
 grep -q 'BIOS' "$ELTORITO_REPORT" || { echo "BIOS El Torito entry missing from output ISO" >&2; exit 1; }
