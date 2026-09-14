@@ -40,7 +40,7 @@ lb config \
   --archive-areas "main restricted universe multiverse" \
   --binary-images iso \
   --build-with-chroot false \
-  --bootloaders grub-pc,grub-efi \
+  --bootloader grub-pc,grub-efi \
   --bootappend-live "boot=casper components username=solos hostname=solos locales=pt_BR.UTF-8 keyboard-layouts=br" \
   --debian-installer false \
   --memtest none
