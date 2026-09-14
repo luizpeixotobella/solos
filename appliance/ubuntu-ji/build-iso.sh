@@ -10,7 +10,7 @@ if [[ "${EUID}" -ne 0 ]]; then
   echo "Run with sudo: sudo $0" >&2
   exit 1
 fi
-for command in lb debootstrap genisoimage xorriso grep-aptavail grub-mkimage mksquashfs rsync fdisk; do
+for command in lb debootstrap genisoimage xorriso grep-aptavail grub-mkimage grub-mkstandalone mksquashfs rsync fdisk mkfs.msdos mmd mcopy; do
   command -v "$command" >/dev/null || { echo "Missing command: $command" >&2; exit 1; }
 done
 [[ -f "$SOLOS_REPO/app/runtime-core/Cargo.toml" ]] || { echo "Invalid SOLOS_REPO: $SOLOS_REPO" >&2; exit 1; }
@@ -40,7 +40,7 @@ lb config \
   --archive-areas "main restricted universe multiverse" \
   --binary-images iso \
   --build-with-chroot false \
-  --bootloader grub-pc,grub-efi \
+  --bootloader grub2 \
   --bootappend-live "boot=casper components username=solos hostname=solos locales=pt_BR.UTF-8 keyboard-layouts=br" \
   --debian-installer false \
   --memtest none
@@ -58,13 +58,62 @@ install -m 0755 "$SCRIPT_DIR/010-build-solos.hook.chroot" config/hooks/normal/01
 lb build
 ISO_PATH="$(find . -maxdepth 1 -type f -name '*.hybrid.iso' -o -name '*.iso' | head -n 1)"
 [[ -n "$ISO_PATH" ]] || { echo "ISO output not found" >&2; exit 1; }
-# xorriso creates the ISO and preserves its BIOS+UEFI El Torito entries, but
-# the GRUB2 MBR and partition table must be added explicitly for USB boot.
+
+# Noble's live-build 3.x can create the BIOS GRUB2 tree, but it predates the
+# EFI image helper. Build a standalone x86_64 EFI loader and a small FAT image
+# ourselves, then add both boot entries with xorriso below.
+EFI_WORK_DIR="$BUILD_DIR/efi"
+EFI_CONFIG="$EFI_WORK_DIR/grub.cfg"
+EFI_BINARY="$EFI_WORK_DIR/BOOTX64.EFI"
+EFI_IMAGE="$BUILD_DIR/binary/boot/grub/efi.img"
+install -d -m 0755 "$EFI_WORK_DIR" "$BUILD_DIR/binary/EFI/BOOT" "$BUILD_DIR/binary/boot/grub"
+cat > "$EFI_CONFIG" <<'EOF'
+search --file --set=root /.disk/info
+set prefix=($root)/boot/grub
+configfile ($root)/boot/grub/grub.cfg
+EOF
+grub-mkstandalone \
+  -d /usr/lib/grub/x86_64-efi \
+  -O x86_64-efi \
+  -o "$EFI_BINARY" \
+  --modules='part_gpt part_msdos fat iso9660 search search_fs_file configfile normal linux chain' \
+  "boot/grub/grub.cfg=$EFI_CONFIG"
+dd if=/dev/zero of="$EFI_IMAGE" bs=1M count=16 status=none
+mkfs.msdos "$EFI_IMAGE" >/dev/null
+mmd -i "$EFI_IMAGE" ::EFI ::EFI/BOOT
+mcopy -i "$EFI_IMAGE" "$EFI_BINARY" ::EFI/BOOT/BOOTX64.EFI
+install -m 0644 "$EFI_BINARY" "$BUILD_DIR/binary/EFI/BOOT/BOOTX64.EFI"
+
+# Rebuild the final image from the assembled binary tree. The first xorriso
+# pass creates BIOS+UEFI El Torito entries; the second adds the GRUB2 hybrid
+# MBR and partition table required when the ISO is written directly to USB.
 OUTPUT_ISO="$OUT_DIR/solos-ubuntu-ji-amd64.iso"
-rm -f "$OUTPUT_ISO" "$OUTPUT_ISO.sha256"
-xorriso -indev "$ISO_PATH" \
+BASE_ISO="$BUILD_DIR/solos-ubuntu-ji-base.iso"
+rm -f "$BASE_ISO" "$OUTPUT_ISO" "$OUTPUT_ISO.sha256"
+xorriso -as mkisofs \
+  -R -r -J -joliet-long -l -iso-level 3 \
+  -V "SOLOS_UBUNTU_JI" \
+  -b boot/grub/grub_eltorito \
+  -c boot.catalog \
+  -no-emul-boot \
+  -boot-load-size 4 \
+  -boot-info-table \
+  -eltorito-alt-boot \
+  -e boot/grub/efi.img \
+  -no-emul-boot \
+  -isohybrid-gpt-basdat \
+  -isohybrid-apm-hfsplus \
+  -o "$BASE_ISO" \
+  "$BUILD_DIR/binary"
+xorriso -indev "$BASE_ISO" \
   -outdev "$OUTPUT_ISO" \
-  -boot_image any replay \
+  -boot_image any discard \
+  -boot_image any bin_path=/boot/grub/grub_eltorito \
+  -boot_image any boot_info_table=on \
+  -boot_image any grub2_boot_info=on \
+  -boot_image any cat_path=boot.catalog \
+  -boot_image any next \
+  -boot_image any efi_path=/boot/grub/efi.img \
   -boot_image any grub2_mbr="$GRUB2_MBR" \
   -boot_image any partition_table=on \
   -boot_image any partition_cyl_align=all \
@@ -73,6 +122,10 @@ xorriso -indev "$ISO_PATH" \
 [[ -s "$OUTPUT_ISO" ]] || { echo "xorriso did not create the output ISO" >&2; exit 1; }
 EFI_BOOT="$(xorriso -indev "$OUTPUT_ISO" -find / -type f -print 2>/dev/null | grep -i '/EFI/BOOT/BOOTX64\.EFI' || true)"
 [[ -n "$EFI_BOOT" ]] || { echo "UEFI BOOTX64.EFI missing from output ISO" >&2; exit 1; }
+ELTORITO_REPORT="$BUILD_DIR/el-torito.txt"
+xorriso -indev "$OUTPUT_ISO" -report_el_torito plain > "$ELTORITO_REPORT"
+grep -q 'BIOS' "$ELTORITO_REPORT" || { echo "BIOS El Torito entry missing from output ISO" >&2; exit 1; }
+grep -q 'UEFI' "$ELTORITO_REPORT" || { echo "UEFI El Torito entry missing from output ISO" >&2; exit 1; }
 fdisk -l "$OUTPUT_ISO"
 if ! fdisk -l "$OUTPUT_ISO" | grep -Eq 'Disklabel type: (dos|gpt)|^Device'; then
   echo "No USB partition table detected in output ISO" >&2
