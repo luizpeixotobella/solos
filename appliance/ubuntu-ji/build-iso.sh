@@ -77,6 +77,7 @@ configfile ($root)/boot/grub/grub.cfg
 EOF
 grub-mkimage \
   -d /usr/lib/grub/i386-pc \
+  -O i386-pc \
   -p /boot/grub \
   -c "$BIOS_CONFIG" \
   -o "$BIOS_CORE" \
