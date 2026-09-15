@@ -16,6 +16,8 @@ done
 [[ -f "$SOLOS_REPO/app/runtime-core/Cargo.toml" ]] || { echo "Invalid SOLOS_REPO: $SOLOS_REPO" >&2; exit 1; }
 GRUB2_MBR="/usr/lib/grub/i386-pc/boot_hybrid.img"
 [[ -r "$GRUB2_MBR" ]] || { echo "Missing GRUB2 hybrid MBR: $GRUB2_MBR" >&2; exit 1; }
+GRUB2_CDBOOT="/usr/lib/grub/i386-pc/cdboot.img"
+[[ -r "$GRUB2_CDBOOT" ]] || { echo "Missing GRUB2 El Torito boot image: $GRUB2_CDBOOT" >&2; exit 1; }
 
 # Ubuntu Noble ships live-build 3.x, whose GRUB2 ISO helper predates the
 # mandatory prefix argument in GRUB 2.12. Patch that single generated command
@@ -58,6 +60,28 @@ install -m 0755 "$SCRIPT_DIR/010-build-solos.hook.chroot" config/hooks/normal/01
 lb build
 ISO_PATH="$(find . -maxdepth 1 -type f -name '*.hybrid.iso' -o -name '*.iso' | head -n 1)"
 [[ -n "$ISO_PATH" ]] || { echo "ISO output not found" >&2; exit 1; }
+
+# The stock BIOS core has a path-only prefix. That works on optical media but
+# can leave GRUB without a root device after the ISO is written to USB. Embed a
+# small discovery config in a replacement El Torito image so both paths locate
+# the ISO filesystem before loading the normal configuration and its modules.
+BIOS_WORK_DIR="$BUILD_DIR/bios"
+BIOS_CONFIG="$BIOS_WORK_DIR/grub.cfg"
+BIOS_CORE="$BIOS_WORK_DIR/core.img"
+BIOS_ELTORITO="$BUILD_DIR/binary/boot/grub/grub_eltorito"
+install -d -m 0755 "$BIOS_WORK_DIR" "$BUILD_DIR/binary/boot/grub"
+cat > "$BIOS_CONFIG" <<'EOF'
+search --file --set=root /.disk/info
+set prefix=($root)/boot/grub
+configfile ($root)/boot/grub/grub.cfg
+EOF
+grub-mkimage \
+  -d /usr/lib/grub/i386-pc \
+  -p /boot/grub \
+  -c "$BIOS_CONFIG" \
+  -o "$BIOS_CORE" \
+  biosdisk iso9660 search search_fs_file configfile normal linux tga font gfxterm all_video
+cat "$GRUB2_CDBOOT" "$BIOS_CORE" > "$BIOS_ELTORITO"
 
 # Noble's live-build 3.x can create the BIOS GRUB2 tree, but it predates the
 # EFI image helper. Build a standalone x86_64 EFI loader and a small FAT image
