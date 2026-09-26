@@ -2,27 +2,51 @@ name: Build SolOS Ubuntu JI ISO
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "appliance/ubuntu-ji/**"
-      - ".github/workflows/build-ubuntu-ji-iso.yml"
+    inputs:
+      build_mode:
+        description: Reuse the existing build state, or rebuild stages after source/config changes
+        required: true
+        type: choice
+        default: --resume
+        options:
+          - --resume
+          - --fresh
 
 permissions:
   contents: read
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, linux, x64, solos-iso]
+    timeout-minutes: 360
+    concurrency:
+      group: solos-ubuntu-ji-iso
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
       - name: Install ISO build dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y live-build debootstrap dctrl-tools genisoimage xorriso grub-pc-bin grub-efi-amd64-bin mtools dosfstools squashfs-tools rsync
-      - name: Build non-destructive live ISO
-        run: sudo SOLOS_REPO="$GITHUB_WORKSPACE" ./appliance/ubuntu-ji/build-iso.sh
+          sudo -n apt-get update
+          sudo -n apt-get install -y live-build debootstrap dctrl-tools genisoimage xorriso grub-pc-bin grub-efi-amd64-bin mtools dosfstools squashfs-tools rsync fdisk
+      - name: Build resumable live ISO
+        env:
+          BUILD_MODE: ${{ inputs.build_mode }}
+        run: |
+          BUILD_STATE="$HOME/.cache/solos-iso/build"
+          sudo -n install -d -m 0755 "$BUILD_STATE"
+          sudo -n env \
+            SOLOS_REPO="$GITHUB_WORKSPACE" \
+            SOLOS_ISO_BUILD_DIR="$BUILD_STATE" \
+            SOLOS_ISO_OUT_DIR="$GITHUB_WORKSPACE/appliance/ubuntu-ji/out" \
+            ./appliance/ubuntu-ji/build-iso.sh "$BUILD_MODE"
+      - name: Restore workspace ownership
+        if: always()
+        run: |
+          OUTPUT_DIR="$GITHUB_WORKSPACE/appliance/ubuntu-ji/out"
+          if [[ -d "$OUTPUT_DIR" ]]; then
+            sudo -n chown -R "$(id -u):$(id -g)" "$OUTPUT_DIR"
+          fi
       - name: Upload ISO and checksum
         uses: actions/upload-artifact@v4
         with:

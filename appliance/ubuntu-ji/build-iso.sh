@@ -5,6 +5,15 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOLOS_REPO="${SOLOS_REPO:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
 BUILD_DIR="${SOLOS_ISO_BUILD_DIR:-$SCRIPT_DIR/.build}"
 OUT_DIR="${SOLOS_ISO_OUT_DIR:-$SCRIPT_DIR/out}"
+BUILD_MODE="${1:---resume}"
+
+case "$BUILD_MODE" in
+  --resume|--fresh|--purge) ;;
+  *)
+    echo "Usage: $0 [--resume|--fresh|--purge]" >&2
+    exit 2
+    ;;
+esac
 
 if [[ "${EUID}" -ne 0 ]]; then
   echo "Run with sudo: sudo $0" >&2
@@ -34,13 +43,20 @@ grep -Fq 'grub-mkimage -d \${input_dir} -p /boot/grub -o \${core_img}' "$LIVE_BU
 
 install -d -m 0755 "$BUILD_DIR" "$OUT_DIR"
 cd "$BUILD_DIR"
-lb clean --purge || true
+case "$BUILD_MODE" in
+  --fresh) lb clean --all ;;
+  --purge) lb clean --purge ;;
+  --resume) echo "Resuming existing live-build state; use --fresh after source/config changes." ;;
+esac
 lb config \
   --mode ubuntu \
   --distribution noble \
   --architectures amd64 \
   --archive-areas "main restricted universe multiverse" \
   --binary-images iso \
+  --cache true \
+  --cache-packages true \
+  --cache-stages bootstrap \
   --build-with-chroot false \
   --bootloader grub2 \
   --bootappend-live "boot=casper components username=solos hostname=solos locales=pt_BR.UTF-8 keyboard-layouts=br" \
@@ -50,7 +66,9 @@ lb config \
 install -d config/package-lists config/includes.chroot/opt/solos-src config/includes.chroot/usr/local/bin
 cp "$SCRIPT_DIR/packages.list.chroot" config/package-lists/solos.list.chroot
 rsync -a --delete \
+  --delete-excluded \
   --exclude='.git' --exclude='.env*' --exclude='target' --exclude='build' \
+  --exclude='.build/' --exclude='/appliance/ubuntu-ji/out/' \
   --exclude='node_modules' --exclude='*.token' --exclude='*.secret' \
   "$SOLOS_REPO/" config/includes.chroot/opt/solos-src/
 install -m 0755 "$SCRIPT_DIR/solos-update" config/includes.chroot/usr/local/bin/solos-update
