@@ -1,15 +1,34 @@
 #!/bin/sh
 set -eu
 
+RUST_TOOLCHAIN=1.89.0
+RUSTUP_HOME="$(mktemp -d /tmp/solos-rustup.XXXXXX)"
+CARGO_HOME="$(mktemp -d /tmp/solos-cargo.XXXXXX)"
+CARGO_TARGET_DIR="$(mktemp -d /tmp/solos-runtime-target.XXXXXX)"
+RUSTUP_INIT="$RUSTUP_HOME/rustup-init"
+trap 'rm -rf -- "$RUSTUP_HOME" "$CARGO_HOME" "$CARGO_TARGET_DIR"' EXIT
+export RUSTUP_HOME CARGO_HOME CARGO_TARGET_DIR
+
+curl --proto '=https' --tlsv1.2 --fail --location --retry 3 --silent --show-error \
+  https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init \
+  --output "$RUSTUP_INIT"
+chmod 0755 "$RUSTUP_INIT"
+RUSTUP_INIT_SKIP_PATH_CHECK=yes "$RUSTUP_INIT" -y --profile minimal --default-toolchain "$RUST_TOOLCHAIN" --no-modify-path
+export PATH="$CARGO_HOME/bin:$PATH"
+
 cd /opt/solos-src/app/runtime-core
-cargo build --release --locked --bin solos-daemon --bin ghost-audit-verify
+"$CARGO_HOME/bin/cargo" "+$RUST_TOOLCHAIN" build --release --locked --bin solos-daemon --bin ghost-audit-verify
 install -d /opt/solos/releases/bootstrap/bin
-install -m 0755 target/release/solos-daemon /opt/solos/releases/bootstrap/bin/
-install -m 0755 target/release/ghost-audit-verify /opt/solos/releases/bootstrap/bin/
+install -m 0755 "$CARGO_TARGET_DIR/release/solos-daemon" /opt/solos/releases/bootstrap/bin/
+install -m 0755 "$CARGO_TARGET_DIR/release/ghost-audit-verify" /opt/solos/releases/bootstrap/bin/
 
 cmake -S /opt/solos-src/app/shell-native -B /tmp/solos-shell-build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build /tmp/solos-shell-build
 install -m 0755 /tmp/solos-shell-build/solos-shell-native /opt/solos/releases/bootstrap/bin/
+
+cmake -S /opt/solos-src/app/explorer-prototype -B /tmp/solos-explorer-build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build /tmp/solos-explorer-build
+install -m 0755 /tmp/solos-explorer-build/solos-explorer-prototype /opt/solos/releases/bootstrap/bin/
 ln -sfn /opt/solos/releases/bootstrap /opt/solos/current
 
 cat >/usr/share/applications/solos.desktop <<'EOF'
@@ -24,7 +43,12 @@ Categories=System;Development;
 EOF
 
 install -d /etc/xdg/autostart
-cp /usr/share/applications/solos.desktop /etc/xdg/autostart/solos.desktop
+install -m 0755 /opt/solos-src/appliance/ubuntu-ji/solos-session-start /usr/local/bin/solos-session-start
+install -m 0755 /opt/solos-src/appliance/ubuntu-ji/solos-installer /usr/local/bin/solos-installer
+install -m 0644 /opt/solos-src/appliance/ubuntu-ji/assets/solos-background.svg /usr/share/backgrounds/solos-background.svg
+install -m 0644 /opt/solos-src/appliance/ubuntu-ji/solos.desktop /etc/xdg/autostart/solos.desktop
+install -m 0644 /opt/solos-src/appliance/ubuntu-ji/solos-installer.desktop /usr/share/applications/solos-installer.desktop
+install -m 0644 /opt/solos-src/appliance/ubuntu-ji/solos-explorer.desktop /usr/share/applications/solos-explorer.desktop
 
 cat >/etc/systemd/user/solos-daemon.service <<'EOF'
 [Unit]

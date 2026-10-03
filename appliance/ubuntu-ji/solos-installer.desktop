@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Install SolOS
+Comment=Install this SolOS image to a disk
+Exec=/usr/local/bin/solos-installer
+Icon=system-software-install
+Terminal=false
+Categories=System;
+Keywords=install;Ubuntu;SolOS;

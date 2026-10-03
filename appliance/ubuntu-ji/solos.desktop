@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=SolOS
+Comment=Start the SolOS native kiosk shell
+Exec=/usr/local/bin/solos-session-start
+TryExec=/usr/local/bin/solos-session-start
+Icon=utilities-system-monitor
+Terminal=false
+X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-Notify=true
+X-GNOME-Autostart-Phase=Application
+OnlyShowIn=GNOME;
+NoDisplay=true

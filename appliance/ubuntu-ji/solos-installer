@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v ubiquity >/dev/null 2>&1; then
+  exec ubiquity "$@"
+fi
+if command -v ubuntu-desktop-installer >/dev/null 2>&1; then
+  exec ubuntu-desktop-installer "$@"
+fi
+if command -v calamares >/dev/null 2>&1; then
+  exec calamares "$@"
+fi
+
+printf '%s\n' "SolOS installer is not present in this image." >&2
+printf '%s\n' "Rebuild with ubuntu-desktop-installer installed." >&2
+exit 127

@@ -59,7 +59,7 @@ lb config \
   --cache-stages bootstrap \
   --build-with-chroot false \
   --bootloader grub2 \
-  --bootappend-live "boot=casper components username=solos hostname=solos locales=pt_BR.UTF-8 keyboard-layouts=br" \
+  --bootappend-live "boot=casper components username=solos hostname=solos locales=pt_BR.UTF-8 keyboard-layouts=br quiet splash" \
   --debian-installer false \
   --memtest none
 
@@ -72,10 +72,34 @@ rsync -a --delete \
   --exclude='node_modules' --exclude='*.token' --exclude='*.secret' \
   "$SOLOS_REPO/" config/includes.chroot/opt/solos-src/
 install -m 0755 "$SCRIPT_DIR/solos-update" config/includes.chroot/usr/local/bin/solos-update
-install -d config/hooks/normal
-install -m 0755 "$SCRIPT_DIR/010-build-solos.hook.chroot" config/hooks/normal/010-build-solos.hook.chroot
+install -d config/hooks
+install -m 0755 "$SCRIPT_DIR/010-build-solos.hook.chroot" config/hooks/010-build-solos.hook.chroot
 
 lb build
+
+CHROOT_ROOT="$BUILD_DIR/chroot"
+for binary in solos-shell-native solos-explorer-prototype solos-daemon; do
+  if [[ ! -x "$CHROOT_ROOT/opt/solos/releases/bootstrap/bin/$binary" ]]; then
+    echo "SolOS payload is missing $binary; check the chroot build hook and staged source tree" >&2
+    exit 1
+  fi
+done
+
+for package in qml6-module-qtquick qml6-module-qtquick-controls qml6-module-qtquick-layouts qml6-module-qtquick-window; do
+  package_status="$(dpkg-query --admindir="$CHROOT_ROOT/var/lib/dpkg" -W -f='${Status}' "$package" 2>/dev/null || true)"
+  if [[ "$package_status" != "install ok installed" ]]; then
+    echo "SolOS GUI dependency $package is missing; rebuild with --fresh after source changes" >&2
+    exit 1
+  fi
+done
+
+for path in /etc/xdg/autostart/solos.desktop /usr/share/applications/solos-explorer.desktop /usr/local/bin/solos-session-start; do
+  if [[ ! -e "$CHROOT_ROOT$path" ]]; then
+    echo "SolOS session integration is missing $path; rebuild with --fresh after source changes" >&2
+    exit 1
+  fi
+done
+
 ISO_PATH="$(find . -maxdepth 1 -type f -name '*.hybrid.iso' -o -name '*.iso' | head -n 1)"
 [[ -n "$ISO_PATH" ]] || { echo "ISO output not found" >&2; exit 1; }
 
@@ -171,8 +195,9 @@ ELTORITO_REPORT="$BUILD_DIR/el-torito.txt"
 xorriso -indev "$OUTPUT_ISO" -report_el_torito plain > "$ELTORITO_REPORT"
 grep -q 'BIOS' "$ELTORITO_REPORT" || { echo "BIOS El Torito entry missing from output ISO" >&2; exit 1; }
 grep -q 'UEFI' "$ELTORITO_REPORT" || { echo "UEFI El Torito entry missing from output ISO" >&2; exit 1; }
-fdisk -l "$OUTPUT_ISO"
-if ! fdisk -l "$OUTPUT_ISO" | grep -Eq 'Disklabel type: (dos|gpt)|^Device'; then
+FDISK_REPORT="$(LC_ALL=C fdisk -l "$OUTPUT_ISO")"
+printf '%s\n' "$FDISK_REPORT"
+if ! grep -Eq '^Disklabel type: (dos|gpt)$' <<< "$FDISK_REPORT"; then
   echo "No USB partition table detected in output ISO" >&2
   exit 1
 fi
