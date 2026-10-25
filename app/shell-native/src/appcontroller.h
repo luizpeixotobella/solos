@@ -9,6 +9,7 @@
 #include "appregistrymodel.h"
 #include "approvalqueuemodel.h"
 #include "ghostruntime.h"
+#include "ghostapiclient.h"
 #include "homestate.h"
 #include "quickactionsmodel.h"
 
@@ -27,6 +28,7 @@ class AppController : public QObject
     Q_PROPERTY(QuickActionsModel* quickActionsModel READ quickActionsModel CONSTANT)
     Q_PROPERTY(ApprovalQueueModel* approvalQueueModel READ approvalQueueModel CONSTANT)
     Q_PROPERTY(GhostRuntime* ghostRuntime READ ghostRuntime CONSTANT)
+    Q_PROPERTY(GhostApiClient* ghostChat READ ghostChat CONSTANT)
     Q_PROPERTY(QString runtimeStatus READ runtimeStatus NOTIFY runtimeStateChanged)
     Q_PROPERTY(QString runtimeSource READ runtimeSource NOTIFY runtimeStateChanged)
     Q_PROPERTY(QString hostRuntimeSummary READ hostRuntimeSummary NOTIFY runtimeStateChanged)
@@ -81,6 +83,7 @@ public:
     QuickActionsModel *quickActionsModel();
     ApprovalQueueModel *approvalQueueModel();
     GhostRuntime *ghostRuntime();
+    GhostApiClient *ghostChat() { return &m_ghostChat; }
     QString runtimeStatus() const;
     QString runtimeSource() const;
     QString hostRuntimeSummary() const;
@@ -190,6 +193,7 @@ private:
     QuickActionsModel m_quickActionsModel;
     ApprovalQueueModel m_approvalQueueModel;
     GhostRuntime m_ghostRuntime;
+    GhostApiClient m_ghostChat;
     HomeState m_homeState;
     QTimer m_runtimeWatchTimer;
 };

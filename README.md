@@ -105,6 +105,10 @@ The first active boundary is now defined as a **runtime intermediary seam**:
 
 This gives SolOS a practical migration path instead of an ideological one.
 
+## Independent Ghost API
+
+Ghost now has an independent core and authenticated chat service. SolOS consumes its vendored `ghost-core` release and exposes **Agent → Talk to Ghost** through a Qt HTTPS client. See [configuration, boundaries and rollout](docs/ghost-independent-api.md). Existing installations/ISOs must be rebuilt or updated; no credentials are bundled.
+
 ## Ghost readiness
 
 Ghost now exposes operational readiness, not only presence. The native shell can show whether Ghost is merely foundational or ready to operate across grounded research, long-term memory, tool/MCP boundaries, human approvals, observability, and language mediation.

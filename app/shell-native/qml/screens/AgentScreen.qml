@@ -37,6 +37,56 @@ Item {
                     body: ghostRuntime.thesisLabel + "\n\n" + ghostRuntime.intelligenceSummary + "\n" + ghostRuntime.webStatusLabel
                 }
 
+                Rectangle {
+                    Layout.fillWidth: true
+                    implicitHeight: chatColumn.implicitHeight + 36
+                    radius: Theme.cardRadius
+                    color: Theme.surface
+                    border.color: Theme.accentPurple
+                    ColumnLayout {
+                        id: chatColumn
+                        anchors.fill: parent
+                        anchors.margins: Theme.cardPadding
+                        spacing: 12
+                        Label { text: "Talk to Ghost"; color: Theme.textStrong; font.pixelSize: 24; font.bold: true }
+                        Label {
+                            Layout.fillWidth: true
+                            text: appController.ghostChat.status
+                            color: Theme.textSoft
+                            wrapMode: Text.WordWrap
+                        }
+                        TextArea {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 260
+                            readOnly: true
+                            text: appController.ghostChat.transcript
+                            textFormat: TextEdit.PlainText
+                            wrapMode: TextEdit.Wrap
+                            placeholderText: "Your conversation appears here. Host actions still use the SolOS approval lane."
+                        }
+                        TextArea {
+                            id: ghostMessage
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 90
+                            enabled: appController.ghostChat.configured && !appController.ghostChat.busy
+                            placeholderText: "Ask Ghost anything…"
+                            wrapMode: TextEdit.Wrap
+                        }
+                        RowLayout {
+                            Button {
+                                text: appController.ghostChat.busy ? "Thinking…" : "Send to Ghost"
+                                enabled: appController.ghostChat.configured && !appController.ghostChat.busy && ghostMessage.text.trim().length > 0 && ghostMessage.text.length <= 4000
+                                onClicked: appController.ghostChat.send(ghostMessage.text)
+                            }
+                            Button {
+                                text: "Clear conversation"
+                                enabled: !appController.ghostChat.busy
+                                onClicked: { appController.ghostChat.clear(); ghostMessage.text = "" }
+                            }
+                        }
+                    }
+                }
+
                 RowLayout {
                     Layout.fillWidth: true
 

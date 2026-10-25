@@ -25,6 +25,8 @@ qt_add_executable(solos-shell-native
     src/approvalqueuemodel.h
     src/ghostruntime.cpp
     src/ghostruntime.h
+    src/ghostapiclient.cpp
+    src/ghostapiclient.h
     src/homestate.cpp
     src/homestate.h
     src/runtimebridge.cpp
@@ -63,3 +65,11 @@ install(TARGETS solos-shell-native
     BUNDLE DESTINATION .
     RUNTIME DESTINATION bin
 )
+
+include(CTest)
+if(BUILD_TESTING)
+    qt_add_executable(ghost-api-smoke tests/ghost-api-smoke.cpp src/ghostapiclient.cpp src/ghostapiclient.h)
+    target_include_directories(ghost-api-smoke PRIVATE src)
+    target_link_libraries(ghost-api-smoke PRIVATE Qt6::Core Qt6::Network)
+    add_test(NAME ghost-api-rejects-plaintext COMMAND ghost-api-smoke)
+endif()

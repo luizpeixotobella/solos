@@ -8,3 +8,6 @@ default-run = "solos-runtime-core"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sha2 = "0.10"
+
+# Offline-vendored release of the independent Ghost core (see vendor/ghost-core/UPSTREAM.md).
+ghost-core = { path = "vendor/ghost-core", version = "0.1.0" }

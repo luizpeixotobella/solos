@@ -137,6 +137,7 @@ AppController::AppController(QObject *parent)
     , m_quickActionsModel(this)
     , m_approvalQueueModel(this)
     , m_ghostRuntime(this)
+    , m_ghostChat(this)
     , m_homeState(this)
 {
     loadRuntimeSnapshot();
