@@ -1,5 +1,9 @@
 # SolOS Heart Pass Lab — proposta para a próxima ISO
 
+> **Revisão de05/11:** laboratório fora da ISO padrão. Manter a Wallet leve e
+> integração opcional; o overlay não é uma recomendação de empacotamento obrigatório.
+> Veja [dependências, manutenção e recursos](RESOURCE-REVIEW.md).
+
 **Protótipo isolado, não oferta comercial nem carteira pessoal.** Nenhum termo,
 pagamento, crédito ou contrato da campanha em produção é alterado.
 
