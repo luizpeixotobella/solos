@@ -78,7 +78,7 @@ install -m 0755 "$SCRIPT_DIR/010-build-solos.hook.chroot" config/hooks/010-build
 lb build
 
 CHROOT_ROOT="$BUILD_DIR/chroot"
-for binary in solos-shell-native solos-explorer-prototype solos-daemon; do
+for binary in solos-shell-native solos-explorer-prototype solos-daemon solos-runtime-core; do
   if [[ ! -x "$CHROOT_ROOT/opt/solos/releases/bootstrap/bin/$binary" ]]; then
     echo "SolOS payload is missing $binary; check the chroot build hook and staged source tree" >&2
     exit 1

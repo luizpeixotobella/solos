@@ -5,9 +5,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Qml Network)
+find_package(Qt6 6.4 REQUIRED COMPONENTS Quick Qml Network)
 
-qt_standard_project_setup(REQUIRES 6.5)
+qt_standard_project_setup(REQUIRES 6.4)
 
 set_source_files_properties(qml/Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 
@@ -36,6 +36,7 @@ qt_add_executable(solos-shell-native
 qt_add_qml_module(solos-shell-native
     URI SolOS.Shell
     VERSION 1.0
+    RESOURCE_PREFIX /qt/qml
     QML_FILES
         qml/Theme.qml
         qml/Main.qml
@@ -68,6 +69,9 @@ install(TARGETS solos-shell-native
 
 include(CTest)
 if(BUILD_TESTING)
+    qt_add_executable(runtime-daemon-smoke tests/runtime-daemon-smoke.cpp src/runtimebridge.cpp src/runtimebridge.h)
+    target_include_directories(runtime-daemon-smoke PRIVATE src)
+    target_link_libraries(runtime-daemon-smoke PRIVATE Qt6::Core Qt6::Network)
     qt_add_executable(ghost-api-smoke tests/ghost-api-smoke.cpp src/ghostapiclient.cpp src/ghostapiclient.h)
     target_include_directories(ghost-api-smoke PRIVATE src)
     target_link_libraries(ghost-api-smoke PRIVATE Qt6::Core Qt6::Network)

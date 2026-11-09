@@ -8,6 +8,9 @@ gnome-terminal
 network-manager
 ca-certificates
 curl
+python3
+util-linux
+xdg-utils
 git
 jq
 rsync

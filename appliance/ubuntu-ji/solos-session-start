@@ -3,6 +3,9 @@ set -euo pipefail
 
 export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-xcb}"
 export SOLOS_KIOSK=1
+install -d -m 0700 "${XDG_RUNTIME_DIR:?Desktop runtime directory unavailable}/solos"
+exec 9>"$XDG_RUNTIME_DIR/solos/session.lock"
+flock -n 9 || exit 0
 
 # GNOME autostart can race the X/DBus session on a live image. Wait briefly,
 # publish the session environment, then apply the branded wallpaper.
@@ -21,13 +24,10 @@ if command -v gsettings >/dev/null 2>&1 && [[ -n "${DBUS_SESSION_BUS_ADDRESS:-}"
   gsettings set org.gnome.desktop.background picture-options "zoom" || true
 fi
 
-[[ -x /opt/solos/current/bin/solos-shell-native ]] || {
-  echo "SolOS native shell is missing" >&2
-  exit 1
-}
+/usr/local/bin/solos-setup || echo 'SolOS runtime setup failed; see journalctl --user -u solos-daemon' >&2
 
 # Restart after an accidental crash, but do not fork a second shell.
 while true; do
-  /opt/solos/current/bin/solos-shell-native
+  /opt/solos/current/bin/solos-explorer-prototype
   sleep 2
 done

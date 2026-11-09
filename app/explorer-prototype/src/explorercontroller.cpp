@@ -6,6 +6,8 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QHash>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QLocale>
 #include <QLocalSocket>
 #include <QProcess>
@@ -173,12 +175,23 @@ void ExplorerController::checkRuntime()
     if (!socketPath.isEmpty()) {
         QLocalSocket socket;
         socket.connectToServer(socketPath, QIODevice::ReadWrite);
+        bool healthy = false;
         if (socket.waitForConnected(150)) {
+            socket.write("{\"method\":\"health.get\"}\n");
+            socket.flush();
+            if (socket.waitForReadyRead(350)) {
+                const auto reply = QJsonDocument::fromJson(socket.readLine()).object();
+                healthy = reply.value(QStringLiteral("ok")).toBool()
+                    && reply.value(QStringLiteral("result")).toObject().value(QStringLiteral("snapshotAvailable")).toBool();
+            }
+        }
+        if (healthy) {
             if (m_runtimeStatus != QStringLiteral("SolOS runtime is running")) {
                 m_runtimeStatus = QStringLiteral("SolOS runtime is running");
                 emit runtimeStatusChanged();
             }
-            m_runtimeTimer.stop();
+            m_runtimeChecks = 12;
+            m_runtimeTimer.setInterval(4000);
             return;
         }
     }

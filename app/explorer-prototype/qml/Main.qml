@@ -9,12 +9,12 @@ ApplicationWindow {
     height: 820
     minimumWidth: 960
     minimumHeight: 640
-    visibility: Window.Maximized
+    visibility: kioskMode ? Window.FullScreen : Window.Maximized
     visible: true
     title: "SolOS Explorer"
     color: "#101421"
 
-    property string activeView: "Home"
+    property string activeView: initialView
     property string searchText: ""
 
     component NavButton: Button {

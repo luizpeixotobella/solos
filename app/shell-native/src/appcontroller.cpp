@@ -13,6 +13,8 @@
 #include <QLocalSocket>
 #include <QProcess>
 #include <QRegularExpression>
+#include <QStandardPaths>
+#include <QSaveFile>
 #include <QUrl>
 
 #include "runtimebridge.h"
@@ -33,16 +35,16 @@ QString daemonSocketPath()
 
 QString runtimeSnapshotPath()
 {
-    const QString appDir = QCoreApplication::applicationDirPath();
-    const QString candidate = QDir(appDir).absoluteFilePath(QStringLiteral("../src/runtime_snapshot.json"));
-    return QDir::cleanPath(candidate);
+    const QString configured = qEnvironmentVariable("SOLOS_RUNTIME_SNAPSHOT");
+    if (!configured.isEmpty()) return configured;
+    return QDir(QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation))
+        .filePath(QStringLiteral("solos/runtime_snapshot.json"));
 }
 
 QString runtimeCorePath()
 {
-    const QString appDir = QCoreApplication::applicationDirPath();
-    const QString candidate = QDir(appDir).absoluteFilePath(QStringLiteral("../../runtime-core"));
-    return QDir::cleanPath(candidate);
+    return QDir(qEnvironmentVariable("SOLOS_SOURCE_DIR", QStringLiteral("/opt/solos-src")))
+        .filePath(QStringLiteral("app/runtime-core"));
 }
 
 bool invokeDaemon(const QString &method, const QJsonObject &params, QString &error)
@@ -653,7 +655,7 @@ bool AppController::generateRuntimeSnapshot()
 {
     QProcess process;
     process.setWorkingDirectory(runtimeCorePath());
-    process.start(QStringLiteral("cargo"), {QStringLiteral("run")});
+    process.start(QDir(QCoreApplication::applicationDirPath()).filePath(QStringLiteral("solos-runtime-core")), {});
     if (!process.waitForFinished(30000)) {
         m_runtimeStatus = QStringLiteral("Runtime snapshot generation timed out");
         return false;
@@ -667,15 +669,15 @@ bool AppController::generateRuntimeSnapshot()
         return false;
     }
 
-    QFile snapshotFile(runtimeSnapshotPath());
+    QDir().mkpath(QFileInfo(runtimeSnapshotPath()).absolutePath());
+    QSaveFile snapshotFile(runtimeSnapshotPath());
     if (!snapshotFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         m_runtimeStatus = QStringLiteral("Could not write runtime snapshot file");
         return false;
     }
 
     snapshotFile.write(process.readAllStandardOutput());
-    snapshotFile.close();
-    return true;
+    return snapshotFile.commit();
 }
 
 bool AppController::saveGhostBraveApiKey(const QString &apiKey)
@@ -1081,7 +1083,7 @@ void AppController::loadRuntimeSnapshot()
         snapshot = RuntimeBridge::loadSnapshotFromDaemon(socketPath);
         loadedFromDaemon = snapshot.isValid;
     }
-    if (!snapshot.isValid) {
+    if (!snapshot.isValid && qEnvironmentVariable("SOLOS_ALLOW_SNAPSHOT_FALLBACK") == QStringLiteral("1")) {
         snapshot = RuntimeBridge::loadSnapshot(runtimeSnapshotPath());
     }
     const QString now = QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd hh:mm:ss"));

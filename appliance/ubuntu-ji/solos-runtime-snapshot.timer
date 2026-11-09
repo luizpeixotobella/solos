@@ -1,0 +1,10 @@
+[Unit]
+Description=Keep SolOS host state current
+
+[Timer]
+OnActiveSec=15
+OnUnitInactiveSec=15
+Unit=solos-runtime-snapshot.service
+
+[Install]
+WantedBy=default.target

@@ -2,9 +2,10 @@
 Type=Application
 Name=SolOS Explorer
 Comment=Browse files and launch applications in SolOS
-Exec=/opt/solos/current/bin/solos-explorer-prototype
+Exec=/opt/solos/current/bin/solos-explorer-prototype %U
 TryExec=/opt/solos/current/bin/solos-explorer-prototype
 Icon=system-file-manager
 Terminal=false
 Categories=System;FileTools;
+MimeType=inode/directory;
 StartupNotify=true

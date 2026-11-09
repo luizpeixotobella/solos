@@ -7,7 +7,7 @@ This directory builds a bootable **Ubuntu 24.04 (Noble) live ISO** with:
 - GNOME Terminal and a normal Ubuntu desktop beneath SolOS;
 - a fullscreen native kiosk session with retry-on-crash startup;
 - a maximized SolOS Explorer with file browsing, installed-app launchers, and automatic runtime startup;
-- a branded SVG wallpaper and animated SolOS splash screen;
+- a branded SVG wallpaper (a custom animated SolOS splash is not implemented);
 - an Ubuntu desktop installer launcher available from the live session;
 - the SolOS source tree in `/opt/solos-src` for local development;
 - `solos-update`, an approval-bound update helper with verify/apply/rollback stages.
@@ -42,7 +42,15 @@ qemu-system-x86_64 -enable-kvm -m 8192 -smp 4 \
   -cdrom out/solos-ubuntu-ji-amd64.iso
 ```
 
-The live user is `solos`. The native shell starts automatically in fullscreen kiosk mode after the desktop session. **SolOS Explorer** is available from the Applications menu; launching it starts `solos-daemon.service` and opens a maximized file-and-app browser. The installer is available as **Install SolOS** in the applications menu, or with `solos-installer` from a terminal. Press `Alt+F4` only if you intentionally want to leave the kiosk shell.
+The live user is `solos`. **SolOS Explorer** is the primary fullscreen session. `solos-setup` automatically starts the runtime and its refresh timer and selects Explorer for folders; the previous file-manager preference is retained in the user's state directory. The native shell remains available from Applications for Wallet/Ghost and other panels. The installer is available as **Install SolOS** in the applications menu, or with `solos-installer` from a terminal. Installation is never automatic.
+
+### Functional-session integration (candidate, 2026-11-09)
+
+The image now packages the precompiled `solos-runtime-core`, not just the daemon. A private atomic host-state file is generated before the daemon starts and refreshed every 15 seconds after each completed refresh. The native bridge reads the daemon; loading a file fallback requires explicit `SOLOS_ALLOW_SNAPSHOT_FALLBACK=1`. Neither normal startup nor the refresh button runs `cargo`.
+
+`solos-setup --check` checks installed executables without changing configuration. Normal session startup runs setup automatically, without asking the user to edit JSON files. It does not create wallet keys, sign transactions, connect paid providers or grant Ghost additional permissions.
+
+This is a **source/build candidate**, not proof of a newly booted ISO. See `docs/functional-session-20261109.md` for verification and the staged work still required for Wallet and the remaining prototype panels.
 
 ## Just Intelligent update loop
 

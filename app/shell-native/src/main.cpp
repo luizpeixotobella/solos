@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+    engine.addImportPath(QStringLiteral("qrc:/qt/qml"));
     AppController controller;
 
     engine.rootContext()->setContextProperty(QStringLiteral("globalAppController"), &controller);

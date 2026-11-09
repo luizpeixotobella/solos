@@ -1,0 +1,8 @@
+[Unit]
+Description=Refresh SolOS host state from the installed runtime
+
+[Service]
+Type=oneshot
+Environment=SOLOS_RUNTIME_SNAPSHOT=%t/solos/runtime_snapshot.json
+ExecStart=/usr/local/bin/solos-runtime-refresh
+TimeoutStartSec=45

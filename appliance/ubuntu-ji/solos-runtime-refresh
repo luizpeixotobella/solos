@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+umask 077
+release="${SOLOS_RELEASE_DIR:-/opt/solos/current}"
+source_dir="${SOLOS_SOURCE_DIR:-/opt/solos-src}"
+snapshot="${SOLOS_RUNTIME_SNAPSHOT:-${XDG_RUNTIME_DIR:?User runtime directory unavailable}/solos/runtime_snapshot.json}"
+[[ -x "$release/bin/solos-runtime-core" ]] || { echo 'SolOS runtime executable missing' >&2; exit 1; }
+install -d -m 0700 "$(dirname "$snapshot")"
+temporary="$(mktemp "${snapshot}.XXXXXX")"
+trap 'rm -f -- "$temporary"' EXIT
+cd "$source_dir/app/runtime-core"
+"$release/bin/solos-runtime-core" > "$temporary"
+python3 -c 'import json,sys; x=json.load(open(sys.argv[1])); assert isinstance(x.get("hostRuntime"),dict) and x.get("sessionLabel")' "$temporary"
+mv -f -- "$temporary" "$snapshot"

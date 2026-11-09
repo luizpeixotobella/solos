@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+umask 077
+release="${SOLOS_RELEASE_DIR:-/opt/solos/current}"
+for binary in solos-runtime-core solos-daemon solos-explorer-prototype solos-shell-native; do
+  [[ -x "$release/bin/$binary" ]] || { echo "SolOS incomplete: missing $binary" >&2; exit 1; }
+done
+if [[ "${1:-}" == --check ]]; then
+  echo 'SolOS executables present. No configuration changed.'
+  exit 0
+fi
+[[ -n "${XDG_RUNTIME_DIR:-}" ]] || { echo 'Open SolOS from your desktop session.' >&2; exit 1; }
+systemctl --user daemon-reload
+systemctl --user cat solos-runtime-snapshot.timer solos-daemon.service >/dev/null
+systemctl --user enable --now solos-runtime-snapshot.timer solos-daemon.service
+if command -v xdg-mime >/dev/null; then
+  previous="$(xdg-mime query default inode/directory || true)"
+  backup="${XDG_STATE_HOME:-${XDG_CONFIG_HOME:-$HOME/.config}/state}/solos/previous-file-manager"
+  if [[ -n "$previous" && "$previous" != solos-explorer.desktop && ! -e "$backup" ]]; then
+    install -d -m 0700 "$(dirname "$backup")"
+    printf '%s\n' "$previous" > "$backup"
+  fi
+  xdg-mime default solos-explorer.desktop inode/directory
+fi
+echo 'SolOS runtime and Explorer configured. No manual file editing required.'

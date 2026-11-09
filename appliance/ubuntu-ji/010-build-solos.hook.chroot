@@ -17,8 +17,9 @@ RUSTUP_INIT_SKIP_PATH_CHECK=yes "$RUSTUP_INIT" -y --profile minimal --default-to
 export PATH="$CARGO_HOME/bin:$PATH"
 
 cd /opt/solos-src/app/runtime-core
-"$CARGO_HOME/bin/cargo" "+$RUST_TOOLCHAIN" build --release --locked --bin solos-daemon --bin ghost-audit-verify
+"$CARGO_HOME/bin/cargo" "+$RUST_TOOLCHAIN" build --release --locked --bin solos-runtime-core --bin solos-daemon --bin ghost-audit-verify
 install -d /opt/solos/releases/bootstrap/bin
+install -m 0755 "$CARGO_TARGET_DIR/release/solos-runtime-core" /opt/solos/releases/bootstrap/bin/
 install -m 0755 "$CARGO_TARGET_DIR/release/solos-daemon" /opt/solos/releases/bootstrap/bin/
 install -m 0755 "$CARGO_TARGET_DIR/release/ghost-audit-verify" /opt/solos/releases/bootstrap/bin/
 
@@ -29,6 +30,21 @@ install -m 0755 /tmp/solos-shell-build/solos-shell-native /opt/solos/releases/bo
 cmake -S /opt/solos-src/app/explorer-prototype -B /tmp/solos-explorer-build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build /tmp/solos-explorer-build
 install -m 0755 /tmp/solos-explorer-build/solos-explorer-prototype /opt/solos/releases/bootstrap/bin/
+
+# Build-tree QML metadata must not mask a broken installed layout.
+SMOKE_DIR="$(mktemp -d /tmp/solos-installed-smoke.XXXXXX)"
+for gui in solos-shell-native solos-explorer-prototype; do
+    install -m 0755 "/opt/solos/releases/bootstrap/bin/$gui" "$SMOKE_DIR/$gui"
+    code=0
+    QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software timeout 6 "$SMOKE_DIR/$gui" >"$SMOKE_DIR/$gui.log" 2>&1 || code=$?
+    if [ "$code" -ne 124 ] || grep -E 'failed to load component|is not a type|module .* is not installed' "$SMOKE_DIR/$gui.log"; then
+        cat "$SMOKE_DIR/$gui.log" >&2
+        exit 1
+    fi
+done
+install -d /var/log/solos-installed-smoke
+cp "$SMOKE_DIR/"*.log /var/log/solos-installed-smoke/
+rm -r -- "$SMOKE_DIR"
 ln -sfn /opt/solos/releases/bootstrap /opt/solos/current
 
 cat >/usr/share/applications/solos.desktop <<'EOF'
@@ -44,6 +60,10 @@ EOF
 
 install -d /etc/xdg/autostart
 install -m 0755 /opt/solos-src/appliance/ubuntu-ji/solos-session-start /usr/local/bin/solos-session-start
+install -m 0755 /opt/solos-src/appliance/ubuntu-ji/solos-setup /usr/local/bin/solos-setup
+install -m 0755 /opt/solos-src/appliance/ubuntu-ji/solos-runtime-refresh /usr/local/bin/solos-runtime-refresh
+install -m 0644 /opt/solos-src/appliance/ubuntu-ji/solos-runtime-snapshot.service /etc/systemd/user/
+install -m 0644 /opt/solos-src/appliance/ubuntu-ji/solos-runtime-snapshot.timer /etc/systemd/user/
 install -m 0755 /opt/solos-src/appliance/ubuntu-ji/solos-installer /usr/local/bin/solos-installer
 install -m 0644 /opt/solos-src/appliance/ubuntu-ji/assets/solos-background.svg /usr/share/backgrounds/solos-background.svg
 install -m 0644 /opt/solos-src/appliance/ubuntu-ji/solos.desktop /etc/xdg/autostart/solos.desktop
@@ -56,6 +76,8 @@ Description=SolOS runtime and Ghost daemon
 After=network-online.target
 
 [Service]
+Environment=SOLOS_RUNTIME_SNAPSHOT=%t/solos/runtime_snapshot.json
+ExecStartPre=/usr/local/bin/solos-runtime-refresh
 ExecStart=/opt/solos/current/bin/solos-daemon serve
 Restart=on-failure
 RestartSec=3
@@ -66,3 +88,4 @@ EOF
 
 install -d /etc/systemd/user/default.target.wants
 ln -sfn /etc/systemd/user/solos-daemon.service /etc/systemd/user/default.target.wants/solos-daemon.service
+ln -sfn /etc/systemd/user/solos-runtime-snapshot.timer /etc/systemd/user/default.target.wants/solos-runtime-snapshot.timer
