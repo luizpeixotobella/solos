@@ -39,3 +39,13 @@ This change does **not** make all snapshot domains production-backed. Wallet, qu
 3. Configure self-hosted Ghost through the UI and verify a real response. API credentials remain private; do not bake them into an ISO. Validate each remaining panel independently and label unavailable functions plainly.
 
 Build-tree/offscreen tests are not boot proof. A source push is not an installed update. Promote only with the corresponding evidence.
+
+## Noble QML packaging correction (2026-11-09)
+
+The first Stage2 image build compiled both GUIs but failed the installed-layout
+gate: `QtQml.WorkerScript` was missing in the Noble chroot. Qt development
+packages do not guarantee deployment of every QML module. The appliance now
+explicitly installs QtQml, Models, WorkerScript and QtQuick Templates alongside
+the existing QtQuick modules, and verifies their installed package state before
+accepting the ISO. Retain both installed-layout smoke gates; a successful compile
+is not sufficient. This dependency correction alone is not ISO or guest proof.

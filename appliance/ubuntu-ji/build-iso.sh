@@ -85,7 +85,7 @@ for binary in solos-shell-native solos-explorer-prototype solos-daemon solos-run
   fi
 done
 
-for package in qml6-module-qtquick qml6-module-qtquick-controls qml6-module-qtquick-layouts qml6-module-qtquick-window; do
+for package in qml6-module-qtqml qml6-module-qtqml-models qml6-module-qtqml-workerscript qml6-module-qtquick-templates qml6-module-qtquick qml6-module-qtquick-controls qml6-module-qtquick-layouts qml6-module-qtquick-window; do
   package_status="$(dpkg-query --admindir="$CHROOT_ROOT/var/lib/dpkg" -W -f='${Status}' "$package" 2>/dev/null || true)"
   if [[ "$package_status" != "install ok installed" ]]; then
     echo "SolOS GUI dependency $package is missing; rebuild with --fresh after source changes" >&2
