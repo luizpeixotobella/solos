@@ -49,3 +49,10 @@ explicitly installs QtQml, Models, WorkerScript and QtQuick Templates alongside
 the existing QtQuick modules, and verifies their installed package state before
 accepting the ISO. Retain both installed-layout smoke gates; a successful compile
 is not sufficient. This dependency correction alone is not ISO or guest proof.
+
+Noble live-build 3.x resume caution: when `cache/bootstrap` exists but
+`.build/bootstrap_cache.restore` does not, the restore helper replaces the chroot.
+Existing `.build/chroot_*` stamps are then stale and must not skip dependency,
+source-overlay or hook stages. Inspect this state before resuming; preserve the
+stamps for diagnostics and rerun all affected stages. A smoke pass before a
+bootstrap restore does not validate the final packaged rootfs.
