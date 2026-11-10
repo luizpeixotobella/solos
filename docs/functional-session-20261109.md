@@ -139,3 +139,42 @@ recorded in the workspace stage report; it is not interactive guest evidence.
 real owner's address query or live chain proof. The old tested image still lacks
 both this Wallet stage and the Explorer framing fix. Ghost endpoint/key/model
 setup is next, followed by one consolidated packaging/guest gate.
+
+
+## Stage 4 — private in-app self-hosted Ghost setup (2026-11-10)
+
+The existing Qt authenticated client and shared endpoint validator were reused;
+no provider SDK, credential service or backend was added. Agent → Talk to Ghost
+now provides endpoint/key/model setup, private atomic persistence, explicit
+unconfigured/saved-but-unverified/errors, and removal of saved setup. Keys are
+masked on input, never returned through QML or echoed in status/error bodies.
+There is no remote/hosted-provider default or fallback. Saving/loading does not
+make requests; Send is the explicit connection/inference attempt.
+
+Configuration lives in the user's `solos/ghost-api.json`, not the repository or
+ISO. It is a 0600 file in a 0700 directory with schema/URL/key/model validation;
+unreadable/nonprivate/corrupt saved configs fail closed rather than falling back.
+Explicit environment-only provisioning remains compatible if no saved config
+exists. Reset commits a key-free disabled marker so an old environment key does
+not silently re-enable chat on restart. A blank key preserves a credential only
+for an unchanged endpoint. Saving a new setup cancels old replies and clears
+conversation; reset and clear also invalidate pending responses. Failed requests
+never append a prompt; history is bounded to ten session-only exchanges.
+
+Source gates use the native CMake build, all CTest targets and a copied-binary
+isolated QML smoke. `ghost-local-config` starts only a controlled loopback mock
+with synthetic credentials. It tests invalid URL/key/model input, private
+persistence/reload, no request on save/load, model and Bearer routing, seven
+failure modes (HTTP, redirect, malformed/empty/error/oversized responses and
+timeout), no credential redirects or remote error-body echo, bounded history,
+in-flight clear/reset, environment fallback suppression, corrupt/nonprivate
+configs and symlink/write rejection. The separate existing plaintext gate and
+Wallet local RPC suite remain enabled. See the workspace Ghost stage report
+for observed results and logs.
+
+**Source-only:** no real endpoint credentials were supplied or used, no live
+Ghost inference was attempted, and no ISO/VM/host configuration changed. Saving
+or a local mock answer is not actual self-hosted inference evidence. After the
+source gates pass, build one consolidated image and recheck runtime/framing,
+Wallet and Ghost UI on an offline guest; real inference remains a separate
+network-enabled integration plan, never a reason to bake secrets into an ISO.

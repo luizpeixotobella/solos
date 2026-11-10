@@ -55,6 +55,52 @@ Item {
                             color: Theme.textSoft
                             wrapMode: Text.WordWrap
                         }
+                        Label {
+                            text: "Self-hosted Ghost setup. Saving configuration does not verify a connection or inference. No hosted-provider fallback. The key is stored privately on this device, not in the ISO."
+                            Layout.fillWidth: true
+                            color: Theme.textSoft
+                            wrapMode: Text.WordWrap
+                        }
+                        TextField {
+                            id: ghostEndpoint
+                            Layout.fillWidth: true
+                            text: appController.ghostChat.endpoint
+                            placeholderText: "Your self-hosted base URL (HTTPS, or http://127.0.0.1:18791/v1 tunnel)"
+                            maximumLength: 2048
+                        }
+                        TextField {
+                            id: ghostModel
+                            Layout.fillWidth: true
+                            text: appController.ghostChat.model
+                            placeholderText: "Self-hosted model ID"
+                            maximumLength: 128
+                        }
+                        TextField {
+                            id: ghostKey
+                            Layout.fillWidth: true
+                            echoMode: TextInput.Password
+                            inputMethodHints: Qt.ImhSensitiveData | Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase
+                            placeholderText: "API key (blank keeps current key only for the same endpoint)"
+                            maximumLength: 4096
+                        }
+                        RowLayout {
+                            Button {
+                                text: "Save Ghost setup"
+                                onClicked: {
+                                    if (appController.ghostChat.configure(ghostEndpoint.text, ghostKey.text, ghostModel.text)) {
+                                        ghostKey.text = ""; ghostMessage.text = ""
+                                    }
+                                }
+                            }
+                            Button {
+                                text: "Remove saved setup"
+                                onClicked: {
+                                    if (appController.ghostChat.resetConfiguration()) {
+                                        ghostKey.text = ""; ghostEndpoint.text = ""; ghostModel.text = "ghost-ji"; ghostMessage.text = ""
+                                    }
+                                }
+                            }
+                        }
                         TextArea {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 260
@@ -80,7 +126,6 @@ Item {
                             }
                             Button {
                                 text: "Clear conversation"
-                                enabled: !appController.ghostChat.busy
                                 onClicked: { appController.ghostChat.clear(); ghostMessage.text = "" }
                             }
                         }

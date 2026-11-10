@@ -1,12 +1,15 @@
 #include "ghostapiclient.h"
 #include <QCoreApplication>
 #include <QTimer>
+#include <QTemporaryDir>
 #include <iostream>
 
 int main(int argc, char **argv) {
     QCoreApplication app(argc, argv);
     const bool live = app.arguments().contains("--live");
+    QTemporaryDir isolatedConfig;
     if (!live) {
+        qputenv("XDG_CONFIG_HOME", isolatedConfig.path().toUtf8());
         qputenv("SOLOS_GHOST_API_URL", "http://example.com/v1");
         GhostApiClient client;
         if (client.configured()) return 1;
