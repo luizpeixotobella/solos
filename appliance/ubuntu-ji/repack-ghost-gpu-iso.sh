@@ -61,13 +61,30 @@ for gui in solos-shell-native solos-explorer-prototype; do
 done
 unsquashfs -cat "$work/filesystem.squashfs" usr/local/bin/solos-ghost-setup >"$out/packaged-setup.py"
 cmp "$out/packaged-setup.py" "$stage/appliance/ubuntu-ji/solos-ghost-setup"
+xorriso -osirrox on -indev "$base" -extract /SHA256SUMS "$work/base-SHA256SUMS"
+python3 - "$work" <<'PY'
+import hashlib,pathlib,sys
+w=pathlib.Path(sys.argv[1]); text=(w/'base-SHA256SUMS').read_text()
+for name in ('filesystem.squashfs','filesystem.size'):
+ with (w/name).open('rb') as f: digest=hashlib.file_digest(f,'sha256').hexdigest()
+ lines=text.splitlines(); count=0
+ for i,line in enumerate(lines):
+  if line.endswith('  ./casper/'+name):
+   lines[i]=digest+'  ./casper/'+name; count+=1
+ if count != 1: raise RuntimeError('Missing or ambiguous embedded manifest entry')
+ text='\n'.join(lines)+'\n'
+(w/'SHA256SUMS').write_text(text)
+PY
 iso=$out/solos-ghost-gpu-amd64.iso
 xorriso -indev "$base" -outdev "$iso" -boot_image any replay \
  -map "$work/filesystem.squashfs" /casper/filesystem.squashfs \
- -map "$work/filesystem.size" /casper/filesystem.size
+ -map "$work/filesystem.size" /casper/filesystem.size \
+ -map "$work/SHA256SUMS" /SHA256SUMS
 xorriso -indev "$iso" -report_el_torito plain >"$out/boot.txt" 2>&1
 grep -q 'BIOS' "$out/boot.txt"
 grep -q 'UEFI' "$out/boot.txt"
+xorriso -osirrox on -indev "$iso" -extract / "$work/iso-integrity-check"
+(cd "$work/iso-integrity-check"; sha256sum -c SHA256SUMS) >"$out/embedded-integrity.log" 2>&1
 file "$iso"
 fdisk -l "$iso"
 (cd "$out"; sha256sum solos-ghost-gpu-amd64.iso >SHA256SUMS; sha256sum -c SHA256SUMS)
