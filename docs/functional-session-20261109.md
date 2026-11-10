@@ -56,3 +56,29 @@ Existing `.build/chroot_*` stamps are then stale and must not skip dependency,
 source-overlay or hook stages. Inspect this state before resuming; preserve the
 stamps for diagnostics and rerun all affected stages. A smoke pass before a
 bootstrap restore does not validate the final packaged rootfs.
+
+## Guest verification and stream-framing correction (2026-11-10)
+
+The dependency-corrected ISO (SHA256
+`0fe9a8b954033dc3c32de5024b5b196466289dea76008925be1421dfa1fc57e6`)
+booted in a separate VirtualBox BIOS VM, with only its read-only ISO attached,
+6 GiB RAM, two CPUs, no network, disks, clipboard or host shares. The earlier
+owner VM was left running unchanged. After selecting the live entry, Explorer
+started automatically fullscreen. Guest terminal checks confirmed the real
+Ubuntu/hostname snapshot, active daemon and refresh timer, 0700 runtime directory,
+0600 snapshot/socket, and `solos-explorer.desktop` as the folder association.
+Opening `/home/solos` through `xdg-open` displayed the actual guest directories.
+The new test VM was saved, with `VMState="saved"` verified.
+
+The second Explorer window exposed an intermittent disconnected indicator.
+Inspection found health JSON was parsed after the first available bytes rather
+than after its newline delimiter. A real-socket fragmented-response regression
+failed against the old algorithm and passes with the corrected reader. The
+reader now has one total deadline and a 64 KiB response limit; incomplete,
+malformed, oversized, negative and disconnected replies remain unhealthy.
+
+Run `ctest --test-dir <explorer-build> --output-on-failure` for nine socket
+scenarios in `runtime-health-framing`. This source correction is **not yet in
+the tested ISO**; boot/autostart evidence does not prove it is installed. Wallet
+and Ghost setup remain separate stages. Consolidate their verified source
+changes before another expensive ISO rebuild, then repeat the guest gates.
