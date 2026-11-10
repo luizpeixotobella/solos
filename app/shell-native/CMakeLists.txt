@@ -12,6 +12,9 @@ qt_standard_project_setup(REQUIRES 6.4)
 set_source_files_properties(qml/Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 
 qt_add_executable(solos-shell-native
+    src/walletreader.cpp
+    src/walletreader.h
+    src/chainrpc.h
     src/main.cpp
     src/appcontroller.cpp
     src/appcontroller.h
@@ -75,5 +78,9 @@ if(BUILD_TESTING)
     qt_add_executable(ghost-api-smoke tests/ghost-api-smoke.cpp src/ghostapiclient.cpp src/ghostapiclient.h)
     target_include_directories(ghost-api-smoke PRIVATE src)
     target_link_libraries(ghost-api-smoke PRIVATE Qt6::Core Qt6::Network)
+    qt_add_executable(wallet-rpc-smoke tests/wallet-rpc-smoke.cpp src/walletreader.cpp src/walletreader.h)
+    target_include_directories(wallet-rpc-smoke PRIVATE src)
+    target_link_libraries(wallet-rpc-smoke PRIVATE Qt6::Core Qt6::Network)
+    add_test(NAME wallet-local-rpc COMMAND wallet-rpc-smoke)
     add_test(NAME ghost-api-rejects-plaintext COMMAND ghost-api-smoke)
 endif()

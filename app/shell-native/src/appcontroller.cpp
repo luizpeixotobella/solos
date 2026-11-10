@@ -18,6 +18,7 @@
 #include <QUrl>
 
 #include "runtimebridge.h"
+#include "chainrpc.h"
 
 namespace {
 QString daemonSocketPath()
@@ -97,7 +98,7 @@ AppController::AppController(QObject *parent)
     , m_currentScreen(QStringLiteral("Home"))
     , m_sessionLabel(QStringLiteral("Luiz · SolOS Environment Active"))
     , m_systemLabel(QStringLiteral("Online · v0.1-foundation · Synced"))
-    , m_walletLabel(QStringLiteral("Solana · 9xLu...Ghost · 12.84 SOL"))
+    , m_walletLabel(QStringLiteral("Wallet unconfigured · no balance"))
     , m_agentStatus(QStringLiteral("Ghost active · awaiting approval"))
     , m_runtimeStatus(QStringLiteral("Waiting for runtime intermediary snapshot"))
     , m_runtimeSource(runtimeSnapshotPath())
@@ -142,6 +143,7 @@ AppController::AppController(QObject *parent)
     , m_ghostChat(this)
     , m_homeState(this)
 {
+    connect(&m_wallet, &WalletReader::changed, this, &AppController::runtimeStateChanged);
     loadRuntimeSnapshot();
 
     m_runtimeWatchTimer.setInterval(2000);
@@ -176,7 +178,7 @@ QString AppController::systemLabel() const
 
 QString AppController::walletLabel() const
 {
-    return m_walletLabel;
+    return m_wallet.address().isEmpty() ? QStringLiteral("Wallet unconfigured") : QStringLiteral("Polygon · read-only address");
 }
 
 QString AppController::agentStatus() const
@@ -641,8 +643,8 @@ quint64 extractUintFromEthCall(const QByteArray &payload, bool &ok)
         return 0;
     }
 
-    const QString result = document.object().value(QStringLiteral("result")).toString();
-    if (!result.startsWith(QStringLiteral("0x")) || result.length() < 3) {
+    const QString result = ChainRpc::result(payload, 1);
+    if (!QRegularExpression(QStringLiteral("^0x[0-9a-fA-F]{64}$")).match(result).hasMatch()) {
         return 0;
     }
 
@@ -802,8 +804,7 @@ bool AppController::clearGhostBraveApiKey()
 bool AppController::saveHeartPassWalletAddress(const QString &walletAddress)
 {
     const QString trimmed = walletAddress.trimmed();
-    const QRegularExpression polygonAddress(QStringLiteral("^0x[0-9a-fA-F]{40}$"));
-    if (!polygonAddress.match(trimmed).hasMatch()) {
+    if (!ChainRpc::address(trimmed)) {
         m_heartPassStatus = QStringLiteral("invalid wallet address");
         emit runtimeStateChanged();
         return false;
@@ -856,8 +857,8 @@ bool AppController::verifyHeartPassOwnership()
     const QString contract = root.value(QStringLiteral("contract")).toString().trimmed().toLower();
     const QString tokenId = root.value(QStringLiteral("tokenId")).toString().trimmed();
 
-    const QRegularExpression polygonAddress(QStringLiteral("^0x[0-9a-fA-F]{40}$"));
-    if (!polygonAddress.match(walletAddress).hasMatch()) {
+    if (!ChainRpc::address(walletAddress) || !ChainRpc::address(contract)
+        || !QRegularExpression(QStringLiteral("^[0-9]{1,19}$")).match(tokenId).hasMatch()) {
         m_heartPassStatus = QStringLiteral("needs valid wallet before verification");
         emit runtimeStateChanged();
         return false;

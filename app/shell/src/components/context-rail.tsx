@@ -74,15 +74,16 @@ function RecentActionsPanel({ state }: { state: SolOSState }) {
 function WalletRail({ state, pendingApprovals }: { state: SolOSState; pendingApprovals: ApprovalItem[] }) {
   return (
     <>
-      <PanelCard title="Wallet Status" aside={<StatusBadge label={state.wallet.status} tone="success" />}>
+      <PanelCard title="Wallet Status" aside={<StatusBadge label={state.wallet.status} />}>
         <div style={{ display: "grid", gap: 8, color: colors.soft }}>
           <div>Network: {state.wallet.network}</div>
           <div>Address: {state.wallet.address}</div>
-          <div>Assets: {state.wallet.assets.length}</div>
+          <div>Assets: not queried</div>
         </div>
       </PanelCard>
       <PanelCard title="Balances">
         <div style={{ display: "grid", gap: 10 }}>
+          {state.wallet.balances.length === 0 && <div>Unavailable — no live query</div>}
           {state.wallet.balances.map((balance) => (
             <div key={balance.label} style={{ display: "flex", justifyContent: "space-between", gap: 12, color: colors.soft }}>
               <span>{balance.label}</span>

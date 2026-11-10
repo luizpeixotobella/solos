@@ -1074,7 +1074,7 @@ fn main() {
             "Linux base system attached · {} · {} · {}",
             host.initSystem, host.sessionType, if online { "online" } else { "offline" }
         ),
-        walletLabel: "Wallet bridge pending · ownership surface visible".into(),
+        walletLabel: "Wallet unconfigured · use native read-only setup".into(),
         agentStatus: if ghost_research.status == "ready" {
             format!("Ghost active · web-grounded · approval-aware · JI {}", ghost_autonomy.level)
         } else {

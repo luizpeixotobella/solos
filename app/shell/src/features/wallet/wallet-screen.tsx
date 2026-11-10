@@ -6,10 +6,10 @@ import type { ApprovalItem, SolOSState } from "../../types/system";
 export function WalletScreen({ state, pendingApprovals }: { state: SolOSState; pendingApprovals: ApprovalItem[] }) {
   return (
     <div style={{ display: "grid", gap: 16 }}>
-      <PanelCard title="Wallet" aside={<StatusBadge label={state.wallet.status} tone="success" />}>
-        <h1 style={{ margin: 0, fontSize: 34 }}>Wallet connected</h1>
+      <PanelCard title="Wallet" aside={<StatusBadge label={state.wallet.status} />}>
+        <h1 style={{ margin: 0, fontSize: 34 }}>Wallet not configured</h1>
         <p style={{ color: colors.soft, maxWidth: 760 }}>
-          Identity, balances, assets, and signature awareness are surfaced here as a visible system layer — not hidden background state.
+          No account, balance or assets are connected. Use the native Wallet to configure a public Polygon address for read-only queries; saving an address is not proof of control.
         </p>
       </PanelCard>
 
@@ -24,6 +24,7 @@ export function WalletScreen({ state, pendingApprovals }: { state: SolOSState; p
 
         <PanelCard title="Balance Summary">
           <div style={{ display: "grid", gap: 8, color: colors.soft }}>
+            {state.wallet.balances.length === 0 && <div>Unavailable — no live query</div>}
             {state.wallet.balances.map((balance) => (
               <div key={balance.label}>
                 {balance.label}: {balance.value}
@@ -43,6 +44,7 @@ export function WalletScreen({ state, pendingApprovals }: { state: SolOSState; p
 
       <PanelCard title="Assets List">
         <div style={{ display: "grid", gap: 10 }}>
+          {state.wallet.assets.length === 0 && <div>Not queried</div>}
           {state.wallet.assets.map((asset) => (
             <div
               key={asset.id}

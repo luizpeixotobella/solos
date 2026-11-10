@@ -10,12 +10,14 @@
 #include "approvalqueuemodel.h"
 #include "ghostruntime.h"
 #include "ghostapiclient.h"
+#include "walletreader.h"
 #include "homestate.h"
 #include "quickactionsmodel.h"
 
 class AppController : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(WalletReader* wallet READ wallet CONSTANT)
     Q_PROPERTY(QString currentScreen READ currentScreen WRITE setCurrentScreen NOTIFY currentScreenChanged)
     Q_PROPERTY(QString sessionLabel READ sessionLabel NOTIFY runtimeStateChanged)
     Q_PROPERTY(QString systemLabel READ systemLabel NOTIFY runtimeStateChanged)
@@ -69,6 +71,7 @@ class AppController : public QObject
 public:
     explicit AppController(QObject *parent = nullptr);
 
+    WalletReader *wallet() { return &m_wallet; }
     QString currentScreen() const;
     void setCurrentScreen(const QString &screen);
 
@@ -194,6 +197,7 @@ private:
     ApprovalQueueModel m_approvalQueueModel;
     GhostRuntime m_ghostRuntime;
     GhostApiClient m_ghostChat;
+    WalletReader m_wallet;
     HomeState m_homeState;
     QTimer m_runtimeWatchTimer;
 };

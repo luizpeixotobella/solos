@@ -80,9 +80,9 @@ export function HomeScreen({
           <div style={{ display: "grid", gap: 8, color: colors.soft }}>
             <div>Address: {state.wallet.address}</div>
             <div>
-              Primary balance: {state.wallet.balances[0]?.value} {state.wallet.balances[0]?.label}
+              Balance: {state.wallet.balances.length ? `${state.wallet.balances[0]?.value} ${state.wallet.balances[0]?.label}` : "Unavailable"}
             </div>
-            <div>Assets tracked: {state.wallet.assets.length}</div>
+            <div>Assets: not queried</div>
           </div>
         </PanelCard>
 

@@ -82,3 +82,60 @@ scenarios in `runtime-health-framing`. This source correction is **not yet in
 the tested ISO**; boot/autostart evidence does not prove it is installed. Wallet
 and Ghost setup remain separate stages. Consolidate their verified source
 changes before another expensive ISO rebuild, then repeat the guest gates.
+
+## Stage 3 — public-address Wallet (2026-11-10)
+
+Preflight reused the native Qt Network stack and the existing Heart Pass
+ERC-1155 read path rather than adding a wallet SDK, signing connector, hosted
+service or dependency. Shared `ChainRpc` validation now also checks the existing
+Heart Pass response envelope; the existing ownership/ABI helpers remain intact.
+
+The native Wallet and top bar no longer invent a Solana account or SOL/USDC
+funds. The auxiliary web shell also starts disconnected with no assets/balances,
+not a green connected badge. Native Wallet provides explicit save/clear/read
+controls for a **public Polygon address** and an owner-selected RPC endpoint.
+Configuration is atomic, private (`$XDG_CONFIG_HOME/solos/wallet.json`, file 0600,
+directory 0700), and reloads without initiating network activity. HTTPS is
+required except for loopback HTTP; credential/query/fragment URLs are rejected.
+No address or endpoint is preconfigured as the owner's identity.
+
+Reads are asynchronous: `eth_chainId` must return Polygon `0x89` before
+`eth_getBalance`. Exact uint256 native quantities are rendered as POL without
+floating-point rounding. JSON-RPC version/id/error, HTTP failures, malformed or
+oversized responses, a total five-second per-request deadline, and canonical
+quantity validation fail closed. A refresh/error clears old funds; an observation
+expires after five minutes. Late replies cannot repopulate a cleared/reconfigured
+address. No automatic balance query occurs at startup or save.
+
+The UI explicitly distinguishes public observation from address control, NFT
+entitlement and inference availability. Existing Heart Pass verification remains
+a separate legacy read path, not a signing session. Local prototype quota totals
+and claim actions are no longer presented as usable funds/allowance in Wallet.
+The old Heart Pass repository-local persistence has **not** been migrated by this
+bounded stage; it is separate from the new writable observer configuration.
+No private keys/seeds, token balances, transactions, Safe lab, or sponsored
+inference are implemented or asserted.
+
+Verification:
+
+```sh
+cmake -S app/shell-native -B /tmp/solos-wallet-build -DBUILD_TESTING=ON
+cmake --build /tmp/solos-wallet-build -j2
+ctest --test-dir /tmp/solos-wallet-build --output-on-failure
+(cd app/shell && npm ci --ignore-scripts && npm run build)
+```
+
+`wallet-local-rpc` runs an in-process loopback HTTP server with synthetic public
+fixtures only. It covers invalid/zero addresses and unsafe endpoints, save/reload
+and file permissions, Polygon chain ID, exact native balance, ten failure modes
+(wrong chain/id/version, RPC error, malformed/noncanonical/overflow/oversized
+responses, HTTP error and timeout), observed-balance expiry using an injected
+clock, clearing old funds on errors, and clear during an in-flight request. It
+also checks zero, one wei and maximum uint256 formatting. Both CTest targets and
+the TypeScript/Vite build passed. A copied-binary isolated offscreen QML smoke is
+recorded in the workspace stage report; it is not interactive guest evidence.
+
+**Source-only:** no ISO rebuild, VM change, host config change, main promotion,
+real owner's address query or live chain proof. The old tested image still lacks
+both this Wallet stage and the Explorer framing fix. Ghost endpoint/key/model
+setup is next, followed by one consolidated packaging/guest gate.

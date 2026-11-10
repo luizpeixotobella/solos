@@ -28,8 +28,15 @@ Item {
         SectionCard {
             Layout.fillWidth: true
             title: "Wallet"
-            subtitle: "Explicit ownership"
-            body: "Balances, assets, connection state, and future signature requests should remain visible and deliberate."
+            subtitle: "Unconfigured or read-only · never a signing wallet"
+            body: "Set up a public address below. Balances remain unavailable until a valid Polygon RPC response is observed."
+        }
+
+        SectionCard {
+            Layout.fillWidth: true
+            title: "Pulso rewards"
+            subtitle: "Unavailable in this recovery stage"
+            body: "No usable Ghost allowance is asserted. Legacy reward records do not establish a funded balance or a working sponsored service."
         }
 
         Rectangle {
@@ -37,49 +44,51 @@ Item {
             radius: Theme.cardRadius
             color: Theme.surface
             border.color: Theme.border
-            border.width: 1
-            implicitHeight: pulsoRewardColumn.implicitHeight + 36
-
+            implicitHeight: walletSetup.implicitHeight + 36
             ColumnLayout {
-                id: pulsoRewardColumn
+                id: walletSetup
                 anchors.fill: parent
                 anchors.margins: Theme.cardPadding
                 spacing: 10
-
+                Label { text: "Polygon · public address observer"; color: Theme.textStrong; font.pixelSize: 20 }
                 Label {
-                    text: "Pulso Founder Reward"
-                    color: Theme.textStrong
-                    font.pixelSize: 20
-                    font.bold: true
-                }
-
-                Label {
-                    text: "Paste the claim code shown in the authenticated Pulso rewards page. The claim is bound to the verified Polygon wallet and adds its Ghost-query allowance to this Wallet."
+                    text: appController.wallet.status
                     color: Theme.textSoft
                     Layout.fillWidth: true
                     wrapMode: Text.WordWrap
                 }
-
-                TextField {
+                Label {
+                    text: "Saving an address does not connect a signing wallet or prove control, Heart Pass entitlement or sponsored inference. No keys, seeds, tokens or transactions. Querying shares the public address with your selected RPC provider."
+                    color: Theme.textSoft
                     Layout.fillWidth: true
-                    placeholderText: "Pulso reward claim code"
-                    text: pulsoClaimInput
-                    onTextChanged: pulsoClaimInput = text
+                    wrapMode: Text.WordWrap
                 }
-
-                Button {
-                    text: "Claim Ghost allowance"
-                    enabled: appController.heartPassVerificationStatus === "verified-holder"
-                    onClicked: appController.claimPulsoGhostReward(pulsoClaimInput)
+                TextField {
+                    id: readAddress
+                    Layout.fillWidth: true
+                    placeholderText: "Public Polygon address (0x…)"
+                    text: appController.wallet.address
+                    maximumLength: 42
+                }
+                TextField {
+                    id: readEndpoint
+                    Layout.fillWidth: true
+                    placeholderText: "Your Polygon HTTPS RPC (localhost HTTP also allowed)"
+                    text: appController.wallet.endpoint
+                    maximumLength: 2048
+                }
+                RowLayout {
+                    Button { text: "Save read-only setup"; onClicked: appController.wallet.configure(readAddress.text, readEndpoint.text) }
+                    Button { text: "Read balance"; enabled: !appController.wallet.busy && appController.wallet.address !== ""; onClicked: appController.wallet.refresh() }
+                    Button { text: "Clear"; onClicked: { if (appController.wallet.clear()) { readAddress.text = ""; readEndpoint.text = "" } } }
+                }
+                Label {
+                    text: "Native balance (POL): " + appController.wallet.balance + "\nLast observed: " + appController.wallet.checkedAt + "\nToken/NFT balances: not queried. No estimated funds are displayed."
+                    color: Theme.textSoft
+                    Layout.fillWidth: true
+                    wrapMode: Text.WrapAnywhere
                 }
             }
-        }
-
-        SectionCard {
-            Layout.fillWidth: true
-            title: "Account Summary"
-            subtitle: "Mock data"
-            body: "Solana · 9xLu...Ghost · 12.84 SOL · 248.00 USDC"
         }
 
         SectionCard {
@@ -97,24 +106,15 @@ Item {
                   + "\nLast checked: " + appController.heartPassLastCheckedAt
                   + "\nConfig: " + appController.heartPassConfigPath
                   + "\nOpenSea: " + appController.heartPassOpenSeaUrl
-                  + "\n\nCapabilities:\n• " + appController.heartPassCapabilityLines.join("\n• ")
+
                   + "\n\nNext: " + appController.heartPassNextStep
         }
 
         SectionCard {
             Layout.fillWidth: true
-            title: appController.heartPassQuotaTitle
-            subtitle: appController.heartPassQuotaStatus + " · " + appController.heartPassQuotaMode
-            body: appController.heartPassQuotaSummary
-                  + "\n\nPeriod: " + appController.heartPassQuotaPeriod
-                  + "\nIncluded queries: " + appController.heartPassQuotaIncludedQueries
-                  + "\nUsed queries: " + appController.heartPassQuotaUsedQueries
-                  + "\nRemaining queries: " + appController.heartPassQuotaRemainingQueries
-                  + "\nUsage source: " + appController.heartPassQuotaUsageSource
-                  + "\nFallback: " + appController.heartPassQuotaFallback
-                  + "\nLast sync: " + appController.heartPassQuotaLastSync
-                  + "\nReset policy: " + appController.heartPassQuotaResetPolicy
-                  + "\n\nNext: " + appController.heartPassQuotaNextStep
+            title: "Sponsored inference"
+            subtitle: "Unavailable · planned quota service"
+            body: "Local quota/reward fields are not a spendable balance or a working sponsored service. A public address or observed NFT holding does not activate inference."
         }
 
         Rectangle {
@@ -140,7 +140,7 @@ Item {
                 }
 
                 Label {
-                    text: "Store the Polygon wallet address locally. On-chain NFT ownership verification comes in the next stage."
+                    text: "Separate Heart Pass address configuration. Verify on Polygon to observe NFT holdings; this does not prove address control or activate sponsored inference."
                     color: Theme.textSoft
                     Layout.fillWidth: true
                     wrapMode: Text.WordWrap

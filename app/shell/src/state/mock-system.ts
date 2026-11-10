@@ -165,17 +165,11 @@ export const initialAgentState: AgentState = {
 };
 
 export const initialWalletState: WalletState = {
-  status: "connected",
-  address: "9xLu...Ghost",
-  network: "Solana",
-  balances: [
-    { label: "SOL", value: "12.84" },
-    { label: "USDC", value: "248.00" },
-  ],
-  assets: [
-    { id: "asset-1", name: "SolOS Genesis Pass", symbol: "SGP", amount: "1" },
-    { id: "asset-2", name: "USD Coin", symbol: "USDC", amount: "248.00" },
-  ],
+  status: "disconnected",
+  address: "Not configured (read-only setup is in the native Wallet)",
+  network: "Not configured",
+  balances: [],
+  assets: [],
 };
 
 export const initialApps: AppDefinition[] = [
