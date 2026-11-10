@@ -61,6 +61,11 @@ EOF
 install -d /etc/xdg/autostart
 install -m 0755 /opt/solos-src/appliance/ubuntu-ji/solos-session-start /usr/local/bin/solos-session-start
 install -m 0755 /opt/solos-src/appliance/ubuntu-ji/solos-setup /usr/local/bin/solos-setup
+install -m 0755 /opt/solos-src/appliance/ubuntu-ji/solos-ghost-setup /usr/local/bin/solos-ghost-setup
+install -m 0755 /opt/solos-src/appliance/ubuntu-ji/solos-ghost-setup-ui /usr/local/bin/solos-ghost-setup-ui
+install -m 0644 /opt/solos-src/appliance/ubuntu-ji/solos-ghost-local.service /etc/systemd/user/
+install -m 0644 /opt/solos-src/appliance/ubuntu-ji/solos-ghost-api.service /etc/systemd/user/
+install -m 0644 /opt/solos-src/appliance/ubuntu-ji/solos-ghost-setup.desktop /usr/share/applications/
 install -m 0755 /opt/solos-src/appliance/ubuntu-ji/solos-runtime-refresh /usr/local/bin/solos-runtime-refresh
 install -m 0644 /opt/solos-src/appliance/ubuntu-ji/solos-runtime-snapshot.service /etc/systemd/user/
 install -m 0644 /opt/solos-src/appliance/ubuntu-ji/solos-runtime-snapshot.timer /etc/systemd/user/

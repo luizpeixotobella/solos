@@ -1,0 +1,15 @@
+[Unit]
+Description=SolOS private local Ghost GPU engine
+After=network.target
+ConditionPathExists=%h/.local/share/solos/ghost/local.json
+
+[Service]
+ExecStart=/usr/local/bin/solos-ghost-setup --serve
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+TimeoutStopSec=20
+
+[Install]
+WantedBy=default.target

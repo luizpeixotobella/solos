@@ -1,0 +1,295 @@
+#!/usr/bin/env python3
+"""Owner-triggered, pinned local Ghost setup. No root, hosted service or OS actions."""
+import argparse
+import fcntl
+import hashlib
+import json
+import os
+from pathlib import Path
+import platform
+import re
+import secrets
+import shutil
+import subprocess
+import sys
+import tarfile
+import tempfile
+import time
+import urllib.error
+import urllib.request
+
+VERSION = 'b11669'
+ENGINE_URL = 'https://github.com/ggml-org/llama.cpp/releases/download/b11669/llama-b11669-bin-ubuntu-vulkan-x64.tar.gz'
+ENGINE_SHA = 'e8709e5ba6c1b093dea7f3de57f4aba842f9a188fba6b465782d65d6fcfa4d9f'
+MODEL_URL = 'https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/resolve/a06e946bb6b655725eafa393f4a9745d460374c9/Qwen3-4B-Instruct-2507-Q4_K_M.gguf'
+MODEL_SHA = '3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597'
+ALIAS = 'ghost-local-qwen3-4b'
+BASE = 'http://127.0.0.1:18794'
+API_BASE = 'http://127.0.0.1:18795'
+NODE_URL = 'https://nodejs.org/dist/v22.23.4/node-v22.23.4-linux-x64.tar.xz'
+NODE_SHA = '1805bcd35e6815559bd2eb97db438d3fdb0eb3a5e6a977b7c1badca76337e9ce'
+DATA = Path(os.environ.get('XDG_DATA_HOME', str(Path.home() / '.local/share'))) / 'solos/ghost'
+CONFIG = Path(os.environ.get('XDG_CONFIG_HOME', str(Path.home() / '.config'))) / 'solos'
+STATE = DATA / 'local.json'
+
+
+def digest(path):
+    with open(path, 'rb') as source:
+        return hashlib.file_digest(source, 'sha256').hexdigest()
+
+
+def private_dir(path):
+    if path.is_symlink():
+        raise RuntimeError('Refusing symbolic-link state directory')
+    path.mkdir(parents=True, exist_ok=True, mode=0o700)
+    path.chmod(0o700)
+
+
+def atomic(path, content):
+    if path.is_symlink():
+        raise RuntimeError('Refusing symbolic-link configuration')
+    private_dir(path.parent)
+    fd, name = tempfile.mkstemp(dir=path.parent, prefix='.ghost-')
+    try:
+        with os.fdopen(fd, 'w') as out:
+            out.write(content)
+        os.replace(name, path)
+    finally:
+        if os.path.exists(name):
+            os.unlink(name)
+
+
+def download(url, target, expected):
+    if target.exists():
+        if target.is_symlink() or digest(target) != expected:
+            raise RuntimeError('Existing artifact failed checksum; left unchanged')
+        return
+    temporary = target.with_suffix(target.suffix + '.part')
+    if temporary.is_symlink():
+        raise RuntimeError('Unsafe download target')
+    request = urllib.request.Request(url, headers={'User-Agent': 'SolOS-Ghost-setup/1'})
+    with urllib.request.urlopen(request, timeout=60) as source, open(temporary, 'wb') as out:
+        shutil.copyfileobj(source, out, 1024 * 1024)
+    if digest(temporary) != expected:
+        raise RuntimeError('Download checksum mismatch; artifact not installed')
+    os.replace(temporary, target)
+
+
+def choose_device(output, cpu=False):
+    if cpu:
+        return 'none'
+    devices = re.findall(r'^\s*(Vulkan\d+):\s*(.+)$', output, re.M)
+    for vendor in ('NVIDIA', 'AMD', 'Radeon'):
+        for device, name in devices:
+            if vendor.lower() in name.lower() and 'llvmpipe' not in name.lower():
+                return device
+    raise RuntimeError('No supported discrete Vulkan GPU detected. Install its driver or explicitly choose --cpu. VirtualBox video is not the notebook GPU.')
+
+
+def engine_path():
+    candidates = list((DATA / VERSION).rglob('llama-server'))
+    if len(candidates) != 1:
+        raise RuntimeError('Local engine absent or ambiguous; run --install')
+    return candidates[0]
+
+
+def request(path, key=None, body=None, timeout=15, base=BASE):
+    headers = {'Content-Type': 'application/json'}
+    if key:
+        headers['Authorization'] = 'Bearer ' + key
+    data = None if body is None else json.dumps(body).encode()
+    with urllib.request.urlopen(urllib.request.Request(base + path, data=data, headers=headers), timeout=timeout) as response:
+        return json.load(response)
+
+
+def probe(key, base=BASE, model=ALIAS):
+    # Authentication and actual generation are separate from liveness.
+    try:
+        request('/v1/models', base=base)
+    except urllib.error.HTTPError as error:
+        if error.code != 401:
+            raise RuntimeError('Unexpected unauthenticated model status') from None
+    else:
+        raise RuntimeError('Local engine did not enforce authentication')
+    start = time.monotonic()
+    result = request('/v1/chat/completions', key, {
+        'model': model, 'messages': [{'role': 'user', 'content': 'Reply with exactly GHOST-GPU-OK'}],
+        'temperature': 0, 'max_tokens': 32, 'stream': False,
+    }, timeout=180, base=base)
+    text = result['choices'][0]['message'].get('content', '').strip()
+    if text != 'GHOST-GPU-OK':
+        raise RuntimeError('Engine replied, but acceptance marker did not match')
+    return {'schema': 'solos.ghost.local-proof.v1', 'model': model,
+            'seconds': round(time.monotonic() - start, 3), 'usage': result.get('usage'),
+            'timings': result.get('timings'), 'authentication': '401-without-key',
+            'marker': text, 'tested_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}
+
+
+def check_profile():
+    target = CONFIG / 'ghost-api.json'
+    if target.is_symlink():
+        raise RuntimeError('Unsafe existing Ghost profile')
+    if target.exists():
+        old = json.loads(target.read_text())
+        if old.get('managedBy') != 'solos-ghost-setup' or old.get('disabled'):
+            raise RuntimeError('Existing manual/disabled Ghost setup preserved. Use a separate Linux user for this lab.')
+
+
+def serve():
+    if STATE.is_symlink() or STATE.stat().st_mode & 0o077:
+        raise RuntimeError('Local engine state is not private')
+    state = json.loads(STATE.read_text())
+    device = state['device']
+    if not re.fullmatch(r'Vulkan\d+|none', device):
+        raise RuntimeError('Invalid local device')
+    binary = engine_path()
+    if device != 'none':
+        listed = subprocess.run([str(binary), '--list-devices'], cwd=binary.parent,
+                                capture_output=True, text=True, timeout=45, check=True)
+        device = choose_device(listed.stdout + '\n' + listed.stderr)
+    args = [str(binary), '--model', state['model'], '--alias', ALIAS,
+            '--host', '127.0.0.1', '--port', '18794', '--api-key-file', str(DATA / 'engine.key'),
+            '--ctx-size', '4096', '--parallel', '1', '--threads', '4', '--threads-batch', '4',
+            '--batch-size', '256', '--ubatch-size', '128', '--flash-attn', 'off',
+            '--device', device, '--n-gpu-layers', '0' if device == 'none' else '99',
+            '--offline', '--no-webui']
+    os.chdir(binary.parent)
+    os.execv(binary, args)
+
+
+def serve_api():
+    node = DATA / 'node/node-v22.23.4-linux-x64/bin/node'
+    script = Path('/opt/solos-src/appliance/ubuntu-ji/ghost-api/src/server.mjs')
+    if not script.is_file():
+        raise RuntimeError('Packaged Ghost API source missing')
+    env = dict(os.environ)
+    # Explicitly clear ambient hosted/fallback settings; this local profile
+    # reaches only its own authenticated engine, not OpenClaw or another model.
+    for name in list(env):
+        if name.startswith('GHOST_'):
+            del env[name]
+    env.update(GHOST_HOST='127.0.0.1', GHOST_PORT='18795',
+               GHOST_BACKEND='openai-compatible', GHOST_UPSTREAM_URL=BASE + '/v1',
+               GHOST_UPSTREAM_MODEL=ALIAS, GHOST_UPSTREAM_KEY_FILE=str(DATA / 'engine.key'),
+               GHOST_API_KEY_FILE=str(DATA / 'engine.key'),
+               GHOST_TIMEOUT_MS='180000', GHOST_PRIMARY_TIMEOUT_MS='180000')
+    os.execve(node, [str(node), str(script)], env)
+
+
+def install(cpu=False, model_file=None):
+    if platform.system() != 'Linux' or platform.machine() != 'x86_64' or os.geteuid() == 0:
+        raise RuntimeError('Run as the desktop user on x86_64 Linux, not with sudo')
+    check_profile()
+    private_dir(DATA)
+    with open(DATA / 'setup.lock', 'a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        if shutil.disk_usage(DATA).free < 3_500_000_000 and not STATE.exists():
+            raise RuntimeError('At least 3.5 GB free required; use a persistent installation/live USB')
+        print('Preparing pinned local engine and Qwen3 4B (first download about 2.5 GB).', flush=True)
+        archive = DATA / (VERSION + '.tar.gz')
+        download(ENGINE_URL, archive, ENGINE_SHA)
+        runtime = DATA / VERSION
+        if not runtime.exists():
+            with tempfile.TemporaryDirectory(dir=DATA, prefix='.engine-') as staging:
+                with tarfile.open(archive) as source:
+                    # Upstream uses relative .so symlinks. The data filter permits
+                    # these but rejects escaping links, absolute paths and devices.
+                    source.extractall(staging, filter='data')
+                os.replace(staging, runtime)
+        binary = engine_path()
+        listed = subprocess.run([str(binary), '--list-devices'], cwd=binary.parent, capture_output=True, text=True, timeout=45, check=True)
+        device = choose_device(listed.stdout + '\n' + listed.stderr, cpu)
+        print('Selected ' + device + (' (CPU explicitly selected)' if cpu else ' (discrete GPU)'), flush=True)
+        node_archive = DATA / 'node-v22.23.4.tar.xz'
+        download(NODE_URL, node_archive, NODE_SHA)
+        if not (DATA / 'node').exists():
+            with tempfile.TemporaryDirectory(dir=DATA, prefix='.node-') as staging:
+                with tarfile.open(node_archive) as source:
+                    source.extractall(staging, filter='data')
+                os.replace(staging, DATA / 'node')
+        model = Path(model_file).resolve() if model_file else DATA / 'Qwen3-4B.gguf'
+        if model_file:
+            if digest(model) != MODEL_SHA:
+                raise RuntimeError('Supplied model checksum mismatch')
+        else:
+            download(MODEL_URL, model, MODEL_SHA)
+        key_path = DATA / 'engine.key'
+        if not key_path.exists():
+            atomic(key_path, secrets.token_hex(32))
+        if key_path.is_symlink() or key_path.stat().st_mode & 0o077:
+            raise RuntimeError('Engine key is not private')
+        key = key_path.read_text().strip()
+        if not re.fullmatch(r'[!-~]{32,4096}', key):
+            raise RuntimeError('Existing local key invalid; preserved')
+        # Never replace another listener or restart an existing manual engine.
+        if STATE.exists():
+            prior = json.loads(STATE.read_text())
+            if prior.get('device') != device or prior.get('model') != str(model):
+                raise RuntimeError('Prior local profile differs; preserved for review')
+        else:
+            import socket
+            for port in (18794, 18795):
+                with socket.socket() as sock:
+                    sock.bind(('127.0.0.1', port))
+            atomic(STATE, json.dumps({'device': device, 'model': str(model), 'engine': VERSION}))
+        subprocess.run(['systemctl', '--user', 'daemon-reload'], check=True)
+        subprocess.run(['systemctl', '--user', 'enable', '--now', 'solos-ghost-local.service'], check=True)
+        for _ in range(120):
+            try:
+                request('/health', key)
+                break
+            except (OSError, ValueError):
+                time.sleep(1)
+        else:
+            raise RuntimeError('Engine readiness timeout; inspect journalctl --user -u solos-ghost-local')
+        engine_proof = probe(key)
+        subprocess.run(['systemctl', '--user', 'enable', '--now', 'solos-ghost-api.service'], check=True)
+        for _ in range(30):
+            try:
+                request('/healthz', base=API_BASE)
+                break
+            except (OSError, ValueError):
+                time.sleep(1)
+        else:
+            raise RuntimeError('Ghost API readiness timeout')
+        proof = probe(key, API_BASE, 'ghost-ji')
+        proof['engine_proof'] = engine_proof
+        proof['device'] = device
+        atomic(DATA / 'acceptance.json', json.dumps(proof, indent=2))
+        check_profile()
+        atomic(CONFIG / 'ghost-api.json', json.dumps({'schema': 'solos.ghost.client.v1',
+               'managedBy': 'solos-ghost-setup', 'endpoint': API_BASE + '/v1', 'key': key, 'model': 'ghost-ji'}))
+        print(f"Ghost answered in {proof['seconds']} s. Private local setup saved. Reopen the SolOS shell to load it.")
+        print('4096-token context, one request at a time. This is a chat test, not permission for OS changes.')
+
+
+def main():
+    os.umask(0o077)
+    parser = argparse.ArgumentParser(description=__doc__)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--install', action='store_true', help='Download/verify, detect GPU, configure and test local Ghost')
+    mode.add_argument('--serve', action='store_true', help=argparse.SUPPRESS)
+    mode.add_argument('--serve-api', action='store_true', help=argparse.SUPPRESS)
+    mode.add_argument('--check', action='store_true', help='Read-only installation summary; never prints credentials')
+    parser.add_argument('--cpu', action='store_true', help='Explicit CPU-only alternative, never automatic')
+    parser.add_argument('--model-file', help='Reuse the exact pinned GGUF instead of downloading')
+    args = parser.parse_args()
+    if args.serve:
+        serve()
+    elif args.serve_api:
+        serve_api()
+    elif args.check:
+        print('Configured locally' if STATE.exists() else 'Not configured locally')
+        if (DATA / 'acceptance.json').exists():
+            print((DATA / 'acceptance.json').read_text())
+    else:
+        install(args.cpu, args.model_file)
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except Exception as error:
+        # Network exceptions may carry URLs; never dump request bodies/headers/config.
+        print('Ghost setup incomplete: ' + (str(error) if isinstance(error, RuntimeError) else type(error).__name__), file=sys.stderr)
+        sys.exit(1)

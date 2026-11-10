@@ -1,0 +1,16 @@
+[Unit]
+Description=SolOS Ghost API (local GPU profile)
+Requires=solos-ghost-local.service
+After=solos-ghost-local.service
+ConditionPathExists=%h/.local/share/solos/ghost/local.json
+
+[Service]
+ExecStart=/usr/local/bin/solos-ghost-setup --serve-api
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+TimeoutStopSec=20
+
+[Install]
+WantedBy=default.target

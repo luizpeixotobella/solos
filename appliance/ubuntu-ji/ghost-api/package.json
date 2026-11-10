@@ -1,0 +1,8 @@
+{
+  "name": "@lbartes/ghost",
+  "version": "0.2.1",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": { "start": "node src/server.mjs", "test": "node --test tests/*.test.mjs" }
+}

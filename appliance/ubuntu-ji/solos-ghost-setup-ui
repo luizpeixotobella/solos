@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+/usr/local/bin/solos-ghost-setup --install
+status=$?
+printf '\nPressione Enter para fechar.\n'
+read -r _
+exit "$status"

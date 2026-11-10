@@ -9,6 +9,10 @@ network-manager
 ca-certificates
 curl
 python3
+libvulkan1
+mesa-vulkan-drivers
+libgomp1
+libcurl4t64
 util-linux
 xdg-utils
 git

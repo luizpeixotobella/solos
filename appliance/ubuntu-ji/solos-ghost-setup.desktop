@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Configurar Ghost na GPU
+Comment=Detecta a GPU e configura o Ghost local; primeiro uso baixa cerca de 2.5 GB
+Exec=gnome-terminal --wait -- /usr/local/bin/solos-ghost-setup-ui
+Icon=system-run
+Terminal=false
+Categories=System;Settings;

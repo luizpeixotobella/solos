@@ -15,3 +15,5 @@ ghost-audit-output/
 *.so
 *.a
 *.out
+__pycache__/
+*.pyc
