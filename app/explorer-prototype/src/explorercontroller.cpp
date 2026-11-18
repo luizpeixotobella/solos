@@ -3,6 +3,10 @@
 
 #include <QCoreApplication>
 #include <QDesktopServices>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusPendingCallWatcher>
+#include <QDBusPendingReply>
 #include <QDir>
 #include <QDirIterator>
 #include <QFileInfo>
@@ -252,5 +256,31 @@ void ExplorerController::startRuntime()
         QStringLiteral("--user"),
         QStringLiteral("start"),
         QStringLiteral("solos-daemon.service"),
+    });
+}
+
+void ExplorerController::requestPowerAction(bool restart)
+{
+    if (m_powerPending) {
+        return;
+    }
+
+    auto call = QDBusMessage::createMethodCall(
+        QStringLiteral("org.freedesktop.login1"),
+        QStringLiteral("/org/freedesktop/login1"),
+        QStringLiteral("org.freedesktop.login1.Manager"),
+        restart ? QStringLiteral("Reboot") : QStringLiteral("PowerOff"));
+    call << true; // Let logind/Polkit authorize interactively and respect inhibitors.
+    m_powerPending = true;
+    emit powerPendingChanged();
+    auto *watcher = new QDBusPendingCallWatcher(QDBusConnection::systemBus().asyncCall(call), this);
+    connect(watcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *finished) {
+        const QDBusPendingReply<> reply = *finished;
+        finished->deleteLater();
+        if (reply.isError()) {
+            m_powerPending = false;
+            emit powerPendingChanged();
+            emit powerActionFailed(tr("The system did not accept the power request: %1").arg(reply.error().message()));
+        }
     });
 }

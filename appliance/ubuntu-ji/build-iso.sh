@@ -3,9 +3,15 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOLOS_REPO="${SOLOS_REPO:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
-BUILD_DIR="${SOLOS_ISO_BUILD_DIR:-$SCRIPT_DIR/.build}"
-OUT_DIR="${SOLOS_ISO_OUT_DIR:-$SCRIPT_DIR/out}"
 BUILD_MODE="${1:---resume}"
+SUITE="${SOLOS_UBUNTU_SUITE:-noble}"
+case "$SUITE" in
+  noble) BUILD_SUFFIX=; ISO_STEM=solos-ubuntu-ji ;;
+  resolute) BUILD_SUFFIX=-resolute; ISO_STEM=solos-ubuntu-2604-ji ;;
+  *) echo "Unsupported SOLOS_UBUNTU_SUITE: $SUITE (expected noble or resolute)" >&2; exit 2 ;;
+esac
+BUILD_DIR="${SOLOS_ISO_BUILD_DIR:-$SCRIPT_DIR/.build$BUILD_SUFFIX}"
+OUT_DIR="${SOLOS_ISO_OUT_DIR:-$SCRIPT_DIR/out}"
 
 case "$BUILD_MODE" in
   --resume|--fresh|--purge) ;;
@@ -15,6 +21,8 @@ case "$BUILD_MODE" in
     ;;
 esac
 
+if [[ $# -gt 1 ]]; then echo "Expected one build mode" >&2; exit 2; fi
+
 if [[ "${EUID}" -ne 0 ]]; then
   echo "Run with sudo: sudo $0" >&2
   exit 1
@@ -22,13 +30,16 @@ fi
 for command in lb debootstrap genisoimage xorriso grep-aptavail grub-mkimage grub-mkstandalone mksquashfs rsync fdisk mkfs.msdos mmd mcopy; do
   command -v "$command" >/dev/null || { echo "Missing command: $command" >&2; exit 1; }
 done
+[[ -r "/usr/share/debootstrap/scripts/$SUITE" ]] || {
+  echo "The installed debootstrap does not support $SUITE; use a current Ubuntu build host" >&2; exit 1;
+}
 [[ -f "$SOLOS_REPO/app/runtime-core/Cargo.toml" ]] || { echo "Invalid SOLOS_REPO: $SOLOS_REPO" >&2; exit 1; }
 GRUB2_MBR="/usr/lib/grub/i386-pc/boot_hybrid.img"
 [[ -r "$GRUB2_MBR" ]] || { echo "Missing GRUB2 hybrid MBR: $GRUB2_MBR" >&2; exit 1; }
 GRUB2_CDBOOT="/usr/lib/grub/i386-pc/cdboot.img"
 [[ -r "$GRUB2_CDBOOT" ]] || { echo "Missing GRUB2 El Torito boot image: $GRUB2_CDBOOT" >&2; exit 1; }
 
-# Ubuntu Noble ships live-build 3.x, whose GRUB2 ISO helper predates the
+# Ubuntu ships live-build 3.x, whose GRUB2 ISO helper predates the
 # mandatory prefix argument in GRUB 2.12. Patch that single generated command
 # on the ephemeral build host; fail closed if the expected helper is absent.
 LIVE_BUILD_BINARY_ISO="/usr/lib/live/build/lb_binary_iso"
@@ -43,6 +54,13 @@ grep -Fq 'grub-mkimage -d \${input_dir} -p /boot/grub -o \${core_img}' "$LIVE_BU
 
 install -d -m 0755 "$BUILD_DIR" "$OUT_DIR"
 cd "$BUILD_DIR"
+# Never reuse bootstrap stages across suites, including manually overridden paths.
+if [[ -f .solos-ubuntu-suite ]]; then
+  [[ "$(<.solos-ubuntu-suite)" == "$SUITE" ]] || { echo "Build directory belongs to another Ubuntu suite" >&2; exit 1; }
+elif [[ "$SUITE" != noble && -n "$(find . -mindepth 1 -maxdepth 1 -print -quit)" ]]; then
+  echo "Use an empty build directory for the first $SUITE build" >&2; exit 1
+fi
+printf '%s\n' "$SUITE" > .solos-ubuntu-suite
 case "$BUILD_MODE" in
   --fresh) lb clean --all ;;
   --purge) lb clean --purge ;;
@@ -50,7 +68,7 @@ case "$BUILD_MODE" in
 esac
 lb config \
   --mode ubuntu \
-  --distribution noble \
+  --distribution "$SUITE" \
   --architectures amd64 \
   --archive-areas "main restricted universe multiverse" \
   --binary-images iso \
@@ -68,7 +86,7 @@ cp "$SCRIPT_DIR/packages.list.chroot" config/package-lists/solos.list.chroot
 rsync -a --delete \
   --delete-excluded \
   --exclude='.git' --exclude='.env*' --exclude='target' --exclude='build' \
-  --exclude='.build/' --exclude='/appliance/ubuntu-ji/out/' \
+  --exclude='.build/' --exclude='.build-resolute/' --exclude='/appliance/ubuntu-ji/out/' \
   --exclude='node_modules' --exclude='*.token' --exclude='*.secret' \
   "$SOLOS_REPO/" config/includes.chroot/opt/solos-src/
 install -m 0755 "$SCRIPT_DIR/solos-update" config/includes.chroot/usr/local/bin/solos-update
@@ -78,6 +96,10 @@ install -m 0755 "$SCRIPT_DIR/010-build-solos.hook.chroot" config/hooks/010-build
 lb build
 
 CHROOT_ROOT="$BUILD_DIR/chroot"
+if ! grep -Eq "^VERSION_CODENAME=($SUITE|\"$SUITE\")$" "$CHROOT_ROOT/etc/os-release"; then
+  echo "Unexpected or missing Ubuntu codename in the staged filesystem (expected $SUITE)" >&2
+  exit 1
+fi
 for binary in solos-shell-native solos-explorer-prototype solos-daemon solos-runtime-core; do
   if [[ ! -x "$CHROOT_ROOT/opt/solos/releases/bootstrap/bin/$binary" ]]; then
     echo "SolOS payload is missing $binary; check the chroot build hook and staged source tree" >&2
@@ -126,7 +148,7 @@ grub-mkimage \
   biosdisk iso9660 search search_fs_file configfile normal linux tga font gfxterm all_video
 cat "$GRUB2_CDBOOT" "$BIOS_CORE" > "$BIOS_ELTORITO"
 
-# Noble's live-build 3.x can create the BIOS GRUB2 tree, but it predates the
+# Ubuntu's live-build 3.x can create the BIOS GRUB2 tree, but it predates the
 # EFI image helper. Build a standalone x86_64 EFI loader and a small FAT image
 # ourselves, then add both boot entries with xorriso below.
 EFI_WORK_DIR="$BUILD_DIR/efi"
@@ -154,7 +176,7 @@ install -m 0644 "$EFI_BINARY" "$BUILD_DIR/binary/EFI/BOOT/BOOTX64.EFI"
 # Rebuild the final image from the assembled binary tree. The first xorriso
 # pass creates BIOS+UEFI El Torito entries; the second adds the GRUB2 hybrid
 # MBR and partition table required when the ISO is written directly to USB.
-OUTPUT_ISO="$OUT_DIR/solos-ubuntu-ji-amd64.iso"
+OUTPUT_ISO="$OUT_DIR/$ISO_STEM-amd64.iso"
 BASE_ISO="$BUILD_DIR/solos-ubuntu-ji-base.iso"
 rm -f "$BASE_ISO" "$OUTPUT_ISO" "$OUTPUT_ISO.sha256"
 xorriso -as mkisofs \

@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt6 6.4 REQUIRED COMPONENTS Quick Qml Network)
+find_package(Qt6 6.4 REQUIRED COMPONENTS Quick Qml Network DBus)
 qt_standard_project_setup(REQUIRES 6.4)
 
 qt_add_executable(solos-explorer-prototype
@@ -24,7 +24,7 @@ qt_add_qml_module(solos-explorer-prototype
         qml/Main.qml
 )
 
-target_link_libraries(solos-explorer-prototype PRIVATE Qt6::Quick Qt6::Qml Qt6::Network)
+target_link_libraries(solos-explorer-prototype PRIVATE Qt6::Quick Qt6::Qml Qt6::Network Qt6::DBus)
 
 include(CTest)
 if(BUILD_TESTING)

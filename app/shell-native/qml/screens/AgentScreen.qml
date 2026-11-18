@@ -101,14 +101,26 @@ Item {
                                 }
                             }
                         }
-                        TextArea {
+                        ScrollView {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 260
-                            readOnly: true
-                            text: appController.ghostChat.transcript
-                            textFormat: TextEdit.PlainText
-                            wrapMode: TextEdit.Wrap
-                            placeholderText: "Your conversation appears here. Host actions still use the SolOS approval lane."
+                            clip: true
+                            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                            TextArea {
+                                id: ghostTranscript
+                                readOnly: true
+                                selectByMouse: true
+                                activeFocusOnTab: true
+                                text: appController.ghostChat.transcript
+                                textFormat: TextEdit.PlainText
+                                wrapMode: TextEdit.Wrap
+                                color: Theme.textStrong
+                                placeholderTextColor: Theme.textSoft
+                                selectionColor: "#345581"
+                                selectedTextColor: "#ffffff"
+                                placeholderText: "Your conversation appears here. Host actions still use the SolOS approval lane."
+                                background: Rectangle { color: "#101421"; radius: 8 }
+                            }
                         }
                         TextArea {
                             id: ghostMessage
@@ -117,12 +129,26 @@ Item {
                             enabled: appController.ghostChat.configured && !appController.ghostChat.busy
                             placeholderText: "Ask Ghost anything…"
                             wrapMode: TextEdit.Wrap
+                            color: Theme.textStrong
+                            placeholderTextColor: Theme.textSoft
+                            selectionColor: "#345581"
+                            selectedTextColor: "#ffffff"
+                            background: Rectangle { color: "#101421"; radius: 8 }
                         }
                         RowLayout {
                             Button {
                                 text: appController.ghostChat.busy ? "Thinking…" : "Send to Ghost"
                                 enabled: appController.ghostChat.configured && !appController.ghostChat.busy && ghostMessage.text.trim().length > 0 && ghostMessage.text.length <= 4000
                                 onClicked: appController.ghostChat.send(ghostMessage.text)
+                            }
+                            Button {
+                                text: "Copy conversation"
+                                enabled: ghostTranscript.length > 0
+                                onClicked: {
+                                    ghostTranscript.forceActiveFocus()
+                                    ghostTranscript.selectAll()
+                                    ghostTranscript.copy()
+                                }
                             }
                             Button {
                                 text: "Clear conversation"

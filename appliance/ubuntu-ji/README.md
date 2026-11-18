@@ -27,6 +27,21 @@ The result is written to `out/solos-ubuntu-ji-amd64.iso`. The build copies only 
 
 The chroot hook downloads the pinned Rust 1.89.0 toolchain into temporary build directories because Ubuntu 24.04's packaged Rust is too old for the runtime. Those temporary directories are removed when the hook exits; allow HTTPS access to `static.rust-lang.org` and `crates.io` during the build.
 
+### Ubuntu 26.04 LTS candidate (Resolute)
+
+Use a dedicated Ubuntu 26.04 amd64 builder with a `debootstrap` that supports `resolute`:
+
+```bash
+sudo env SOLOS_UBUNTU_SUITE=resolute ./build-iso.sh --fresh
+```
+
+The candidate has separate live-build state (`.build-resolute`) and writes
+`out/solos-ubuntu-2604-ji-amd64.iso`. It does not replace the Noble ISO. Do not
+release until a fresh build and checksum, BIOS/UEFI boot in disposable VMs,
+Explorer startup and power confirmation, installer launch without touching a
+physical disk, and Ghost chat have been verified. No remote Ghost credentials,
+personal host address, or automatic network enrollment belong in the ISO.
+
 ## Build from GitHub Actions
 
 The manual **Build SolOS Ubuntu JI ISO** workflow uses a self-hosted Linux x64 runner labeled `solos-iso`. This keeps live-build's package cache and staging directory between runs, while the workflow logs and downloadable ISO/checksum are available in GitHub Actions. The runner machine must remain online during the job, have at least 25 GB free disk and 8 GB RAM, and allow the runner account to use `sudo`.

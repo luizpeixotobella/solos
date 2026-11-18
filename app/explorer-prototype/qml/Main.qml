@@ -17,6 +17,47 @@ ApplicationWindow {
     property string activeView: initialView
     property string searchText: ""
 
+    Dialog {
+        id: powerDialog
+        anchors.centerIn: parent
+        modal: true
+        title: qsTr("Power options")
+        standardButtons: Dialog.Cancel
+        contentItem: ColumnLayout {
+            Label { text: qsTr("Save your work first. Changes in a live session may be lost.") }
+            RowLayout {
+                Button {
+                    text: qsTr("Shut down")
+                    onClicked: { powerDialog.close(); explorer.requestPowerAction(false) }
+                }
+                Button {
+                    text: qsTr("Restart")
+                    onClicked: { powerDialog.close(); explorer.requestPowerAction(true) }
+                }
+            }
+        }
+        onOpened: standardButton(Dialog.Cancel).forceActiveFocus()
+    }
+
+    Dialog {
+        id: powerError
+        anchors.centerIn: parent
+        width: Math.min(window.width - 40, 480)
+        modal: true
+        title: qsTr("Power request failed")
+        standardButtons: Dialog.Ok
+        property string message
+        contentItem: Label { text: powerError.message; textFormat: Text.PlainText; wrapMode: Text.WordWrap }
+    }
+
+    Connections {
+        target: explorer
+        function onPowerActionFailed(message) {
+            powerError.message = message
+            powerError.open()
+        }
+    }
+
     component NavButton: Button {
         id: navButton
         property bool selected: false
@@ -118,6 +159,13 @@ ApplicationWindow {
                 }
 
                 Item { Layout.fillHeight: true }
+
+                NavButton {
+                    text: explorer.powerPending ? qsTr("Power request sent…") : qsTr("Power options…")
+                    Layout.fillWidth: true
+                    enabled: !explorer.powerPending
+                    onClicked: powerDialog.open()
+                }
 
                 Rectangle {
                     Layout.fillWidth: true

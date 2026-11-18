@@ -12,6 +12,7 @@ class ExplorerController : public QObject
     Q_PROPERTY(QVariantList places READ places CONSTANT)
     Q_PROPERTY(QVariantList files READ files NOTIFY filesChanged)
     Q_PROPERTY(QVariantList apps READ apps CONSTANT)
+    Q_PROPERTY(bool powerPending READ powerPending NOTIFY powerPendingChanged)
     Q_PROPERTY(QString runtimeStatus READ runtimeStatus NOTIFY runtimeStatusChanged)
 
 public:
@@ -24,12 +25,16 @@ public:
     QVariantList apps() const;
     QString runtimeStatus() const;
 
+    bool powerPending() const { return m_powerPending; }
+    Q_INVOKABLE void requestPowerAction(bool restart);
     Q_INVOKABLE void openFolder(const QString &path);
     Q_INVOKABLE void openParentFolder();
     Q_INVOKABLE void openItem(const QString &path, bool isDirectory);
     Q_INVOKABLE void launchApp(const QString &desktopFile);
 
 signals:
+    void powerPendingChanged();
+    void powerActionFailed(const QString &message);
     void filesChanged();
     void runtimeStatusChanged();
 
@@ -48,5 +53,6 @@ private:
     QVariantList m_apps;
     QString m_runtimeStatus;
     QTimer m_runtimeTimer;
+    bool m_powerPending = false;
     int m_runtimeChecks = 0;
 };
