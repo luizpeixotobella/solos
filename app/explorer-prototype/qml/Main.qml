@@ -20,11 +20,16 @@ ApplicationWindow {
     Dialog {
         id: powerDialog
         anchors.centerIn: parent
+        width: Math.min(window.width - 40, 480)
         modal: true
         title: qsTr("Power options")
         standardButtons: Dialog.Cancel
         contentItem: ColumnLayout {
-            Label { text: qsTr("Save your work first. Changes in a live session may be lost.") }
+            Label {
+                Layout.fillWidth: true
+                wrapMode: Text.WordWrap
+                text: qsTr("Save your work first. Changes in a live session may be lost.")
+            }
             RowLayout {
                 Button {
                     text: qsTr("Shut down")
